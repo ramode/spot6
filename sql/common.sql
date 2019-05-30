@@ -18,7 +18,7 @@ create table common.users
 	label varchar default 'Пользователь'::varchar not null,
 	email varchar,
 	phone varchar,
-	password varchar,
+	password varchar default '' not null,
 	parent integer default 0 not null
 		constraint users_parent_fk
 			references common.users
@@ -26,7 +26,9 @@ create table common.users
 	"group" integer default 0 not null
 		constraint users_group_fk
 			references common.users
-				on delete set default
+				on delete set default,
+	deleted  boolean             default false not null,
+        roles    common.roles_type[] default ARRAY ['guest'::common.roles_type] not null
 );
 
 comment on table common.users is 'пользователи продукта, админы';
@@ -56,8 +58,5 @@ create trigger encrypt_pass
     on common.users
     for each row
 execute procedure common.encrypt_pass();
-
-alter table common.users
-	add deleted bool default false not null;
 
 INSERT INTO common.users (id, login, label, email, phone, password, parent, "group", deleted) VALUES (0, 'root', 'Рут', 'me@eri.su', '+79158327039', 'ghpass', 0, 0, false);
