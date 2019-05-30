@@ -56,7 +56,7 @@
 
         <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition">
           
-          <router-link v-ripple slot="activator" class="toolbar-items" to="/user">
+          <router-link v-ripple slot="activator" class="toolbar-items" to="#">
             <v-badge color="error" overlap>
               <!-- <template slot="badge">
                 {{ user_menu.length }}

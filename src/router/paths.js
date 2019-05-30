@@ -11,7 +11,7 @@ export default [
     name: 'users',
     meta: {
       auth: {
-        roles: ['admin'],
+        roles: ['su','admin'],
       }
     },
   },
@@ -21,7 +21,7 @@ export default [
     name: 'user_add',
     meta: {
       auth: {
-        roles: ['admin'],
+        roles: ['su','admin'],
       }
     },
   },
@@ -31,7 +31,7 @@ export default [
     name: 'user_edit',
     meta: {
       auth: {
-        roles: ['admin'],
+        roles: ['su','admin'],
       }
     },
   },

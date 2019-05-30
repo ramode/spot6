@@ -80,7 +80,16 @@
 			source: String
 		},
 
+		mounted () {
+			this.load();
+		},
+
 		methods: {
+
+			load() {
+				// Чтобы затерся токен, и запрос к API шел под ролью web_anon, т.к. другим ролям нет полного доступа к таблице users
+				this.$auth.logout();
+			},
 
 			logIn(event) {
 				this.p.login_error = false;

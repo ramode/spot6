@@ -30,7 +30,7 @@
             />
           </v-list-tile-avatar>
           <v-list-tile-title class="title">
-            App MF Skel
+            RaMode Hot-Spot
           </v-list-tile-title>
         </v-list-tile>
         <v-divider/>
@@ -92,13 +92,13 @@ export default {
         to: '/users',
         icon: 'mdi-account',
         text: 'Users',
-        roles: ["admin"],
+        roles: ["su", "admin"],
       },
       {
         to: '/books',
         icon: 'mdi-book',
         text: 'Books',
-        roles: ["admin", "manager"],
+        roles: ["su", "admin", "manager"],
       },
     ],
     responsive: false,
