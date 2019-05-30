@@ -25,7 +25,7 @@
                   <v-text-field label="Repeat Password" class="purple-input" type="password" v-model="form.pass2" :rules="pass2Rules" required />
                 </v-flex>
 
-                <v-flex xs12 md6>
+                <v-flex xs12 md6 v-if="$auth.user().role === 'su'">
                   <v-select label="Role" class="purple-input" :items="roles" v-model="form.role" required></v-select>
                 </v-flex>
                 
@@ -112,6 +112,11 @@
               res => {
 
                 this.form = res.data[0];
+
+                // Backend не даст проапдейтить role для не суперадминов:
+                // if ( this.$auth.user().role != 'su' ) {
+                //   delete this.form.role;
+                // };
 
                 // Переписываем рульз на необходимость пароля
                 // Если поле пароля пустое - то не изменять пароль

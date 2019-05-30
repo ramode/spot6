@@ -19,17 +19,18 @@ export default {
 	},
 
 	addUser(data) {
-		var config = {
-			headers: {
-				"Prefer": "return=minimal",
-			},
-		};
-		return axios.post("/users_raw", data, config);
+		// var config = {
+		// 	headers: {
+		// 		"Prefer": "return=minimal",
+		// 	},
+		// };
+		// return axios.post("/users", data, config);
+		return axios.post("/users", data);
 	},
 
 	updateUser(data) {
 		var user_id = data.id;
-		return axios.patch(`/users_raw?id=eq.${user_id}`, data);
+		return axios.patch(`/users?id=eq.${user_id}`, data);
 	},
 
 }
