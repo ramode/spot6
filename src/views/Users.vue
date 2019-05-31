@@ -15,7 +15,7 @@
               <td>{{ item.email }}</td>
               <td>{{ item.full_name }}</td>
               <td>{{ item.role }}</td>
-              <td>
+              <td class="text-xs-right">
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'user_edit', params: {id: item.id}}">

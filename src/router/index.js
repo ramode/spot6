@@ -41,14 +41,14 @@ const router = new Router({
     { path: '/login', name: 'Login', component: Login },
 
     {
-      path: '/', name: 'app', component: AppInterface, redirect: { name: 'Users' },
+      path: '/', name: 'app', component: AppInterface, redirect: { name: 'dashboard' },
       meta: {
         auth: true,
       },
       children: 
         paths.map(path => route(path.path, path.view, path.name, path.meta))
           .concat([
-            { path: '*', redirect: '/books' }
+            { path: '*', redirect: '/404' }
           ])
     },
 

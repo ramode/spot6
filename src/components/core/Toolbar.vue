@@ -36,17 +36,24 @@
         
         <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition">
           
-          <router-link v-ripple slot="activator" class="toolbar-items" to="/notifications" >
+          <router-link v-ripple slot="activator" class="toolbar-items" to="#" >
             <v-badge color="error" overlap>
-              <template slot="badge">
+              <template slot="badge" v-if="notifications.length > 0">
                 {{ notifications.length }}
               </template>
               <v-icon color="tertiary">mdi-bell</v-icon>
             </v-badge>
           </router-link>
+
           <v-card>
             <v-list dense>
-              <v-list-tile v-for="notification in notifications" :key="notification" @click="onClick">
+              <v-list-tile>
+                <v-list-tile-title @click="clear_notifys">
+                  <small><i>Clear</i></small>
+                </v-list-tile-title>
+              </v-list-tile>
+              <!-- <v-list-tile v-for="notification in notifications" :key="notification" @click="onClick"> -->
+              <v-list-tile v-for="notification in notifications">
                 <v-list-tile-title v-text="notification" />
               </v-list-tile>
             </v-list>
@@ -88,17 +95,23 @@ import {
 
 export default {
   data: () => ({
-    notifications: [
-      'Mike, John responded to your email',
-      'You have 5 new tasks',
-      'You\'re now a friend with Andrew',
-      'Another Notification',
-      'Another One'
-    ],
+    // notifications: [
+    //   'Mike, John responded to your email',
+    //   'You have 5 new tasks',
+    //   'You\'re now a friend with Andrew',
+    //   'Another Notification',
+    //   'Another One'
+    // ],
     title: null,
     responsive: false,
     responsiveInput: false
   }),
+
+  computed: {
+    notifications() {
+      return this.$store.state.notifications;
+    },
+  },
 
   watch: {
     '$route' (val) {
@@ -136,6 +149,10 @@ export default {
       this.$auth.logout({
         redirect: '/login',
       });
+    },
+
+    clear_notifys() {
+      this.$store.commit("clearNotifys");
     },
 
   }

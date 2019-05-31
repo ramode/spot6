@@ -19,52 +19,37 @@
         tag="v-list"
         column
       >
+        
         <v-list-tile avatar>
-          <v-list-tile-avatar
-            color="white"
-          >
-            <v-img
-              :src="logo"
-              height="34"
-              contain
-            />
+          <v-list-tile-avatar color="white">
+            <v-img :src="logo" height="34" contain/>
           </v-list-tile-avatar>
           <v-list-tile-title class="title">
             RaMode Hot-Spot
           </v-list-tile-title>
         </v-list-tile>
+
         <v-divider/>
-        <v-list-tile
-          v-if="responsive"
-        >
-          <v-text-field
-            class="purple-input search-input"
-            label="Search..."
-            color="purple"
-          />
+
+        <v-list-tile v-if="responsive">
+          <v-text-field class="purple-input search-input" label="Search..." color="purple" />
         </v-list-tile>
+        
         <v-list-tile
           v-for="(link, i) in links"
-          :key="i"
-          :to="link.to"
-          :active-class="color"
-          avatar
-          class="v-list-item"
-          v-if="link.roles.includes($auth.user().role)"
-        >
+          :key="i" :to="link.to" :active-class="color"
+          avatar class="v-list-item"
+          v-if="link.roles.includes($auth.user().role)">
+          
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title
-            v-text="link.text"
-          />
+
+          <v-list-tile-title v-text="link.text" />
+
         </v-list-tile>
-        <v-list-tile
-          disabled
-          active-class="primary"
-          class="v-list-item v-list__tile--buy"
-          to="/upgrade"
-        >
+        
+        <v-list-tile disabled active-class="primary" class="v-list-item v-list__tile--buy" to="#">
           <v-list-tile-action>
             <v-icon>mdi-package-up</v-icon>
           </v-list-tile-action>
@@ -72,34 +57,43 @@
             Upgrade To PRO
           </v-list-tile-title>
         </v-list-tile>
+
       </v-layout>
     </v-img>
   </v-navigation-drawer>
 </template>
 
 <script>
+
 // Utilities
-import {
-  mapMutations,
-  mapState
-} from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data: () => ({
     logo: '/img/vuetifylogo.png',
     links: [
       {
-        to: '/users',
+        // to: '/dashboard',
+        to: { name: "dashboard" },
+        icon: 'mdi-view-dashboard',
+        text: 'Dashboard',
+        roles: ["su", "admin", "manager"],
+      },
+      {
+        // to: '/users',
+        to: { name: "users" },
         icon: 'mdi-account',
         text: 'Users',
         roles: ["su", "admin"],
       },
       {
-        to: '/books',
-        icon: 'mdi-book',
-        text: 'Books',
+        // to: '/profiles',
+        to: { name: "profiles" },
+        icon: 'mdi-account',
+        text: 'Profiles',
         roles: ["su", "admin", "manager"],
       },
+
     ],
     responsive: false,
     image: "/img/sidebar-3.3a54f533.jpg",

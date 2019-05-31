@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
         
-        <material-card color="green" title="Edit Profile" text="Complete your profile">
+        <material-card color="green" title="Edit User" text="Complete your profile">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
@@ -40,6 +40,8 @@
             </v-container>
           </v-form>
         </material-card>
+
+        <v-btn color="success" class="right" :to='{ name: "user_add" }'>Add</v-btn>
 
       </v-flex>
     </v-layout>

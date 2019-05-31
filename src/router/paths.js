@@ -6,6 +6,26 @@
 export default [
 
   {
+    path: '/403',
+    view: '403',
+    name: '403',
+  },
+  {
+    path: '/404',
+    view: '404',
+    name: '404',
+  },
+
+  {
+    path: '/dashboard',
+    view: 'Dashboard',
+    name: 'dashboard',
+    meta: {
+      auth: true,
+    },
+  },
+
+  {
     path: '/users',
     view: 'Users',
     name: 'users',
@@ -37,12 +57,32 @@ export default [
   },
 
   {
-    path: '/books',
-    view: 'Books',
+    path: '/profiles',
+    view: 'Profiles',
+    name: 'profiles',
+    meta: {
+      auth: true,
+    },
   },
   {
-    path: '/books/add',
-    view: 'BookMod',
+    path: '/profiles/add',
+    view: 'ProfileMod',
+    name: 'profile_add',
+    meta: {
+      auth: {
+        roles: ['su', 'admin'],
+      }
+    },
+  },
+  {
+    path: '/profiles/:id',
+    view: 'ProfileMod',
+    name: 'profile_edit',
+    meta: {
+      auth: {
+        roles: ['su', 'admin', 'manager'],
+      }
+    },
   },
 
 ]
