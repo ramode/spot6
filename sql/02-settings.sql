@@ -1,27 +1,18 @@
 create table common.settings
 (
-	id integer not null
+	id integer default (current_setting('request.jwt.claim.uid'::text, true))::integer not null
 		constraint settings_pk
+		references common.users
 			primary key,
-	autoreg_enabled boolean default true not null,
-	autoreg_role pg_roles
+
+	reg_users boolean default true not null,
+	reg_as_enabled boolean default false not null,
+	reg_role name,
+	session_time interval default '23:59:59'
 );
 
 comment on table common.settings is 'настройки для админа';
 
-
-
-alter table common.settings alter column id set default (current_setting('request.jwt.claim.uid'::text, true))::integer ;
-
-
-create table common.tokens
-(
-	id int default (current_setting('request.jwt.claim.uid'::text, true))::integer not null,
-	expires timestamp not null,
-	serial bigserial not null,
-	user_agent varchar,
-	ip inet
-);
 
 
 
