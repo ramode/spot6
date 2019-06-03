@@ -1,6 +1,6 @@
 CREATE DATABASE spot6;
 CREATE ROLE admin;
-ALTER ROLE admin WITH SUPERUSER INHERIT CREATEROLE NOCREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md55e6fba03d6bab1e5b653f662009a4cf5'; 
+ALTER ROLE admin WITH SUPERUSER INHERIT CREATEROLE NOCREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md55e6fba03d6bab1e5b653f662009a4cf5';
 -- password 'admin'
 
 grant ALL on DATABASE spot6 to admin ;
@@ -39,7 +39,7 @@ alter table common.users owner to admin;
 
 create unique index users_login_uindex
 	on common.users (login);
-  
+
 create function common.encrypt_pass() returns trigger
     language plpgsql
 as
@@ -62,23 +62,23 @@ create trigger encrypt_pass
 execute procedure common.encrypt_pass();
 
 INSERT INTO common.users (id, login, label, email, phone, password, parent, "group", deleted) VALUES (0, 'root', 'Рут', 'me@eri.su', '+79158327039', 'ghpass', 0, 0, false);
-							      
-							      
+
+
 create view "api".user_groups(label, id) as
 SELECT users.label,
        users.id
 FROM "common".users
-WHERE ((users.id = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
-       (users.parent = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
-       (users.id = (current_setting('request.jwt.claim.group'::text, true))::integer));
+WHERE ((users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR
+       (users.parent = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR
+       (users.id = (current_setting('request.jwt.claim.gid'::text, true))::integer));
 
 
 create view "api".user_users as
 WITH RECURSIVE r AS (
 SELECT users.*
 FROM "common".users
-   WHERE ((users.id = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
-       (users.parent = (current_setting('request.jwt.claim.user'::text, true))::integer))
+   WHERE ((users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR
+       (users.parent = (current_setting('request.jwt.claim.uid'::text, true))::integer))
 
    UNION
 
@@ -87,3 +87,7 @@ FROM "common".users
       JOIN r
           ON users.parent = r.id
 ) select * from r;
+
+
+alter table common.users alter column parent set default (current_setting('request.jwt.claim.uid'::text, true))::integer;
+alter table common.users alter column "group" set default (current_setting('request.jwt.claim.gid'::text, true))::integer;
