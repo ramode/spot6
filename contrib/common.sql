@@ -7,6 +7,8 @@ grant ALL on DATABASE spot6 to admin ;
 \c spot6
 create extension pgcrypto ;
 
+create type common.roles_type as enum ('super', 'admin', 'manager', 'guest');
+
 create table common.users
 (
 	id serial not null
@@ -28,7 +30,7 @@ create table common.users
 			references common.users
 				on delete set default,
 	deleted  boolean             default false not null,
-        roles    common.roles_type[] default ARRAY ['guest'::common.roles_type] not null
+        roles    common.roles_type default 'guest'::common.roles_type not null
 );
 
 comment on table common.users is 'пользователи продукта, админы';
@@ -60,3 +62,28 @@ create trigger encrypt_pass
 execute procedure common.encrypt_pass();
 
 INSERT INTO common.users (id, login, label, email, phone, password, parent, "group", deleted) VALUES (0, 'root', 'Рут', 'me@eri.su', '+79158327039', 'ghpass', 0, 0, false);
+							      
+							      
+create view "api".user_groups(label, id) as
+SELECT users.label,
+       users.id
+FROM "common".users
+WHERE ((users.id = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
+       (users.parent = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
+       (users.id = (current_setting('request.jwt.claim.group'::text, true))::integer));
+
+
+create view "api".user_users as
+WITH RECURSIVE r AS (
+SELECT users.*
+FROM "common".users
+   WHERE ((users.id = (current_setting('request.jwt.claim.user'::text, true))::integer) OR
+       (users.parent = (current_setting('request.jwt.claim.user'::text, true))::integer))
+
+   UNION
+
+   SELECT users.*
+   FROM "common".users
+      JOIN r
+          ON users.parent = r.id
+) select * from r;
