@@ -14,7 +14,7 @@
             <template slot="items" slot-scope="{ item }">
               <td>{{ item.name }}</td>
               <td>{{ item.skin }}</td>
-              <td>{{ item.tarif_min }}</td>
+              <td>{{ item.session_time | mf_time_human_duration }}</td>
               <td>{{ item.tarif_mb }} Mb</td>
               <td>{{ item.tarif_speed }} Mbps</td>
               <td>{{ item.auth_type }}</td>
