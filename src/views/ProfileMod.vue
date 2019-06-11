@@ -26,10 +26,10 @@
                
 
                 <v-flex xs11 md5>
-                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.traffic_limit" :rules="limitRules" required />
+                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.traffic_limit" />
                 </v-flex>
                 <v-flex xs1 md1>
-                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" :rules="limitRules" required />
+                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
                 </v-flex>
 
                 <v-flex xs10 md4>
@@ -169,7 +169,9 @@
 
       submit() {
 
-        var data = this.form;
+        // Костыль, чтобы склонирвоать переменную, чтобы в полях формы не отрисовывались большие числа байтов:
+        var data = Object.assign({}, this.form);
+
         data = this.convert_to_bits_bytes(data);
 
         var ApiMethod;
