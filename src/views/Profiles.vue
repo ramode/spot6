@@ -58,7 +58,7 @@
       headers: [
         { text: 'Name', value: 'name', sortable: true, },
         { text: 'Skin Dir', value: 'skin', sortable: false, },
-        { text: 'Minutes', value: 'tarif_min', sortable: false, },
+        { text: 'Time Limit', value: 'session_time', sortable: false, },
         { text: 'Traffic Limit', value: 'tarif_mb', sortable: false, },
         { text: 'Speed', value: 'tarif_speed', sortable: false, },
         { text: 'Auth Type', value: 'auth_type', sortable: false, },

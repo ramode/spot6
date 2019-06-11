@@ -25,12 +25,18 @@
                 </v-flex>
                
 
-                <v-flex xs12 md4>
-                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.tarif_mb" :rules="limitRules" required />
+                <v-flex xs11 md5>
+                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.traffic_limit" :rules="limitRules" required />
+                </v-flex>
+                <v-flex xs1 md1>
+                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" :rules="limitRules" required />
                 </v-flex>
 
-                <v-flex xs12 md4>
-                  <v-text-field label="Speed" class="purple-input" v-model="form.tarif_speed" :rules="speedRules" required />
+                <v-flex xs10 md4>
+                  <v-text-field label="Speed" class="purple-input" v-model="form.data_rate" :rules="speedRules" required />
+                </v-flex>
+                <v-flex xs1 md1>
+                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" :rules="limitRules" required />
                 </v-flex>
 
                 <v-flex xs12 md6>
@@ -69,6 +75,18 @@
         valid: false,
         auth_types: [],
 
+        traffic_units: [
+          { id: 1, name: "Mb", ratio: 1048576 },
+          { id: 2, name: "Gb", ratio: 1073741824 },
+        ],
+        traffic_unit: 1,
+
+        speed_units: [
+          { id: 1, name: "Mbit/sec", ratio: 1048576 },
+          { id: 2, name: "Kbit/sec", ratio: 1024 },
+        ],
+        speed_unit: 1,
+
         nameRules: [
           v => !!v || 'Required',
         ],
@@ -98,6 +116,24 @@
 
     methods: {
 
+      convert_to_bits_bytes(data) {
+        
+        data.traffic_limit = data.traffic_limit * this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+        data.data_rate = data.data_rate * this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+
+        return data;
+
+      },
+
+      convert_from_bits_bytes(data) {
+
+        data.traffic_limit = data.traffic_limit / this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+        data.data_rate = data.data_rate / this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+
+        return data;
+
+      },
+
       load() {
 
           API.getAuthTypes().then(
@@ -123,7 +159,7 @@
           if ( this.v_edit ) {
 
             API.getProfile(this.$route.params.id).then(
-              res => this.form = res.data[0],
+              res => this.form = this.convert_from_bits_bytes(res.data[0]),
               err => this.$store.commit("error", err)
             )
 
@@ -132,6 +168,9 @@
       },
 
       submit() {
+
+        var data = this.form;
+        data = this.convert_to_bits_bytes(data);
 
         var ApiMethod;
           // If "add":
@@ -143,7 +182,7 @@
           }
 
         if (this.$refs.form.validate()) {
-          ApiMethod(this.form).then(
+          ApiMethod(data).then(
             res => {
              this.$router.push({name: "profiles"})
             },
