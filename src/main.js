@@ -13,6 +13,11 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueAuth from '@websanova/vue-auth'
 
+// https://github.com/brockpetrie/vue-moment
+import VueMoment from 'vue-moment'
+import moment from 'moment-timezone'
+// import qwe from 'moment-precise-range-plugin'
+
 // Components
 import './components'
 
@@ -76,6 +81,12 @@ Vue.use(VueAuth, {
 // Vue.use(Vuetify, {
 // 	iconfont: 'md' // 'md' || 'mdi' || 'fa' || 'fa4'
 // })
+
+
+// 2019-06-11:
+Vue.use(VueMoment, {
+	moment,
+})
 
 
 /* eslint-disable no-new */

@@ -89,7 +89,7 @@ export default {
       {
         // to: '/profiles',
         to: { name: "profiles" },
-        icon: 'mdi-account',
+        icon: 'receipt',
         text: 'Profiles',
         roles: ["su", "admin", "manager"],
       },

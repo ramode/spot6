@@ -17,9 +17,13 @@
                   <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required />
                 </v-flex>
                 
-                <v-flex xs12 md4>
-                  <v-text-field label="Minutes" class="purple-input" v-model="form.tarif_min" :rules="minutesRules" required />
+                <v-flex xs12 md12>
+                  <!-- <v-text-field label="Minutes" class="purple-input" v-model="form.tarif_min" :rules="minutesRules" required /> -->
+                  <!-- <v-subheader class="pl-0">Always show thumb label</v-subheader> -->
+                  <span class="subheading font-weight-light mr-1">{{ time_limit }}</span>
+                  <v-slider label="Time Limit" v-model="form.tarif_sec" :max="86400" step="15"></v-slider>
                 </v-flex>
+               
 
                 <v-flex xs12 md4>
                   <v-text-field label="Traffic Limit" class="purple-input" v-model="form.tarif_mb" :rules="limitRules" required />
@@ -85,11 +89,56 @@
 
     },
 
+    computed: {
+
+      time_limit() {
+        return this.time_human_duration(this.form.tarif_sec);
+      },
+
+    },
+
     mounted () {
       this.load();
     },
 
     methods: {
+
+      time_human_duration(time_sec) {
+
+        if ( time_sec === undefined ) {
+          return;
+        };
+
+        var res;
+
+        if ( time_sec < 60 ) {
+
+          res = `${time_sec} сек.`;
+
+        } else if ( time_sec < 3600 ) {
+
+          var _sec = time_sec % 60;
+          var _min = (time_sec - _sec) / 60;
+
+          res = `${_min} мин`;
+
+          if ( _sec > 0 ) {
+            res = `${res} ${_sec} сек`;
+          }
+
+        } else {
+
+          var _sec = time_sec % 3600 % 60;
+          var _min = ( time_sec - _sec ) / 60 % 60;
+          var _hour = ( time_sec - time_sec % 3600 ) / 3600;
+          
+          res = `${_hour} ч. ${_min} мин. ${_sec} сек.`;
+
+        };
+
+        return res;
+
+      },
      
       load() {
 
