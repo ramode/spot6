@@ -21,7 +21,7 @@
                   <!-- <v-text-field label="Minutes" class="purple-input" v-model="form.tarif_min" :rules="minutesRules" required /> -->
                   <!-- <v-subheader class="pl-0">Always show thumb label</v-subheader> -->
                   <span class="subheading font-weight-light mr-1">{{ time_limit }}</span>
-                  <v-slider label="Time Limit" v-model="form.tarif_sec" :max="86400" step="15"></v-slider>
+                  <v-slider label="Time Limit" v-model="form.session_time" :max="86400" step="15"></v-slider>
                 </v-flex>
                
 
@@ -92,7 +92,7 @@
     computed: {
 
       time_limit() {
-        return this.time_human_duration(this.form.tarif_sec);
+        return this.time_human_duration(this.form.session_time);
       },
 
     },
@@ -132,7 +132,11 @@
           var _min = ( time_sec - _sec ) / 60 % 60;
           var _hour = ( time_sec - time_sec % 3600 ) / 3600;
           
-          res = `${_hour} ч. ${_min} мин. ${_sec} сек.`;
+          res = `${_hour} ч. ${_min} мин.`;
+
+          if ( _sec > 0 ) {
+            res = `${res} ${_sec} сек`;
+          }
 
         };
 
