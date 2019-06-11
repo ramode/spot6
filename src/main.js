@@ -18,6 +18,9 @@ import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
 // import qwe from 'moment-precise-range-plugin'
 
+// 2019-06-11, my custom
+import "@/lib/mf"
+
 // Components
 import './components'
 
