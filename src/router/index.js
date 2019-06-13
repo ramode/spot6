@@ -48,7 +48,7 @@ const router = new Router({
       children: 
         paths.map(path => route(path.path, path.view, path.name, path.meta))
           .concat([
-            { path: '*', redirect: '/404' }
+            { path: '*', redirect: '/dashboard' }
           ])
     },
 
