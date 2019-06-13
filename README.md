@@ -36,7 +36,7 @@ On api.login() function set SECURITY DEFINER;
 ### Exampels for debug:
 ```
 set role admin; set request.jwt.claim.role = 'admin'; set request.jwt.claim.email = 'test@eth0.pro';
-set role su; set request.jwt.claim.role = 'su'; set request.jwt.claim.email = 'morfair@gmail.com';
+set role super; set request.jwt.claim.role = 'super'; set request.jwt.claim.email = 'morfair@gmail.com';
 ```
 ```
 SHOW current_setting('request.jwt.claim.email');
