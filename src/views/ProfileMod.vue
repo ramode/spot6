@@ -18,7 +18,7 @@
                   <v-select label="Theme" class="purple-input" :items="themes" item-text="name" item-value="id" v-on:input="renewThemeVars" v-model="form.theme_id" required></v-select>
                 </v-flex>
 
-                <v-flex xs12 md12>
+                <v-flex xs12 md12 v-if="form.theme_id">
                   <span class="subheading">Theme params:</span>
                 </v-flex>
 
