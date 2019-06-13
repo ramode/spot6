@@ -14,14 +14,23 @@
                 </v-flex>
                 
                 <v-flex xs12 md5>
-                  <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required />
+                  <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
+                  <v-select label="Theme" class="purple-input" :items="themes" item-text="name" item-value="id" v-on:input="renewThemeVars" v-model="form.theme_id" required></v-select>
                 </v-flex>
                 
+                <span class="subheading">Theme params:</span>
+                <v-flex xs12 md12 v-for="v in theme_var_list">
+                  <!-- <v-text-field :label="v['label']" v-model="form.theme_vars[v.name]" required /> -->
+                  <v-text-field :label="v.label" v-model="form.theme_vars[v.name]" required />
+                </v-flex>
+
+
+
                 <v-flex xs12 md12>
                   <!-- <v-text-field label="Minutes" class="purple-input" v-model="form.tarif_min" :rules="minutesRules" required /> -->
                   <!-- <v-subheader class="pl-0">Always show thumb label</v-subheader> -->
                   <span class="subheading font-weight-light mr-1">{{ form.session_time | mf_time_human_duration }}</span>
-                  <v-slider label="Time Limit" v-model="form.session_time" :max="86400" step="15"></v-slider>
+                  <v-slider label="Time Limit" v-model="form.session_time" :max="86400" step="300"></v-slider>
                 </v-flex>
                
 
@@ -33,14 +42,26 @@
                 </v-flex>
 
                 <v-flex xs10 md4>
-                  <v-text-field label="Speed" class="purple-input" v-model="form.data_rate" :rules="speedRules" required />
+                  <v-text-field label="Speed" class="purple-input" v-model="form.data_rate" />
                 </v-flex>
                 <v-flex xs1 md1>
-                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" :rules="limitRules" required />
+                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
                 </v-flex>
 
                 <v-flex xs12 md6>
                   <v-select label="Auth Type" class="purple-input" :items="auth_types" item-text="name" item-value="id" v-model="form.auth_type" required></v-select>
+                </v-flex>
+
+                <v-flex xs12 md6>
+                  <v-text-field label="port_limit" class="purple-input" v-model="form.port_limit" />
+                </v-flex>
+
+                <v-flex xs12 md12>
+                  <v-text-field label="redirect_url" class="purple-input" v-model="form.redirect_url" />
+                </v-flex>
+
+                <v-flex xs12 md12>
+                  <v-text-field label="ad_url" class="purple-input" v-model="form.ad_url" />
                 </v-flex>
                 
 
@@ -73,6 +94,8 @@
         form: {},
         v_edit: false,
         valid: false,
+        themes: [],
+        theme_var_list: [],
         auth_types: [],
 
         traffic_units: [
@@ -150,6 +173,14 @@
             }
           );
 
+          API.getThemes().then(
+            res => {
+              // console.log(res);
+              this.themes = res.data;
+            },
+            err => this.$store.commit("error", err)
+          );
+
 
           // For EDIT action:
           if ( this.$route.params.id ) {
@@ -159,13 +190,35 @@
           if ( this.v_edit ) {
 
             API.getProfile(this.$route.params.id).then(
-              res => this.form = this.convert_from_bits_bytes(res.data[0]),
+              res => {
+                this.form = this.convert_from_bits_bytes(res.data[0]);
+                if ( this.form.theme_vars == null ) {
+                  this.form.theme_vars = {};
+                };
+                this.renewThemeVars(this.form.theme_id);
+              },
               err => this.$store.commit("error", err)
             )
 
           };
 
       },
+
+
+      renewThemeVars(theme_id) {
+        
+        // console.log(theme_id);
+        // console.log(this.themes);
+        // console.log("renewThemeVars");
+
+        this.themes.forEach( (item, i) => {
+          if ( item.id == theme_id ) {
+            this.theme_var_list = item.variables;
+          };
+        });
+
+      },
+
 
       submit() {
 

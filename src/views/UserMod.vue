@@ -41,8 +41,6 @@
           </v-form>
         </material-card>
 
-        <v-btn color="success" class="right" :to='{ name: "user_add" }'>Add</v-btn>
-
       </v-flex>
     </v-layout>
   </v-container>
@@ -100,7 +98,8 @@
                 this.roles.push(item.rolname);
               });
             },
-            err => console.log(err)
+            // err => console.log(err)
+            err => this.$store.commit("error", err)
           );
 
 
@@ -135,7 +134,8 @@
                 ];
 
               },
-              err => console.log(err)
+              // err => console.log(err)
+              err => this.$store.commit("error", err)
             )
           };
 
@@ -164,7 +164,8 @@
               res => {
                 this.$router.push({name: "users"})
               },
-              err => console.log(err)
+              // err => console.log(err)
+              err => this.$store.commit("error", err)
             )
         }
 

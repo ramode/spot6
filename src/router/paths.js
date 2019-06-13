@@ -57,6 +57,17 @@ export default [
   },
 
   {
+    path: '/settings',
+    view: 'Settings',
+    name: 'settings',
+    meta: {
+      auth: {
+        roles: ['su'],
+      }
+    },
+  },
+
+  {
     path: '/profiles',
     view: 'Profiles',
     name: 'profiles',

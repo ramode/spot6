@@ -93,6 +93,12 @@ export default {
         text: 'Profiles',
         roles: ["su", "admin", "manager"],
       },
+      {
+        to: { name: "settings" },
+        icon: 'mdi-settings',
+        text: 'Settings',
+        roles: ["su"],
+      },
 
     ],
     responsive: false,

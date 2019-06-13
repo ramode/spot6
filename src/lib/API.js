@@ -48,7 +48,7 @@ export default {
 	addProfile(data) {
 		data._session_time = data.session_time;
 		delete data.session_time;
-		
+
 		return axios.post("/profiles", data);
 	},
 
@@ -58,6 +58,21 @@ export default {
 
 		var profile_id = data.id;
 		return axios.patch(`/profiles?id=eq.${profile_id}`, data);
+	},
+
+	createInvite() {
+	},
+
+	getSettings() {
+		return axios.get('/settings');
+	},
+
+	updateSettings(data) {
+		return axios.patch(`/settings`, data);
+	},
+
+	getThemes() {
+		return axios.get(`/themes`);
 	},
 
 }
