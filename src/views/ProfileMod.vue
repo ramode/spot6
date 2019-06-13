@@ -17,8 +17,10 @@
                   <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
                   <v-select label="Theme" class="purple-input" :items="themes" item-text="name" item-value="id" v-on:input="renewThemeVars" v-model="form.theme_id" required></v-select>
                 </v-flex>
-                
-                <span class="subheading">Theme params:</span>
+
+                <v-flex xs12 md12>
+                  <span class="subheading">Theme params:</span>
+                </v-flex>
 
                 <v-flex xs12 md12 v-for="v in theme_var_list">
                   <!-- <v-text-field :label="v['label']" v-model="form.theme_vars[v.name]" required /> -->
