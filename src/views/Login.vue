@@ -36,6 +36,7 @@
 						</v-card-text>
 
 						<v-card-actions>
+							<router-link :to="{ name: 'Registration' }">Регистрация</router-link>
 							<v-spacer></v-spacer>
 							<v-btn color="primary" v-on:click="logIn">Login</v-btn>
 						</v-card-actions>

@@ -16,6 +16,7 @@ import AppInterface from '../AppInterface.vue'
 
 // Routes
 import Login from '../views/Login.vue'
+import Registration from '@/views/Registration.vue'
 import paths from './paths'
 
 function route (path, view, name, meta) {
@@ -39,6 +40,7 @@ const router = new Router({
   routes: [
 
     { path: '/login', name: 'Login', component: Login },
+    { path: '/reg', name: 'Registration', component: Registration },
 
     {
       path: '/', name: 'app', component: AppInterface, redirect: { name: 'dashboard' },

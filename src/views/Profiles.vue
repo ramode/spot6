@@ -41,7 +41,7 @@
           </v-data-table>
         </material-card>
 
-        <v-btn color="success" class="right" :to='{ name: "profile_add" }' v-if="['su', 'admin'].includes($auth.user().role)">Add</v-btn>
+        <v-btn color="success" class="right" :to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)">Add</v-btn>
 
       </v-flex>
     </v-layout>

@@ -106,14 +106,14 @@
         auth_types: [],
 
         traffic_units: [
-          { id: 1, name: "Mb", ratio: 1048576 },
-          { id: 2, name: "Gb", ratio: 1073741824 },
+          { id: 1, name: "Gb", ratio: 1073741824 },
+          { id: 2, name: "Mb", ratio: 1048576 },
         ],
         traffic_unit: 1,
 
         speed_units: [
           { id: 1, name: "Mbit/sec", ratio: 1048576 },
-          { id: 2, name: "Kbit/sec", ratio: 1024 },
+          { id: 2, name: "kbit/sec", ratio: 1024 },
         ],
         speed_unit: 1,
 
@@ -148,8 +148,16 @@
 
       convert_to_bits_bytes(data) {
         
-        data.traffic_limit = data.traffic_limit * this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
-        data.data_rate = data.data_rate * this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+        var
+          traffic_unit_ratio = this.traffic_units.filter( obj => obj.id == this.traffic_unit )[0].ratio,
+          speed_unit_rario = this.speed_units.filter( obj => obj.id == this.speed_unit )[0].ratio;
+
+        console.log(traffic_unit_ratio);
+        console.log(speed_unit_rario);
+
+        data.traffic_limit = data.traffic_limit * traffic_unit_ratio;
+        data.data_rate = data.data_rate * speed_unit_rario;
+        
 
         return data;
 
@@ -157,8 +165,24 @@
 
       convert_from_bits_bytes(data) {
 
-        data.traffic_limit = data.traffic_limit / this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
-        data.data_rate = data.data_rate / this.traffic_units.filter(obj => obj.id == this.traffic_unit)[0].ratio;
+        // Если меньше 1 Gb:
+        if ( data.traffic_limit < this.traffic_units.filter( obj => obj.id == 1)[0].ratio ) {
+          this.traffic_unit = 2;
+        // Если больше 1 Gb:
+        } else {
+          this.traffic_unit = 1;
+        }
+        var traffic_unit_ratio = this.traffic_units.filter( obj => obj.id == this.traffic_unit )[0].ratio;
+        data.traffic_limit = data.traffic_limit / traffic_unit_ratio;
+        
+        // Если меньше 1 Mbit/sec:
+        if ( data.data_rate < this.speed_units.filter( obj => obj.id == 1)[0].ratio ) {
+          this.speed_unit = 2;
+        } else {
+          this.speed_unit = 1;
+        }
+        var speed_unit_ratio = this.speed_units.filter( obj => obj.id == this.speed_unit)[0].ratio;
+        data.data_rate = data.data_rate / speed_unit_ratio;
 
         return data;
 

@@ -31,7 +31,7 @@ export default [
     name: 'users',
     meta: {
       auth: {
-        roles: ['su','admin'],
+        roles: ['super','admin'],
       }
     },
   },
@@ -41,7 +41,7 @@ export default [
     name: 'user_add',
     meta: {
       auth: {
-        roles: ['su','admin'],
+        roles: ['super','admin'],
       }
     },
   },
@@ -51,7 +51,7 @@ export default [
     name: 'user_edit',
     meta: {
       auth: {
-        roles: ['su','admin'],
+        roles: ['super','admin'],
       }
     },
   },
@@ -62,7 +62,7 @@ export default [
     name: 'settings',
     meta: {
       auth: {
-        roles: ['su'],
+        roles: ['super'],
       }
     },
   },
@@ -81,7 +81,7 @@ export default [
     name: 'profile_add',
     meta: {
       auth: {
-        roles: ['su', 'admin'],
+        roles: ['super', 'admin'],
       }
     },
   },
@@ -91,7 +91,7 @@ export default [
     name: 'profile_edit',
     meta: {
       auth: {
-        roles: ['su', 'admin', 'manager'],
+        roles: ['super', 'admin', 'manager'],
       }
     },
   },

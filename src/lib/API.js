@@ -6,6 +6,14 @@ Vue.use(VueAxios, axios)
 
 export default {
 
+	Registration(data) {
+		// return this.addUser(data);
+		if ( data.pass2 ) {
+			delete data.pass2;
+		};
+		return axios.post('/rpc/reg', data);
+	},
+
 	getRoles() {
 		return axios.get('/roles');
 	},
@@ -25,6 +33,9 @@ export default {
 		// 	},
 		// };
 		// return axios.post("/users", data, config);
+		if ( data.pass2 ) {
+			delete data.pass2;
+		};
 		return axios.post("/users", data);
 	},
 
