@@ -16,12 +16,16 @@
 					<v-card-text>
 						<v-form ref="form" v-model="valid">
 
-							<v-text-field prepend-icon="person" label="Login" type="text" v-model="form.email" :rules="emailRules" required></v-text-field>
+							<v-text-field prepend-icon="person" label="Login" type="text" v-model="form.login" :rules="emailRules" required></v-text-field>
 
 							<v-text-field prepend-icon="lock" label="Password" type="password" v-model="form.pass" :rules="passRules" required></v-text-field>
 							<v-text-field prepend-icon="lock" label=" Repeat Password" type="password" v-model="form.pass2" :rules="pass2Rules" required></v-text-field>
 
-							<v-text-field prepend-icon="mdi-alphabetical" label="Registration Secret" type="text" v-model="form.reg_secret" :rules="regSecretRules"></v-text-field>
+							<v-text-field prepend-icon="mdi-at" label="E-Mail" type="text" v-model="form.email"></v-text-field>
+
+							<v-text-field prepend-icon="mdi-phone-classic" label="Phone" type="text" v-model="form.phone"></v-text-field>
+
+							<v-text-field v-if="show_reg_secret" prepend-icon="mdi-alphabetical" label="Registration Secret" type="text" v-model="form.reg_secret" :rules="regSecretRules"></v-text-field>
 
 						</v-form>
 					</v-card-text>
@@ -55,7 +59,11 @@
 
 		data() {
 			return {
-				form: {},
+				form: {
+					email: null,
+					phone: null,
+				},
+				show_reg_secret: true,
 				valid: false,
 				res: {},
 				p: {
@@ -101,6 +109,12 @@
 			load() {
 				// Чтобы затерся токен, и запрос к API шел под ролью web_anon, т.к. другим ролям нет полного доступа к таблице users
 				// this.$auth.logout();
+
+				if ( this.$route.params.reg_secret ) {
+	            	this.form.reg_secret = this.$route.params.reg_secret;
+	            	this.show_reg_secret = false;
+          		};
+
 			},
 
 			Reg(event) {

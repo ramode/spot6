@@ -41,6 +41,7 @@ const router = new Router({
 
     { path: '/login', name: 'Login', component: Login },
     { path: '/reg', name: 'Registration', component: Registration },
+    { path: '/reg/:reg_secret', name: 'Registration2', component: Registration },
 
     {
       path: '/', name: 'app', component: AppInterface, redirect: { name: 'dashboard' },

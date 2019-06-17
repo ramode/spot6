@@ -21,7 +21,7 @@
 									name="login"
 									label="Login"
 									type="text"
-									v-model="user.email">
+									v-model="user.login">
 								</v-text-field>
 
 								<v-text-field

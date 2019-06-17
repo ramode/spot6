@@ -34,7 +34,7 @@
                   <v-slider label="Time Limit" v-model="form.session_time" :max="86400" step="300"></v-slider>
                 </v-flex> -->
 
-                <v-flex xs12 md5>
+                <v-flex xs12 md3>
                   <v-text-field label="Time Limit" v-model="form.session_time" required />
                 </v-flex>
                
@@ -49,7 +49,7 @@
                 <v-flex xs10 md2>
                   <v-text-field label="Speed" class="purple-input" v-model="form.data_rate" />
                 </v-flex>
-                <v-flex xs1 md1>
+                <v-flex xs2 md2>
                   <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
                 </v-flex>
 
@@ -58,8 +58,8 @@
                   <v-text-field label="port_limit" class="purple-input" v-model="form.port_limit" />
                 </v-flex>
 
-                <v-flex xs12 md10>
-                  <v-select label="Auth Types" class="purple-input" :items="auth_types" item-text="name" item-value="id" v-model="form.auth_types" multiple required></v-select>
+                <v-flex xs12 md12>
+                  <v-select label="Auth Types" class="purple-input" :items="auth_types" item-text="name" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
                 </v-flex>
 
 

@@ -53,7 +53,7 @@ export default {
 	},
 
 	getAuthTypes() {
-		return axios.get('/auth_types');
+		return axios.get('/auth_types_list');
 	},
 
 	addProfile(data) {

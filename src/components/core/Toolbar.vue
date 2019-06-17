@@ -73,7 +73,7 @@
           </router-link>
           <v-card>
             <v-list dense>
-              <v-list-tile>{{ $auth.user().email }}</v-list-tile>
+              <v-list-tile>{{ $auth.user().login }}</v-list-tile>
               <v-list-tile @click="LogOut">
                 <v-list-tile-title>Log Out</v-list-tile-title>
               </v-list-tile>
