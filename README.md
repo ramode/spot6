@@ -31,7 +31,14 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### NOTES:
 Row level policy: select * from pg_policies;
+
 On api.login() function set SECURITY DEFINER;
+
+### PostgREST
+To refresh the cache without restarting the PostgREST server, send the server process a SIGUSR1 signal:
+```
+killall -SIGUSR1 postgrest
+```
 
 ### Exampels for debug:
 ```
