@@ -86,4 +86,12 @@ export default {
 		return axios.get(`/hotspot_themes`);
 	},
 
+	getClientDevices() {
+		return axios.get(`/hotspot_devices`);
+	},
+
+	Dashboard() {
+		return axios.get(`/dashboard`);
+	},
+
 }

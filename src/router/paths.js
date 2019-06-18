@@ -6,17 +6,6 @@
 export default [
 
   {
-    path: '/403',
-    view: '403',
-    name: '403',
-  },
-  {
-    path: '/404',
-    view: '404',
-    name: '404',
-  },
-
-  {
     path: '/dashboard',
     view: 'Dashboard',
     name: 'dashboard',
