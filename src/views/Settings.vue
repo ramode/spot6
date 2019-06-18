@@ -67,7 +67,7 @@
           res => {
             res.data.forEach((item, i) => {
               // TODO: do make check on server side:
-              if ( item.rolname != "su" ) {
+              if ( ! ["su", "super"].includes(item.rolname) ) {
                 this.roles.push(item.rolname);
               };
             });

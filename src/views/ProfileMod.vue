@@ -3,18 +3,21 @@
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
         
-        <material-card color="orange" title="Edit Profile" text="Profile for your hotspots">
+        <material-card color="blue-grey" title="Edit Profile" text="Profile for your Hot-Spots">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
-              <v-layout column>
+              <v-layout wrap>
                 
-                <v-flex xs12 md7>
-                  <v-text-field label="Profile Name" class="purple-input" v-model="form.profile" :rules="nameRules" required />
-                  <v-text-field label="Label" class="purple-input" v-model="form.label" required />
+                <v-flex xs12 md12>
+                  <v-text-field label="Name" class="purple-input" v-model="form.label" required />
+                </v-flex>
+
+                <v-flex xs12 md6>
+                  <v-text-field label="RADIUS Profile Name" class="purple-input" v-model="form.profile" :rules="nameRules" required />
                 </v-flex>
                 
-                <v-flex xs12 md5>
+                <v-flex xs12 md6>
                   <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
                   <v-select label="Theme" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
                 </v-flex>
@@ -32,48 +35,49 @@
                 <v-flex xs12 md12>
                   <span class="subheading">Authorization:</span>
                 </v-flex>
+
                 <v-flex xs12 md12>
                   <v-select label="Auth Types" class="purple-input" :items="auth_types" item-text="label" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
                 </v-flex>
 
-                <v-flex xs12 md3>
+                <v-flex xs12 md12>
                   <v-checkbox label="MAC Auth" v-model="form.mac_auth" required />
                 </v-flex>
+
+
 
                 <v-flex xs12 md12>
                   <span class="subheading">Limits:</span>
                 </v-flex>
 
+
+                <v-flex xs9 md4>
+                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.limit_bytes" />
+                </v-flex>
+
+                <v-flex xs2 md1>
+                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
+                </v-flex>
+ 
+                <v-flex xs9 md4 offset-md1>
+                  <v-text-field label="Speed" class="purple-input" v-model="form.limit_speed" />
+                </v-flex>
+                <v-flex xs2 md1>
+                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
+                </v-flex>
+ 
+
                 <v-flex xs12 md3>
                   <v-text-field label="Port Limit" v-model="form.limit_ports" required />
                 </v-flex>
-               
-                <v-flex xs12 md3>
- <v-layout row>
-                
-                <v-flex xs8 md4>
-                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.limit_bytes" />
-                </v-flex>
-                <v-flex xs4 md2>
-                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
-                </v-flex>
- </v-layout>                </v-flex>
-<v-flex xs12 md3>
- <v-layout row>
-                <v-flex xs8 md4>
-                  <v-text-field label="Speed" class="purple-input" v-model="form.limit_speed" />
-                </v-flex>
-                <v-flex xs4 md2>
-                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
-                </v-flex>
- </v-layout>                </v-flex>
 
-                <v-flex xs12 md2>
+                <v-flex xs12 md9>
                   <v-text-field label="Session time" class="purple-input" v-model="form.limit_time" />
                 </v-flex>
 
-
-
+                <v-flex xs12 md12>
+                  <span class="subheading">HTTP Redirects:</span>
+                </v-flex>
 
                 <v-flex xs12 md12>
                   <v-text-field label="redirect_url" class="purple-input" v-model="form.redirect_url" />
@@ -201,30 +205,31 @@
       },
 
       load() {
-            
-            self=this;
+
+          // впезду эту дрянь
+          // self=this;
 
           API.getAuthTypes().then(
             res => {
               // console.log(res);
               res.data.forEach((item, i) => {
-                self.auth_types.push(item);
+                this.auth_types.push(item);
               });
             },
             err => {
               // console.log(err);
               // this.$store.commit("addNotify", `${err.response.status}: ${err.response.data.message}`);
-              self.$store.commit("error", err);
+              this.$store.commit("error", err);
             }
           );
 
           API.getThemes().then(
             res => {
-              self.themes = res.data;
+              this.themes = res.data;
 
-              if ( self.form.theme ) {
+              if ( this.form.theme ) {
 
-                self.renewThemeVars(self.form.theme);
+                this.renewThemeVars(this.form.theme);
               };
             },
             err => this.$store.commit("error", err)
@@ -232,24 +237,24 @@
 
 
           // For EDIT action:
-          if ( self.$route.params.id ) {
-            self.v_edit = true
+          if ( this.$route.params.id ) {
+            this.v_edit = true
           };
 
-          if ( self.v_edit ) {
+          if ( this.v_edit ) {
 
-            API.getProfile(self.$route.params.id).then(
+            API.getProfile(this.$route.params.id).then(
               res => {
-                self.form = self.convert_from_bits_bytes(res.data[0]);
+                this.form = this.convert_from_bits_bytes(res.data[0]);
                 if (this.themes) {
-                    self.renewThemeVars(self.form.theme);
+                    this.renewThemeVars(this.form.theme);
                 }
               },
-              err => self.$store.commit("error", err)
+              err => this.$store.commit("error", err)
             )
 
           } else {
-            self.form.template = {};
+            this.form.template = {};
           };
 
       },

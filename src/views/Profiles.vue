@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="orange" title="Profiles" text="Profiles for your Wi-Fi access devices">
+        <material-card color="blue-grey" title="Profiles" text="Profiles for your Wi-Fi access devices">
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -90,7 +90,6 @@
             API.getProfiles().then(
               res => {
                 res.data.forEach((item, i) => {
-
                   this.items.push(item);
                 });
               },

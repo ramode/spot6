@@ -114,6 +114,7 @@
               res => {
 
                 this.form = res.data[0];
+                delete this.form.pass;
 
                 // Backend не даст проапдейтить role для не суперадминов:
                 // if ( this.$auth.user().role != 'su' ) {
