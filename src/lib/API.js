@@ -45,11 +45,11 @@ export default {
 	},
 
 	getProfiles() {
-		return axios.get("/profiles");
+		return axios.get("/hotspot_profiles");
 	},
 
 	getProfile(profile_id) {
-		return axios.get(`/profiles?id=eq.${profile_id}`);
+		return axios.get(`/hotspot_profiles?id=eq.${profile_id}`);
 	},
 
 	getAuthTypes() {
@@ -60,7 +60,7 @@ export default {
 		// data._session_time = data.session_time;
 		// delete data.session_time;
 
-		return axios.post("/profiles", data);
+		return axios.post("/hotspot_profiles", data);
 	},
 
 	updateProfile(data) {
@@ -68,7 +68,7 @@ export default {
 		// delete data.session_time;
 
 		var profile_id = data.id;
-		return axios.patch(`/profiles?id=eq.${profile_id}`, data);
+		return axios.patch(`/hotspot_profiles?id=eq.${profile_id}`, data);
 	},
 
 	createInvite() {
@@ -83,7 +83,7 @@ export default {
 	},
 
 	getThemes() {
-		return axios.get(`/themes`);
+		return axios.get(`/hotspot_themes`);
 	},
 
 }

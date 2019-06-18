@@ -6,7 +6,7 @@ $brand-primary:                    $purple !default;
 $brand-success:                    $green !default;
 $brand-danger:                     $red !default;
 $brand-warning:                    $orange !default;
-$brand-info:                       $cyan !default;
+$brand-info:                       $blue !default;
 
 // Paddings
 $padding-logo:                      15px !default;
@@ -64,7 +64,7 @@ $font-size-h4:                      1.125rem !default;
 $font-size-h5:                      1.0625rem !default;
 $font-size-h6:                      0.75rem !default;
 $font-paragraph:                    $font-size-default !default;
-$font-size-chart-label:             .730rem !default;
+$font-size-chart-label:             .800rem !default;
 
 // Font Weight
 $font-weight-lighter:               300 !default;
@@ -92,8 +92,8 @@ $toolbar-margin-left:               260px !default;
 $body-color:                        #eee !default;
 
 // Black Color
-$black-color:                       #495057 !default;
-$blockquote-color:                  rgba(0, 0, 0, .87) !default;
+$black-color:                       #000 !default;
+$blockquote-color:                  rgba(0, 0, 0, .95) !default;
 
 // Gray Color
 $gray-light:                        #999 !default;
@@ -101,7 +101,7 @@ $gray:                              lighten(#000, 33.5%) !default;
 
 // Inputs Color
 $input-color:                       #d2d2d2 !default;
-$label-color:                       #aaa !default;
+$label-color:                       #555 !default;
 
 //  Footer Border
 $footer-border-color:               #e7e7e7 !default;

@@ -1,5 +1,5 @@
 <template>
-  <v-footer
+  <!--v-footer
     id="core-footer"
     absolute
     height="82"
@@ -15,22 +15,22 @@
       </span>
     </div>
     <v-spacer/>
-    <span class="font-weight-light copyright">
+    <!--span class="font-weight-light copyright">
       &copy;
       {{ (new Date()).getFullYear() }}
       <a
         href="https://www.creative-tim.com/"
         target="_blank">Creative Tim</a>, made with <v-icon color="tertiary" size="17">mdi-heart</v-icon> for a better web; Ramode integration.
-    </span>
-  </v-footer>
+    </span-->
+  </v-footer-->
 </template>
 
 <script>
 export default {
   data: () => ({
     links: [
-      { name: 'GIT', Link: 'https://github.com/morfair/vue_postgrest_skel' },
-      { name: 'VKontakte', Link: 'https://vk.com/morfair' },
+//      { name: 'GIT', Link: 'https://github.com/morfair/vue_postgrest_skel' },
+//      { name: 'VKontakte', Link: 'https://vk.com/morfair' },
     ]
   })
 }

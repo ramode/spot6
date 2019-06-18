@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="teal" title="Profiles" text="Profiles for your Wi-Fi access devices">
+        <material-card color="orange" title="Profiles" text="Profiles for your Wi-Fi access devices">
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -12,13 +12,12 @@
             </template>
             
             <template slot="items" slot-scope="{ item }">
-              <td>{{ item.name }}</td>
-              <td>{{ item.skin }}</td>
+              <td>{{ item.label }}</td>
+              <td>{{ item.theme }}</td>
               <!-- <td>{{ item.session_time | mf_time_human_duration }}</td> -->
-              <td>{{ item.session_time }}</td>
-              <td>{{ item.tarif_mb }} Mb</td>
-              <td>{{ item.tarif_speed }} Mbps</td>
-              <td>{{ item.auth_type }}</td>
+              <td>{{ item.limit_time }}</td>
+              <td>{{ Math.floor(item.limit_speed/1024/1024) }} Mb/s</td>
+              <td><v-chip v-for="at in item.auth_types" >{{auth_types[at]}}</v-chip></td>
               <td class="text-xs-right">
 
                 <v-tooltip top content-class="top">
@@ -57,12 +56,11 @@
     data: () => ({
 
       headers: [
-        { text: 'Name', value: 'name', sortable: true, },
-        { text: 'Skin Dir', value: 'skin', sortable: false, },
-        { text: 'Time Limit', value: 'session_time', sortable: false, },
-        { text: 'Traffic Limit', value: 'tarif_mb', sortable: false, },
-        { text: 'Speed', value: 'tarif_speed', sortable: false, },
-        { text: 'Auth Type', value: 'auth_type', sortable: false, },
+        { text: 'Label', value: 'label', sortable: true, },
+        { text: 'Theme', value: 'theme', sortable: false, },
+        { text: 'Time Limit', value: 'limit_time', sortable: false, },
+        { text: 'Speed', value: 'limit_speed', sortable: false, },
+        { text: 'Auth Type', value: 'auth_types', sortable: false, },
         {}
       ],
 
@@ -84,7 +82,7 @@
           res => {
 
             res.data.forEach((item, i) => {
-              this.auth_types[ item['id'] ] = item['name'];
+              this.auth_types[ item['id'] ] = item['label'];
             });
 
             // После того, как справочник auth_types заполнен, получаем список с севрака и заеняем ID на NAME:
@@ -92,7 +90,7 @@
             API.getProfiles().then(
               res => {
                 res.data.forEach((item, i) => {
-                  item['auth_type'] = this.auth_types[ item['auth_type'] ];
+
                   this.items.push(item);
                 });
               },
