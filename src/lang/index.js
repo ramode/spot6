@@ -23,5 +23,5 @@ for (const file of requireLang.keys()) {
     return o[s]
   }, messages)
 }
-console.log(messages);
+
 export default messages

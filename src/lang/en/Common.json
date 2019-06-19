@@ -1,4 +1,7 @@
 {
-	"title":	"spot6",
-	"clear":	"Clear"
+	"title":			"spot6",
+	"clear":			"Clear",
+	"save":				"Save",
+	"add":				"Add",
+	"create":			"Create"
 }

@@ -1,0 +1,17 @@
+{
+	"settings":						"Settings",
+	"settings_small":				"Your system settings",
+	"reg_enable":					"Registration Enabled",
+	"reg_users_need_activation":	"Require activation for self-reged users?",
+	"reg_role":						"Default role for self-reged users",
+	"reg_secret":					"Registraion Secret",
+	"auth_types":					"Auth Types",
+	"auth_types_small":				"auth_types_small",
+	"add_auth_type_btn":			"Add",
+	"auth_type_label":				"Name",
+	"auth_driver":					"Driver",
+	"auth_type_key1":				"Public key",
+	"auth_type_key2":				"Private key",
+	"web_hook":						"Web Hook",
+	"auth_type_button_title":		"Button Title"
+}

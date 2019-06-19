@@ -56,6 +56,24 @@ export default {
 		return axios.get('/auth_types_list');
 	},
 
+	getMyAuthTypes() {
+		return axios.get('/auth_types');
+	},
+
+	addAuthType(data) {
+		return axios.post('/auth_types', data);
+	},
+
+	updateAuthType(data) {
+		var auth_type_id = data.id;
+		delete data.web_hook;
+		return axios.patch(`/auth_types?id=eq.${auth_type_id}`, data);
+	},
+
+	getAuthDrivers() {
+		return axios.get('/auth_drivers');
+	},
+
 	addProfile(data) {
 		// data._session_time = data.session_time;
 		// delete data.session_time;
