@@ -1,0 +1,12 @@
+{
+	"profile_list":			"Profiles",
+	"profile_list_small":	"Profiles for your Wi-Fi access devices",
+	"edit_profile":			"Edit Profile",
+	"edit_profile_small":	"Profile for your Hot-Spots",
+	"template_params":		"Template params",
+	"authorization":		"Authorization",
+	"limits":				"Limits",
+	"traffic_unit":			"",
+	"speed_unit":			"",
+	"http_redirects":		"HTTP Redirects"
+}

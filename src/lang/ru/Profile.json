@@ -1,0 +1,12 @@
+{
+	"profile_list":			"Профили",
+	"profile_list_small":	"Профили для Ваших Wi-Fi устройств",
+	"edit_profile":			"Изменение профиля",
+	"edit_profile_small":	"Профиль для Вашего Hot-Spot'а",
+	"template_params":		"Параметры шаблона",
+	"authorization":		"Авторизация",
+	"limits":				"Ограничения",
+	"traffic_unit":			"",
+	"speed_unit":			"",
+	"http_redirects":		"HTTP перенаправления"
+}

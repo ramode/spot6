@@ -12,7 +12,7 @@ for (const file of requireLang.keys()) {
   if (file === './index.js') continue
 
   const path = file.replace(/(\.\/|\.json$)/g, '').split('/')
-
+  
   path.reduce((o, s, i) => {
     if (o[s]) return o[s]
 
@@ -23,5 +23,5 @@ for (const file of requireLang.keys()) {
     return o[s]
   }, messages)
 }
-
+console.log(messages);
 export default messages

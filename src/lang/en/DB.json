@@ -1,0 +1,13 @@
+{
+	"label":		"Name",
+	"profile":		"RADIUS Profile Name Attr",
+	"theme":		"Theme",
+	"auth_types":	"Auth Types",
+	"mac_auth":		"MAC Auth",
+	"limit_bytes":	"Limit Bytes",
+	"limit_speed":	"Speed",
+	"limit_time":	"Session Time",
+	"limit_ports":	"Limin on Port",
+	"redirect_url":	"Redirect URL",
+	"ad_url":		"Ad URL"
+}

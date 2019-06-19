@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="blue-grey" title="Profiles" text="Profiles for your Wi-Fi access devices">
+        <material-card color="blue-grey" :title="$t('Profile.profile_list')" :text="$t('Profile.profile_list_small')">
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -55,15 +55,6 @@
 
     data: () => ({
 
-      headers: [
-        { text: 'Label', value: 'label', sortable: true, },
-        { text: 'Theme', value: 'theme', sortable: false, },
-        { text: 'Time Limit', value: 'limit_time', sortable: false, },
-        { text: 'Speed', value: 'limit_speed', sortable: false, },
-        { text: 'Auth Type', value: 'auth_types', sortable: false, },
-        {}
-      ],
-
       items: [],
       auth_types: {},
 
@@ -71,6 +62,21 @@
 
     mounted () {
       this.load();
+    },
+
+    computed: {
+
+      headers: function() {
+        return [
+          { text: this.$t("DB.label"), value: 'label', sortable: true, },
+          { text: this.$t("DB.theme"), value: 'theme', sortable: false, },
+          { text: this.$t("DB.limit_time"), value: 'limit_time', sortable: false, },
+          { text: this.$t("DB.limit_speed"), value: 'limit_speed', sortable: false, },
+          { text: this.$t("DB.auth_types"), value: 'auth_types', sortable: false, },
+          {}
+        ];
+      },
+
     },
 
     methods: {

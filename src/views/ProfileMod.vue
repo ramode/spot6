@@ -3,27 +3,27 @@
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
         
-        <material-card color="blue-grey" title="Edit Profile" text="Profile for your Hot-Spots">
+        <material-card color="blue-grey" :title="$t('Profile.edit_profile')" :text="$t('Profile.edit_profile_small')">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
               <v-layout wrap>
                 
                 <v-flex xs12 md12>
-                  <v-text-field label="Name" class="purple-input" v-model="form.label" required />
+                  <v-text-field :label="$t('DB.label')" class="purple-input" v-model="form.label" required />
                 </v-flex>
 
                 <v-flex xs12 md6>
-                  <v-text-field label="RADIUS Profile Name" class="purple-input" v-model="form.profile" :rules="nameRules" required />
+                  <v-text-field :label="$t('DB.profile')" class="purple-input" v-model="form.profile" :rules="nameRules" required />
                 </v-flex>
                 
                 <v-flex xs12 md6>
                   <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
-                  <v-select label="Theme" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
+                  <v-select :label="$t('DB.theme')" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
                 </v-flex>
 
                 <v-flex xs12 md12 v-if="form.theme">
-                  <span class="subheading">Template params:</span>
+                  <span class="subheading">{{ $t('Profile.template_params') }}:</span>
                 </v-flex>
 
                 <v-flex xs12 md12 v-for="v in theme_var_list">
@@ -33,64 +33,64 @@
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <span class="subheading">Authorization:</span>
+                  <span class="subheading">{{ $t('Profile.authorization') }}:</span>
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-select label="Auth Types" class="purple-input" :items="auth_types" item-text="label" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
+                  <v-select :label="$t('DB.auth_types')" class="purple-input" :items="auth_types" item-text="label" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-checkbox label="MAC Auth" v-model="form.mac_auth" required />
+                  <v-checkbox :label="$t('DB.mac_auth')" v-model="form.mac_auth" required />
                 </v-flex>
 
 
 
                 <v-flex xs12 md12>
-                  <span class="subheading">Limits:</span>
+                  <span class="subheading">{{ $t('Profile.limits') }}:</span>
                 </v-flex>
 
 
-                <v-flex xs9 md4>
-                  <v-text-field label="Traffic Limit" class="purple-input" v-model="form.limit_bytes" />
+                <v-flex xs9 md3>
+                  <v-text-field :label="$t('DB.limit_bytes')" class="purple-input" v-model="form.limit_bytes" />
                 </v-flex>
 
                 <v-flex xs2 md1>
-                  <v-select label="Unit" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
+                  <v-select :label="$t('Profile.traffic_unit')" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
                 </v-flex>
  
-                <v-flex xs9 md4 offset-md1>
-                  <v-text-field label="Speed" class="purple-input" v-model="form.limit_speed" />
+                <v-flex xs9 md3 offset-md3>
+                  <v-text-field :label="$t('DB.limit_speed')" class="purple-input" v-model="form.limit_speed" />
                 </v-flex>
                 <v-flex xs2 md1>
-                  <v-select label="Unit" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
+                  <v-select :label="$t('Profile.speed_unit')" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
                 </v-flex>
  
 
                 <v-flex xs12 md3>
-                  <v-text-field label="Port Limit" v-model="form.limit_ports" required />
+                  <v-text-field :label="$t('DB.limit_ports')" v-model="form.limit_ports" required />
                 </v-flex>
 
                 <v-flex xs12 md9>
-                  <v-text-field label="Session time" class="purple-input" v-model="form.limit_time" />
+                  <v-text-field :label="$t('DB.limit_time')" class="purple-input" v-model="form.limit_time" />
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <span class="subheading">HTTP Redirects:</span>
+                  <span class="subheading">{{ $t('Profile.http_redirects') }}:</span>
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-text-field label="redirect_url" class="purple-input" v-model="form.redirect_url" />
+                  <v-text-field :label="$t('DB.redirect_url')" class="purple-input" v-model="form.redirect_url" />
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-text-field label="ad_url" class="purple-input" v-model="form.ad_url" />
+                  <v-text-field :label="$t('DB.ad_url')" class="purple-input" v-model="form.ad_url" />
                 </v-flex>
                 
 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">Submit</v-btn>
+                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">{{ $t('Form.submit') }}</v-btn>
                 </v-flex>
 
               </v-layout>

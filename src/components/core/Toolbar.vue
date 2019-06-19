@@ -34,6 +34,21 @@
           <v-icon color="tertiary">mdi-view-dashboard</v-icon>
         </router-link> -->
         
+
+        <v-menu transition="slide-y-transition" bottom>
+
+          <template v-slot:activator='{ on }'>
+            <v-btn flat small color="tertiary" v-on="on">Lang</v-btn>
+          </template>
+
+          <v-list>
+            <v-list-tile v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang">
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+
+        </v-menu>
+
         <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition">
           
           <router-link v-ripple slot="activator" class="toolbar-items" to="#" >
@@ -49,7 +64,7 @@
             <v-list dense>
               <v-list-tile>
                 <v-list-tile-title @click="clear_notifys">
-                  <small><i>Clear</i></small>
+                  <small><i>{{ $t('Common.clear') }}</i></small>
                 </v-list-tile-title>
               </v-list-tile>
               <!-- <v-list-tile v-for="notification in notifications" :key="notification" @click="onClick"> -->
@@ -104,7 +119,19 @@ export default {
     // ],
     title: null,
     responsive: false,
-    responsiveInput: false
+    responsiveInput: false,
+
+    langs: [
+      { 
+        lang: "en",
+        title: 'English',
+      },
+      { 
+        lang: "ru",
+        title: 'Русский',
+      },
+    ]
+
   }),
 
   computed: {

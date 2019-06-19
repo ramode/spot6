@@ -63,36 +63,6 @@ import { mapMutations, mapState } from 'vuex'
 export default {
   data: () => ({
     logo: '/img/vuetifylogo.png',
-    links: [
-      {
-        // to: '/dashboard',
-        to: { name: "dashboard" },
-        icon: 'mdi-view-dashboard',
-        text: 'Dashboard',
-        roles: ["super", "admin", "manager"],
-      },
-      {
-        // to: '/users',
-        to: { name: "users" },
-        icon: 'mdi-account',
-        text: 'Users',
-        roles: ["super", "admin"],
-      },
-      {
-        // to: '/profiles',
-        to: { name: "profiles" },
-        icon: 'receipt',
-        text: 'Profiles',
-        roles: ["super", "admin", "manager"],
-      },
-      {
-        to: { name: "settings" },
-        icon: 'mdi-settings',
-        text: 'Settings',
-        roles: ["super"],
-      },
-
-    ],
     responsive: false,
     image: "/img/sidebar-3.3a54f533.jpg",
     color: "success",
@@ -112,7 +82,40 @@ export default {
     },
     sidebarOverlayGradiant () {
       return `${this.$store.state.app.sidebarBackgroundColor}, ${this.$store.state.app.sidebarBackgroundColor}`
-    }
+    },
+
+    links: function() {
+      return [
+      {
+        // to: '/dashboard',
+        to: { name: "dashboard" },
+        icon: 'mdi-view-dashboard',
+        text: this.$t('Menu.dashboard'),
+        roles: ["super", "admin", "manager"],
+      },
+      {
+        // to: '/users',
+        to: { name: "users" },
+        icon: 'mdi-account',
+        text: this.$t('Menu.users'),
+        roles: ["super", "admin"],
+      },
+      {
+        // to: '/profiles',
+        to: { name: "profiles" },
+        icon: 'receipt',
+        text: this.$t('Menu.profiles'),
+        roles: ["super", "admin", "manager"],
+      },
+      {
+        to: { name: "settings" },
+        icon: 'mdi-settings',
+        text: this.$t('Menu.settings'),
+        roles: ["super"],
+      },
+
+    ]},
+
   },
   mounted () {
     this.onResponsiveInverted()
