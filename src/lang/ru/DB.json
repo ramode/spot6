@@ -1,13 +1,13 @@
 {
 	"label":		"Название",
-	"profile":		"RADIUS атрибут названия",
+	"profile":		"Идентификатор профиля",
 	"theme":		"Тема",
 	"auth_types":	"Способ аутентификации",
-	"mac_auth":		"Известный MAC",
+	"mac_auth":		"Вход по MAC адресу",
 	"limit_bytes":	"Объем трафика",
 	"limit_speed":	"Скорость",
 	"limit_time":	"Время сессии",
-	"limit_ports":	"Макс. кол-во. на порту",
+	"limit_ports":	"Количество сессий",
 	"redirect_url":	"Переадресация на URL",
 	"ad_url":		"URL рекламы"
 }
