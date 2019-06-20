@@ -2,14 +2,13 @@
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
-        
-        <material-card color="blue-grey" :title="$t('Profile.edit_profile')" :text="$t('Profile.edit_profile_small')">
+        <material-card color="blue-grey" :title="$t('Profile.edit_profile')+': '+ form.label" :text="$t('Profile.edit_profile_small')" :loading="loading">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
               <v-layout wrap>
                 
-                <v-flex xs12 md12>
+                <v-flex xs12 md6>
                   <v-text-field :label="$t('DB.label')" class="purple-input" v-model="form.label" required />
                 </v-flex>
 
@@ -17,13 +16,14 @@
                   <v-text-field :label="$t('DB.profile')" class="purple-input" v-model="form.profile" :rules="nameRules" required />
                 </v-flex>
                 
-                <v-flex xs12 md6>
-                  <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
-                  <v-select :label="$t('DB.theme')" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
-                </v-flex>
 
                 <v-flex xs12 md12 v-if="form.theme">
                   <span class="subheading">{{ $t('Profile.template_params') }}:</span>
+                </v-flex>
+
+                <v-flex xs12 md6>
+                  <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
+                  <v-select :label="$t('DB.theme')" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
                 </v-flex>
 
                 <v-flex xs12 md12 v-for="v in theme_var_list">
@@ -52,26 +52,27 @@
 
 
                 <v-flex xs9 md3>
+                  <v-text-field :label="$t('DB.limit_speed')" class="purple-input" v-model="form.limit_speed" />
+                </v-flex>
+                <v-flex xs2 md1>
+                  <v-select :label="$t('Profile.speed_unit')" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
+                </v-flex>
+  
+                <v-flex xs9 md3 offset-md3>
+
                   <v-text-field :label="$t('DB.limit_bytes')" class="purple-input" v-model="form.limit_bytes" />
                 </v-flex>
 
                 <v-flex xs2 md1>
                   <v-select :label="$t('Profile.traffic_unit')" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
                 </v-flex>
- 
-                <v-flex xs9 md3 offset-md3>
-                  <v-text-field :label="$t('DB.limit_speed')" class="purple-input" v-model="form.limit_speed" />
-                </v-flex>
-                <v-flex xs2 md1>
-                  <v-select :label="$t('Profile.speed_unit')" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
-                </v-flex>
- 
+
 
                 <v-flex xs12 md3>
                   <v-text-field :label="$t('DB.limit_ports')" v-model="form.limit_ports" required />
                 </v-flex>
 
-                <v-flex xs12 md9>
+                <v-flex xs12 md4 offset-md4>
                   <v-text-field :label="$t('DB.limit_time')" class="purple-input" v-model="form.limit_time" />
                 </v-flex>
 
@@ -90,7 +91,7 @@
 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">{{ $t('Form.submit') }}</v-btn>
+                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
                 </v-flex>
 
               </v-layout>
@@ -113,6 +114,7 @@
     data() {
 
       return {
+        loading: true,
 
         form: {},
         v_edit: false,
@@ -205,13 +207,11 @@
       },
 
       load() {
-
-          // впезду эту дрянь
-          // self=this;
-
+          this.loading = 0;
           API.getAuthTypes().then(
             res => {
               // console.log(res);
+              this.loading += 30;
               res.data.forEach((item, i) => {
                 this.auth_types.push(item);
               });
@@ -226,6 +226,7 @@
           API.getThemes().then(
             res => {
               this.themes = res.data;
+              this.loading += 30;
 
               if ( this.form.theme ) {
 
@@ -245,6 +246,7 @@
 
             API.getProfile(this.$route.params.id).then(
               res => {
+                this.loading += 40;
                 this.form = this.convert_from_bits_bytes(res.data[0]);
                 if (this.themes) {
                     this.renewThemeVars(this.form.theme);
@@ -288,8 +290,10 @@
           }
 
         if (this.$refs.form.validate()) {
+          this.loading = true;
           ApiMethod(data).then(
             res => {
+             this.loading = 100;
              this.$router.push({name: "profiles"})
             },
             err => this.$store.commit("error", err)

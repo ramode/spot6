@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="blue-grey" :title="$t('Profile.profile_list')" :text="$t('Profile.profile_list_small')">
+        <material-card color="blue-grey" :title="$t('Profile.profile_list')" :text="$t('Profile.profile_list_small')" :loading="loading">
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -54,6 +54,7 @@
   export default {
 
     data: () => ({
+      loading: true,
 
       items: [],
       auth_types: {},
@@ -82,11 +83,12 @@
     methods: {
      
       load() {
+        this.loading = 0
 
         // Для замены в таблице ID'шников аутх-типа на буквенное название:
         API.getAuthTypes().then(
           res => {
-
+            this.loading += 50
             res.data.forEach((item, i) => {
               this.auth_types[ item['id'] ] = item['label'];
             });
@@ -98,6 +100,7 @@
                 res.data.forEach((item, i) => {
                   this.items.push(item);
                 });
+                this.loading += 50
               },
               err => this.$store.commit("error", err)
             );
@@ -109,6 +112,7 @@
       },
 
       change_item(item) {
+        this.loading = true;
 
         if ( item.disabled == false ) {
           item.disabled = true;
@@ -122,7 +126,7 @@
         };
 
         API.updateProfile(data).then(
-          res => {},
+          res => {this.loading = 100},
           err => this.$store.commit("error", err)
         );
 

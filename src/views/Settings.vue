@@ -61,11 +61,11 @@
                 </v-flex>
 
 
-                <v-flex xs12 md7>
+                <v-flex xs12 md6>
                   <v-text-field :label="$t('Settings.auth_type_label')" class="purple-input" v-model="auth_type_form.label" required />
                 </v-flex>
 
-                <v-flex xs12 md5>
+                <v-flex xs12 md6>
                   <v-select :label="$t('Settings.auth_driver')" class="purple-input" v-model="auth_type_form.driver"
                     :items="auth_drivers"
                     item-text="label" item-value="module"
@@ -89,7 +89,7 @@
                     <span class="body-2">{{ $t('Settings.web_hook') }}</span>: {{ auth_type_form.web_hook }}
                   </template>
                   <template v-else>
-                    <v-text-field :label="$t('Settings.web_hook')" class="purple-input" v-model="auth_type_form.web_hook" required />
+                    <v-text-field :label="$t('Settings.web_hook')" class="purple-input" :value="'/'+ auth_type_form.driver + '/'+ auth_type_form.id" disabled />
                   </template>
                 </v-flex>
 

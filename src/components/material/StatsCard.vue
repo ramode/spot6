@@ -4,19 +4,20 @@
     class="v-card--material-stats"
     v-on="$listeners"
   >
-    <v-card
+    <v-card-title
       slot="offset"
-      :class="`elevation-${elevation}`"
+      :class="`~elevation-${elevation}`"
       :color="color"
       class="pa-4"
       dark
     >
       <v-icon
+        :color="color"
         size="40"
       >
         {{ icon }}
       </v-icon>
-    </v-card>
+    </v-card-title>
     <div class="text-xs-right">
       <p
         class="category grey--text font-weight-light"

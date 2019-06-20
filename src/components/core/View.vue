@@ -13,7 +13,7 @@
 export default {
   metaInfo () {
     return {
-      title: 'Vuetify Material Dashboard by CreativeTim'
+      title: 'Spot6' // TODO заголовок роута
     }
   }
 }

@@ -4,20 +4,49 @@
     :style="styles"
     v-on="$listeners"
   >
-    <helper-offset
+
+    <v-progress-linear
+        :indeterminate="loading===true"
+        :value="(loading===true)? 0: loading"
+        style="paddind:0;margin:-16px -16px -16px 0"
+        :color="color"/>
+    <v-card-title :color="color" v-if="!$slots.offset">
+
+        <slot
+          v-if="!title && !text"
+          name="header"
+        />
+        <span v-else>
+          <h3
+            class=""
+            v-text="title"
+          />
+          <p
+            class="category font-weight-thin"
+            v-text="text"
+          />
+        </span>
+    </v-card-title>
+      <slot
+        v-else
+        name="offset"
+      />
+ <v-divider v-if="!$slots.offset"/>
+
+    <!--helper-offset
       v-if="hasOffset"
       :inline="inline"
       :full-width="fullWidth"
       :offset="offset"
     >
-      <v-card
+      <!--v-card
         v-if="!$slots.offset"
         :color="color"
         :class="`elevation-${elevation}`"
         class="v-card--material__header"
         dark
       >
-        <slot
+        <!--slot
           v-if="!title && !text"
           name="header"
         />
@@ -35,8 +64,8 @@
       <slot
         v-else
         name="offset"
-      />
-    </helper-offset>
+      /-->
+    </helper-offset-->
 
     <v-card-text>
       <slot />
@@ -76,7 +105,7 @@ export default {
     },
     offset: {
       type: [Number, String],
-      default: 24
+      default: 0
     },
     title: {
       type: String,
@@ -85,6 +114,10 @@ export default {
     text: {
       type: String,
       default: undefined
+    },
+    loading: {
+      type: [Number,Boolean] ,
+      default: 100
     }
   },
 
