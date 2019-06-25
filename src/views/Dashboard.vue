@@ -41,8 +41,8 @@
               <td>{{ item.username }}</td>
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
-              <td>{{ item.time_register }}</td>
-              <td>{{ item.time_seen }}</td>
+              <td>{{ item.time_registred | moment("YYYY-mm-DD, HH:MM") }}</td>
+              <td>{{ item.time_seen | moment("YYYY-mm-DD, HH:MM") }}</td>
               <td>{{ item.profile_seen }}</td>
             </template>
 
