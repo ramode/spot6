@@ -12,7 +12,7 @@ export default {
   	// console.log(err);
   	var text = `${err.response.status}: ${err.response.data.message}`;
   	state.notifications.unshift(text);
-    var audio = new Audio('/sounds/Sound_11183.wav');
+    // var audio = new Audio('/sounds/Sound_11183.wav');
     var audio = new Audio('/sounds/Sound_11153.wav');
     audio.play();
   },
