@@ -115,6 +115,12 @@ export default {
         roles: ["super"],
       },
       {
+        to: { name: "client_devices" },
+        icon: "mdi-cellphone",
+        text: this.$t('Menu.client_devices'),
+        roles: ["super", "admin", "manager"],
+      },
+      {
         to: { name: "settings" },
         icon: 'mdi-settings',
         text: this.$t('Menu.settings'),

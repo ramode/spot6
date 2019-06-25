@@ -1,0 +1,10 @@
+{
+	"title":			"Client Devices",
+	"small_text":		"Your client's devices who get service",
+	"username":			"Username",
+	"phone":			"Phone",
+	"mac":				"MAC",
+	"time_register":	"Registered",
+	"time_seen":		"Seen",
+	"profile_seen":		"Profile"
+}

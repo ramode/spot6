@@ -118,4 +118,13 @@ export default [
     },
   },
 
+  {
+    path: '/client_devices',
+    view: 'ClientDevices',
+    name: 'client_devices',
+    meta: {
+      auth: true,
+    },
+  }
+
 ]

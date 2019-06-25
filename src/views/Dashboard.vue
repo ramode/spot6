@@ -27,30 +27,7 @@
         />
       </v-flex>
 
-
-      <v-flex xs12>
-        <material-card color="light-green" title="Client Devices" text="Your clients gadgets and sessions /ANDROID COLOR/">
-          <v-data-table :headers="client_devices_headers" :items="client_devices" hide-actions>
-            
-            <template slot="headerCell" slot-scope="{ header }">
-              <span class="font-weight-light" v-text="header.text" />
-            </template>
-            
-            <template slot="items" slot-scope="{ index, item }">
-              <!-- <td>{{ index + 1 }}</td> -->
-              <td>{{ item.username }}</td>
-              <td>{{ item.phone }}</td>
-              <td>{{ item.mac }}</td>
-              <td>{{ item.time_registred | moment("YYYY-mm-DD, HH:MM") }}</td>
-              <td>{{ item.time_seen | moment("YYYY-mm-DD, HH:MM") }}</td>
-              <td>{{ item.profile_seen }}</td>
-            </template>
-
-          </v-data-table>
-        </material-card>
-      </v-flex>
-
-
+      
       <!-- <v-flex md12>
         <v-btn color="success" @click="test_notify">Tetst notify</v-btn>
       </v-flex> -->
@@ -71,40 +48,6 @@
 
         dashboard: {},
 
-        client_devices: [],
-        client_devices_headers: [
-          {
-            sortable: false,
-            text: 'Name',
-            value: 'username'
-          },
-          {
-            sortable: false,
-            text: 'Phone',
-            value: 'phone'
-          },
-          {
-            sortable: false,
-            text: 'MAC',
-            value: 'mac'
-          },
-          {
-            sortable: false,
-            text: 'Registered',
-            value: 'time_register'
-          },
-          {
-            sortable: false,
-            text: 'Seen',
-            value: 'time_seen'
-          },
-          {
-            sortable: false,
-            text: 'Profile',
-            value: 'profile_seen'
-          },
-        ],
-
       }
     },
 
@@ -121,16 +64,6 @@
           res => {
             res.data[0].client_devices = res.data[0].client_devices.toString();
             this.dashboard = res.data[0];
-          },
-          err => this.$store.commit("error", err)
-        );
-
-
-        // get Devices list:
-        API.getClientDevices().then(
-          res => {
-            // console.log(res);
-            this.client_devices = res.data
           },
           err => this.$store.commit("error", err)
         );
