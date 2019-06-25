@@ -108,7 +108,7 @@
           disabled: item.disabled
         };
 
-        API.updateUser(data).then(
+        API.updateNas(data).then(
           res => {},
           err => console.log(err)
         );

@@ -30,6 +30,10 @@
                   <v-text-field :label="$t('Nases.nas_location_name')" class="purple-input" v-model="form.location_name" required />
                 </v-flex>
 
+                <v-flex xs12 md12>
+                  <v-checkbox :label="$t('Common.disabled')" v-model="form.disabled" required />
+                </v-flex>
+
 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->

@@ -3,5 +3,6 @@
 	"clear":			"Clear",
 	"save":				"Save",
 	"add":				"Add",
-	"create":			"Create"
+	"create":			"Create",
+	"disabled":			"Disabled"
 }
