@@ -7,7 +7,7 @@
 
     <v-progress-linear
         :indeterminate="loading===true"
-        :value="(loading===true)? 0: loading"
+        :value="(loading===true)? 0: ((loading===false)?100:loading)"
         style="paddind:0;margin:-16px -16px -16px 0"
         :color="color"/>
     <v-card-title :color="color" v-if="!$slots.offset">

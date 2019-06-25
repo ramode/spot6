@@ -3,6 +3,7 @@
     v-bind="$attrs"
     class="v-card--material-stats"
     v-on="$listeners"
+    :color="color"
   >
     <v-card-title
       slot="offset"
