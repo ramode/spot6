@@ -62,7 +62,8 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   data: () => ({
-    logo: '/img/vuetifylogo.png',
+    // logo: '/img/vuetifylogo.png',
+    logo: '/img/ramode_logo.gif',
     responsive: false,
     image: "/img/sidebar-3.3a54f533.jpg",
     color: "success",
