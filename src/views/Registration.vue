@@ -6,14 +6,7 @@
 	<v-layout align-center justify-center>
 		<v-flex xs12 sm8 md6>
 
-			<v-card class="elevation-12">
-
-					<v-toolbar color="primary">
-						<v-toolbar-title>Registraion</v-toolbar-title>
-						<v-spacer></v-spacer>
-					</v-toolbar>
-
-					<v-card-text>
+                   <material-card color="primary" title="Registraion" :loading="p.loading">
 						<v-form ref="form" v-model="valid">
 
 							<v-text-field prepend-icon="person" label="Login" type="text" v-model="form.login" :rules="emailRules" required></v-text-field>
@@ -28,16 +21,13 @@
 							<v-text-field v-if="show_reg_secret" prepend-icon="mdi-alphabetical" label="Registration Secret" type="text" v-model="form.reg_secret" :rules="regSecretRules"></v-text-field>
 
 						</v-form>
-					</v-card-text>
 
-					<v-card-actions>
+					<slot slot=actions>
 						<v-spacer></v-spacer>
 						<v-btn color="primary" v-on:click="Reg">Registration</v-btn>
-					</v-card-actions>
+					</slot>
 
-				</v-card>
-
-				<v-progress-linear :indeterminate="true" v-if="p.loading"></v-progress-linear>
+				</material-card>
 
 				<v-alert :value="p.reg_error" type="error">
 					Registration Error:<br />

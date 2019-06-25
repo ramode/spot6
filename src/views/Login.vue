@@ -1,59 +1,52 @@
 <template>
 	
 	<v-content>
-	<v-container fluid fill-height>
+	    <v-container fluid fill-height>
 
-		<v-layout align-center justify-center>
-			<v-flex xs12 sm8 md4>
+		    <v-layout align-center justify-center>
+			    <v-flex xs12 sm8 md4>
 
-				<v-card class="elevation-12">
+                   <material-card color="primary" title="Login form" text="Please log in" :loading="p.loading">
 
-						<v-toolbar dark color="primary">
-							<v-toolbar-title>Login form</v-toolbar-title>
-							<v-spacer></v-spacer>
-						</v-toolbar>
+					    <v-form>
 
-						<v-card-text>
-							<v-form>
+						    <v-text-field
+							    prepend-icon="person"
+							    name="login"
+							    label="Login"
+							    type="text"
+							    v-model="user.login">
+						    </v-text-field>
 
-								<v-text-field
-									prepend-icon="person"
-									name="login"
-									label="Login"
-									type="text"
-									v-model="user.login">
-								</v-text-field>
+						    <v-text-field
+							    id="password"
+							    prepend-icon="lock"
+							    name="password" label="Password"
+							    type="password"
+							    v-model="user.pass">
+						    </v-text-field>
 
-								<v-text-field
-									id="password"
-									prepend-icon="lock"
-									name="password" label="Password"
-									type="password"
-									v-model="user.pass">
-								</v-text-field>
+					    </v-form>
 
-							</v-form>
-						</v-card-text>
 
-						<v-card-actions>
-							<router-link :to="{ name: 'Registration' }">Регистрация</router-link>
-							<v-spacer></v-spacer>
-							<v-btn color="primary" v-on:click="logIn">Login</v-btn>
-						</v-card-actions>
+					    <slot slot="actions">
+						    <router-link :to="{ name: 'Registration' }">Регистрация</router-link>
+						    <v-spacer></v-spacer>
+						    <v-btn color="primary" v-on:click="logIn">Login</v-btn>
+					    </slot>
 
-					</v-card>
+				    </material-card>
 
-					<v-progress-linear :indeterminate="true" v-if="p.loading"></v-progress-linear>
 
-					<v-alert
-						:value="p.login_error"
-						type="error"
-					>
-						Ошибка входа<br />
-						<small>{{ p.response }}</small>
-					</v-alert>
+				    <v-alert
+					    :value="p.login_error"
+					    type="error"
+				    >
+					    Ошибка входа<br />
+					    <small>{{ p.response }}</small>
+				    </v-alert>
 
-			</v-flex>
+			    </v-flex>
 		    </v-layout>
 		</v-container>
 	</v-content>
