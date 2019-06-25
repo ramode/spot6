@@ -1,0 +1,11 @@
+{
+	"nas_list":				"NAS List",
+	"nas_list_small":		"Your Wi-Fi access devcies list",
+	"label":				"Name",
+	"nas_type":				"NAS Type",
+	"nas_ident":			"RADIUS Ident",
+	"nas_location_id":		"RADIUS Location ID",
+	"nas_location_name":	"RADIUS Location Name",
+	"edit_nas":				"NAS Edit",
+	"edit_nas_small":		"edit_nas_small"
+}

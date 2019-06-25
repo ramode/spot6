@@ -1,0 +1,11 @@
+{
+	"nas_list":				"Устройства доступа",
+	"nas_list_small":		"Ваши Wi-Fi точки доступа",
+	"label":				"Название",
+	"nas_type":				"Тип",
+	"nas_ident":			"RADIUS Ident",
+	"nas_location_id":		"RADIUS Location ID",
+	"nas_location_name":	"RADIUS Location Name",
+	"edit_nas":				"Редактирование NAS'а",
+	"edit_nas_small":		"edit_nas_small"
+}

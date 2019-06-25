@@ -46,6 +46,39 @@ export default [
   },
 
   {
+    path: '/nases',
+    view: 'Nases',
+    name: 'nases',
+    meta: {
+      auth: {
+        roles: ['super'],
+      }
+    },
+  },
+
+  {
+    path: '/nases/:id',
+    view: 'NasMod',
+    name: 'nas_edit',
+    meta: {
+      auth: {
+        roles: ['super'],
+      }
+    },
+  },
+
+  {
+    path: '/nases/add',
+    view: 'NasMod',
+    name: 'nas_add',
+    meta: {
+      auth: {
+        roles: ['super'],
+      }
+    },
+  },
+
+  {
     path: '/settings',
     view: 'Settings',
     name: 'settings',

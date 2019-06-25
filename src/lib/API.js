@@ -97,19 +97,40 @@ export default {
 	},
 
 	updateSettings(data) {
-		return axios.patch(`/settings`, data);
+		return axios.patch('/settings', data);
 	},
 
 	getThemes() {
-		return axios.get(`/hotspot_themes`);
+		return axios.get('/hotspot_themes');
 	},
 
 	getClientDevices() {
-		return axios.get(`/hotspot_devices`);
+		return axios.get('/hotspot_devices');
 	},
 
 	Dashboard() {
-		return axios.get(`/dashboard`);
+		return axios.get('/dashboard');
+	},
+
+	getNases() {
+		return axios.get('/hotspot_nases')
+	},
+
+	getNas(nas_id) {
+		return axios.get(`/hotspot_nases?id=eq.${nas_id}`)
+	},
+
+	getNasTypes() {
+		return axios.get('/hotspot_nastypes')
+	},
+
+	addNas(data) {
+		return axios.post('/hotspot_nases', data);
+	},
+
+	updateNas(data) {
+		var nas_id = data.id;
+		return axios.patch(`/hotspot_nases?id=eq.${nas_id}`, data);
 	},
 
 }

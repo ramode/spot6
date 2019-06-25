@@ -108,6 +108,12 @@ export default {
         roles: ["super", "admin", "manager"],
       },
       {
+        to: { name: "nases" },
+        icon: 'mdi-access-point-network',
+        text: this.$t('Menu.nases'),
+        roles: ["super"],
+      },
+      {
         to: { name: "settings" },
         icon: 'mdi-settings',
         text: this.$t('Menu.settings'),
