@@ -104,8 +104,15 @@ export default {
 		return axios.get('/hotspot_themes');
 	},
 
-	getClientDevices() {
-		return axios.get('/hotspot_devices');
+	getClientDevices(start_date, end_date) {
+		var config = {
+			headers: {
+				// "Range-Unit": "items",
+				// "Range": "0-19",
+			},
+		};
+		// return axios.get(`/hotspot_devices?time_seen=ov.[${start_date},${end_date}]`, config);
+		return axios.get(`/hotspot_devices?time_seen=gte.${start_date}&time_seen=lte.${end_date}`, config);
 	},
 
 	Dashboard() {
