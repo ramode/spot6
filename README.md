@@ -42,8 +42,8 @@ killall -SIGUSR1 postgrest
 
 ### Exampels for debug:
 ```
-set role admin; set request.jwt.claim.role = 'admin'; set request.jwt.claim.email = 'test@eth0.pro';
-set role super; set request.jwt.claim.role = 'super'; set request.jwt.claim.login = 'morfair@gmail.com'; set request.jwt.claim.uid = '1'; set request.jwt.claim.gid = '1';
+set role admin; set request.jwt.claim.role = 'admin'; set request.jwt.claim.login = 'test@eth0.pro'; set request.jwt.claim.uid = '3'; set request.jwt.claim.gid = '1';
+set role super; set request.jwt.claim.role = 'super'; set request.jwt.claim.login = 'morfair@gmail.com'; set request.jwt.claim.uid = '1'; set request.jwt.claim.gid = '0';
 ```
 ```
 SHOW current_setting('request.jwt.claim.email');
