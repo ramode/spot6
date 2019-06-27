@@ -83,7 +83,7 @@
 
         API.getNases().then(
           res => {
-            console.log(res);
+            // console.log(res);
             this.items = res.data;
             this.loading = false;
           },
@@ -110,7 +110,7 @@
 
         API.updateNas(data).then(
           res => {},
-          err => console.log(err)
+          err => this.$store.commit("error", err)
         );
 
       },

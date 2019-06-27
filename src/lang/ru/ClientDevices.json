@@ -6,5 +6,6 @@
 	"mac":				"MAC",
 	"time_register":	"Зарегистрирован",
 	"time_seen":		"Наблюдался",
-	"profile_seen":		"Профиль"
+	"profile_seen":		"Профиль",
+	"db_date_filed":	"Поле для поиска по дате"
 }

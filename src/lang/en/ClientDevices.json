@@ -6,5 +6,6 @@
 	"mac":				"MAC",
 	"time_register":	"Registered",
 	"time_seen":		"Seen",
-	"profile_seen":		"Profile"
+	"profile_seen":		"Profile",
+	"db_date_filed":	"Date search DB field"
 }

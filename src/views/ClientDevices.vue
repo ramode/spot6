@@ -6,7 +6,7 @@
         <material-card color="light-green" :title="$t('ClientDevices.title')" :text="$t('ClientDevices.small_text')" :loading="loading">
 
           <v-layout justify-center wrap>
-            <v-flex xs12 md3>
+            <v-flex xs12 md2>
               
               <v-menu ref="menu_start_date" v-model="menu_start_date"
                 :close-on-content-click="false" nudge-right="40" lazy transition="scale-transition"
@@ -29,7 +29,7 @@
 
             </v-flex>
 
-            <v-flex xs12 md3>
+            <v-flex xs12 md2>
               
               <v-menu ref="menu_end_date" v-model="menu_end_date"
                 :close-on-content-click="false" nudge-right="40" lazy transition="scale-transition"
@@ -52,9 +52,18 @@
 
             </v-flex>
 
-            <v-flex xs12 md1>
+            <v-flex xs12 md2>
               <v-btn color="success" @click="getData">{{ $t('Form.search') }}</v-btn>
             </v-flex>
+
+            <v-flex xs12 md5>
+              <v-radio-group v-model="date_field" :messages="$t('ClientDevices.db_date_filed')" row>
+                <v-radio :label="$t('ClientDevices.time_seen')" value="time_seen"></v-radio>
+                <v-radio :label="$t('ClientDevices.time_register')" value="time_registred"></v-radio>
+              </v-radio-group>
+            </v-flex>
+
+            
 
             <v-flex xs12 md6>
               <v-text-field v-model="search" append-icon="search" label="Filter" single-line hide-details></v-text-field>
@@ -105,6 +114,9 @@
     data: () => ({
 
       loading: false,
+
+      // Search field in DB: time_seen or time_registred
+      date_field: "time_seen",
       
       menu_start_date: false,
       menu_end_date: false,
@@ -181,9 +193,9 @@
         this.loading = true;
 
         // get Devices list:
-        API.getClientDevices(this.start_date, this.end_date).then(
+        API.getClientDevices(this.start_date, this.end_date, this.date_field).then(
           res => {
-            console.log(res);
+            // console.log(res);
             this.items = res.data;
             this.loading = false;
           },

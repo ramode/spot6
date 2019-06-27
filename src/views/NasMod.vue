@@ -104,7 +104,7 @@
 
         API.getNasTypes().then(
           res => {
-            console.log(res);
+            // console.log(res);
             res.data.forEach( (item, i) => {
               this.nas_types.push(item.nastype);
             });
@@ -121,7 +121,7 @@
 
           API.getNas(this.$route.params.id).then(
             res => {
-              console.log(res);
+              // console.log(res);
               this.form = res.data[0];
               this.loading = false;
             },
