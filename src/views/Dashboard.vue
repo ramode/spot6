@@ -7,7 +7,7 @@
           :data="clientDevicesCntByMonth.data"
           :options="clientDevicesCntByMonth.options"
           :responsive-options="clientDevicesCntByMonth.responsiveOptions"
-          color="green"
+          color="light-green"
           type="Bar"
         >
           <h4 class="title font-weight-light">{{ $t('Dashboard.cldev_per_month') }}</h4>
@@ -70,7 +70,18 @@
         />
       </v-flex>
 
-      <v-flex xs12 sm6 md6 lg4>
+      <v-flex xs12 sm6 md6 lg3>
+        <material-stats-card
+          color="blue-grey"
+          icon="mdi-store"
+          :title="$t('Dashboard.profile_cnt')"
+          :value="dashboard.profiles"
+          sub-icon="mdi-calendar"
+          sub-text="In your admin's area"
+        />
+      </v-flex>
+
+      <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="orange"
           icon="mdi-content-copy"
@@ -204,6 +215,8 @@
           res => {
             console.log(res);
             res.data[0].client_devices = res.data[0].client_devices.toString();
+            res.data[0].nases = res.data[0].nases.toString();
+            res.data[0].profiles = res.data[0].profiles.toString();
             this.dashboard = res.data[0];
           },
           err => this.$store.commit("error", err)

@@ -4,5 +4,6 @@
 	"cldev_cnt":			"Client Devices",
 	"cldev_per_month":		"Clients/registrations in last 12 months",
 	"cldev_regs_per_month":	"Client Registrations in last 12 months",
-	"nas_cnt":				"NAS count"
+	"nas_cnt":				"NAS count",
+	"profile_cnt":			"Profiles"
 }
