@@ -42,7 +42,8 @@
           </template>
 
           <v-list>
-            <v-list-tile v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang">
+            <!-- <v-list-tile v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang"> -->
+            <v-list-tile v-for="(item, i) in langs" :key="i" @click="changeLocale(item.lang)">
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
@@ -180,6 +181,12 @@ export default {
 
     clear_notifys() {
       this.$store.commit("clearNotifys");
+    },
+
+    changeLocale(lang) {
+      // console.log(lang);
+      this.$i18n.locale = lang;
+      this.$moment.locale(lang);
     },
 
   }

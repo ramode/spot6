@@ -120,6 +120,26 @@ export default {
 		return axios.get('/dashboard');
 	},
 
+	getStatClDevByMonth() {
+		var config = {
+			headers: {
+				// "Range-Unit": "items",
+				"Range": "0-11",
+			},
+		};
+		return axios.get('/stat_cl_devices_cnt_by_month', config);
+	},
+
+	getStatClDevRegsByMonth() {
+		var config = {
+			headers: {
+				// "Range-Unit": "items",
+				"Range": "0-11",
+			},
+		};
+		return axios.get('/stat_cl_devices_regs_cnt_by_month', config);
+	},
+
 	getNases() {
 		return axios.get('/hotspot_nases')
 	},
