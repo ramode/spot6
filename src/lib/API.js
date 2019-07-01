@@ -19,12 +19,24 @@ export default {
 	},
 
 	getUsers() {
-		return axios.get('/users');
+		return axios.get('/user_users');
+	},
+	getGroups() {
+		return axios.get('/user_groups');
 	},
 
 	getUser(user_id) {
-		return axios.get(`/users?id=eq.${user_id}`);
+		return axios.get(`/user_users?id=eq.${user_id}`);
 	},
+
+
+    passwdUser(user_id, password) {
+        var data = {
+            user_id:user_id,
+            newpassword: password
+        }
+        return axios.post("/rpc/passwd", data);
+    },
 
 	addUser(data) {
 		// var config = {
@@ -36,12 +48,12 @@ export default {
 		if ( data.pass2 ) {
 			delete data.pass2;
 		};
-		return axios.post("/users", data);
+		return axios.post("/user_users", data, {headers:{Prefer: 'return=representation'}});
 	},
 
 	updateUser(data) {
 		var user_id = data.id;
-		return axios.patch(`/users?id=eq.${user_id}`, data);
+		return axios.patch(`/user_users?id=eq.${user_id}`, data, {headers:{Prefer: 'return=representation'}});
 	},
 
 	getProfiles() {
@@ -93,11 +105,11 @@ export default {
 	},
 
 	getSettings() {
-		return axios.get('/settings');
+		return axios.get('/user_settings');
 	},
 
 	updateSettings(data) {
-		return axios.patch('/settings', data);
+		return axios.patch('/user_settings', data);
 	},
 
 	getThemes() {

@@ -12,10 +12,19 @@
             </template>
             
             <template slot="items" slot-scope="{ item }">
+              <td>{{ item.label }}</td>
+              <td>{{ item.login }}</td>
+              <td>{{ item.phone }}</td>
               <td>{{ item.email }}</td>
-              <td>{{ item.full_name }}</td>
               <td>{{ item.role }}</td>
               <td class="text-xs-right">
+
+                <v-tooltip top content-class="top">
+                  <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'user_passwd', params: {id: item.id}}">
+                    <v-icon color="success">mdi-lock-reset</v-icon>
+                  </v-btn>
+                  <span>Passwd</span><!-- установка пароля через функцию api.passwd(uid,password) !-->
+                </v-tooltip>
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'user_edit', params: {id: item.id}}">
@@ -55,16 +64,28 @@
       headers: [
         {
           sortable: true,
-          text: 'E-Mail',
+          text: 'Name',
+          value: 'label'
+        },
+        {
+          sortable: false,
+          text: 'Login',
+          value: 'login'
+        },
+
+        {
+          sortable: false,
+          text: 'Phone',
+          value: 'phone'
+        },
+
+        {
+          sortable: false,
+          text: 'Email',
           value: 'email'
         },
         {
-          sortable: false,
-          text: 'Full Name',
-          value: 'full_name'
-        },
-        {
-          sortable: false,
+          sortable: true,
           text: 'Role',
           value: 'role'
         },

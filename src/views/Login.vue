@@ -15,7 +15,7 @@
 							    name="login"
 							    label="Login"
 							    type="text"
-							    v-model="user.login">
+							    v-model="user.username">
 						    </v-text-field>
 
 						    <v-text-field
@@ -23,7 +23,7 @@
 							    prepend-icon="lock"
 							    name="password" label="Password"
 							    type="password"
-							    v-model="user.pass">
+							    v-model="user.password">
 						    </v-text-field>
 
 					    </v-form>

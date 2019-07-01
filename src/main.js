@@ -73,7 +73,8 @@ Vue.use(VueAuth, {
 	rolesVar: "role",
 	refreshData: {
 		url: 'rpc/refresh',
-		enabled: false,
+		enabled: true,
+        interval: 20
 	},
 	// forbiddenRedirect: {path: '/403'},
 	forbiddenRedirect: {path: '/login'},
