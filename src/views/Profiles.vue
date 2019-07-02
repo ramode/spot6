@@ -8,7 +8,7 @@
             
             <template slot="headerCell" slot-scope="{ header }">
               <span
-                class="subheading font-weight-light text-success text--darken-3" v-text="header.text" />
+                class="subheading text-info text--darken-3" v-text="header.text" />
             </template>
             
             <template slot="items" slot-scope="{ item }">
@@ -22,14 +22,14 @@
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'profile_edit', params: {id: item.id}}">
-                    <v-icon color="success">mdi-pencil</v-icon>
+                    <v-icon color="primary">mdi-pencil</v-icon>
                   </v-btn>
                   <span>Edit</span>
                 </v-tooltip>
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" class="v-btn--simple" icon @click="change_item(item)">
-                    <v-icon :color="item.disabled ? 'pink' : 'grey'" >mdi-block-helper</v-icon>
+                    <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
                   </v-btn>
                   <span>Disable</span>
                 </v-tooltip>

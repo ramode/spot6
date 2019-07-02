@@ -1,43 +1,34 @@
 <template>
   <v-container fill-height fluid grid-list-xl>
-    <v-layout justify-center wrap>
-      <v-flex xs12 md12 xl8>
-        <material-card color="blue-grey" :title="$t('Profile.edit_profile')+': '+ form.label" :text="$t('Profile.edit_profile_small')" :loading="loading">
+
           <v-form ref="form" v-model="valid">
+            <v-container py-0>
+            <v-layout wrap>
+
+<v-flex xs12 lg6>
+        <material-card  color="blue-grey" :title="$t('Profile.edit_profile')+': '+ form.label" :text="$t('Profile.edit_profile_small')" :loading="loading">
+
             <v-container py-0>
               
               <v-layout wrap>
                 
                 <v-flex xs12 md6>
-                  <v-text-field :label="$t('DB.label')" class="purple-input" v-model="form.label" required />
+                  <v-text-field :label="$t('DB.label')"  v-model="form.label" required />
                 </v-flex>
 
                 <v-flex xs12 md6>
-                  <v-text-field :label="$t('DB.profile')" class="purple-input" v-model="form.profile" :rules="nameRules" required />
+                  <v-text-field :label="$t('DB.profile')"  v-model="form.profile" :rules="nameRules" required />
                 </v-flex>
                 
 
-                <v-flex xs12 md12 v-if="form.theme">
-                  <span class="subheading">{{ $t('Profile.template_params') }}:</span>
-                </v-flex>
 
-                <v-flex xs12 md6>
-                  <!-- <v-text-field label="Skin Folder Name" class="purple-input" v-model="form.skin" :rules="skinRules" required /> -->
-                  <v-select :label="$t('DB.theme')" class="purple-input" :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
-                </v-flex>
-
-                <v-flex xs12 md12 v-for="v in theme_var_list">
-                  <v-textarea auto-grow clearable :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='html'" type="html" />
-                  <v-textarea auto-grow clearable :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='textarea'" />
-                  <v-text-field :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='text'" />
-                </v-flex>
 
                 <v-flex xs12 md12>
                   <span class="subheading">{{ $t('Profile.authorization') }}:</span>
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-select :label="$t('DB.auth_types')" class="purple-input" :items="auth_types" item-text="label" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
+                  <v-select :label="$t('DB.auth_types')"  :items="auth_types" item-text="label" item-value="id" v-model="form.auth_types" multiple chips required></v-select>
                 </v-flex>
 
                 <v-flex xs12 md12>
@@ -51,29 +42,33 @@
                 </v-flex>
 
 
-                <v-flex xs9 md3>
-                  <v-text-field :label="$t('DB.limit_speed')" class="purple-input" v-model="form.limit_speed" />
+                <v-flex xs9 md4>
+                  <v-text-field :label="$t('DB.limit_speed')"  v-model="form.limit_speed" type="number">
+
+                    </v-text-field>
                 </v-flex>
                 <v-flex xs2 md1>
-                  <v-select :label="$t('Profile.speed_unit')" class="purple-input" :items="speed_units" item-text="name" item-value="id" v-model="speed_unit" />
+                  <v-select :label="$t('Profile.speed_unit')"  :items="speed_units" item-text="name" item-value="id" v-model="speed_unit"
+                     style="margin-left:-24px"           
+                 />
                 </v-flex>
   
-                <v-flex xs9 md3 offset-md3>
+                <v-flex xs9 md4 offset-md2>
 
-                  <v-text-field :label="$t('DB.limit_bytes')" class="purple-input" v-model="form.limit_bytes" />
+                  <v-text-field :label="$t('DB.limit_bytes')"  v-model="form.limit_bytes" type="number" />
                 </v-flex>
 
                 <v-flex xs2 md1>
-                  <v-select :label="$t('Profile.traffic_unit')" class="purple-input" :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" />
+                  <v-select :label="$t('Profile.traffic_unit')"  :items="traffic_units" item-text="name" item-value="id" v-model="traffic_unit" style="margin-left:-24px" />
                 </v-flex>
 
 
-                <v-flex xs12 md3>
+                <v-flex xs12 md4>
                   <v-text-field :label="$t('DB.limit_ports')" v-model="form.limit_ports" required />
                 </v-flex>
 
-                <v-flex xs12 md4 offset-md4>
-                  <v-text-field :label="$t('DB.limit_time')" class="purple-input" v-model="form.limit_time" />
+                <v-flex xs12 md5 offset-md3>
+                  <v-text-field :label="$t('DB.limit_time')"  v-model="form.limit_time" />
                 </v-flex>
 
                 <v-flex xs12 md12>
@@ -81,27 +76,59 @@
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-text-field :label="$t('DB.redirect_url')" class="purple-input" v-model="form.redirect_url" />
+                  <v-text-field :label="$t('DB.redirect_url')"  v-model="form.redirect_url" />
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-text-field :label="$t('DB.ad_url')" class="purple-input" v-model="form.ad_url" />
+                  <v-text-field :label="$t('DB.ad_url')"  v-model="form.ad_url" />
                 </v-flex>
                 
 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
+                  <v-btn class="" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
                 </v-flex>
 
               </v-layout>
 
             </v-container>
-          </v-form>
-        </material-card>
 
-      </v-flex>
-    </v-layout>
+        </material-card>
+</v-flex>
+<v-flex xs12 lg6>
+        <material-card color="blue-grey" :title="$t('Profile.template_params')+': '+ form.label" :loading="loading"  v-if="form.theme">
+
+            <v-container py-0>
+              
+              <v-layout column>
+
+                <v-flex xs12 md6>
+                  <!-- <v-text-field label="Skin Folder Name"  v-model="form.skin" :rules="skinRules" required /> -->
+                  <v-select :label="$t('DB.theme')"  :items="themes" item-text="label" item-value="name" v-on:input="renewThemeVars" v-model="form.theme" required></v-select>
+                </v-flex>
+
+                <v-flex xs12 md12 v-for="v in theme_var_list">
+                  <v-textarea auto-grow clearable :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='html'" type="html" />
+                  <v-textarea auto-grow clearable :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='textarea'" />
+                  <v-text-field :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='text'" />
+                </v-flex>
+                <v-flex xs12 text-xs-right>
+                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
+                  <v-btn class="" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
+                </v-flex>
+              </v-layout>
+
+            </v-container>
+
+        </material-card></v-flex>
+              </v-layout>
+
+            </v-container>
+
+          </v-form>
+
+
+
   </v-container>
 </template>
 

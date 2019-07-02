@@ -1,12 +1,13 @@
 <template>
 	
-	<v-content>
-	    <v-container fluid fill-height>
 
-		    <v-layout align-center justify-center>
+	    <v-container fluid fill-height >
+
+		    <v-layout align-center justify-center >
+
 			    <v-flex xs12 sm8 md4>
 
-                   <material-card color="primary" title="Login form" text="Please log in" :loading="p.loading">
+                   <material-card color="primary" title="Login form" :loading="p.loading">
 
 					    <v-form>
 
@@ -30,7 +31,7 @@
 
 
 					    <slot slot="actions">
-						    <router-link :to="{ name: 'Registration' }">Регистрация</router-link>
+						    <v-btn flat color="primary" :to="{ name: 'Registration' }">Регистрация</v-btn>
 						    <v-spacer></v-spacer>
 						    <v-btn color="primary" v-on:click="logIn">Login</v-btn>
 					    </slot>
@@ -49,7 +50,7 @@
 			    </v-flex>
 		    </v-layout>
 		</v-container>
-	</v-content>
+
 </template>
 
 

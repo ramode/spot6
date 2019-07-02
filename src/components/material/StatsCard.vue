@@ -7,27 +7,33 @@
   >
     <v-card-title
       slot="offset"
-      :class="`~elevation-${elevation}`"
       :color="color"
-      class="pa-4"
+      class=""
       dark
     >
+
       <v-icon
         :color="color"
         size="40"
       >
         {{ icon }}
       </v-icon>
-    </v-card-title>
-    <div class="text-xs-right">
-      <p
-        class="category grey--text font-weight-light"
+
+<v-spacer></v-spacer>
+        
+
+      <span
+        :class=" color+'--text text--darken-3 title font-weight-light'"
         v-text="title"
       />
-      <h3
-        class="title display-1 font-weight-light">
+
+    </v-card-title>
+    <div class="text-xs-right">
+
+      <span
+        class="display-1  font-weight-light">
         {{ value }} <small>{{ smallValue }}</small>
-      </h3>
+      </span>
     </div>
 
     <template slot="actions">
@@ -109,11 +115,16 @@ export default {
   }
 
   .v-card {
-    border-radius: 4px;
     flex: 0 1 auto;
   }
 
-  .v-card__text {
+    .v-card__title {
+        padding-bottom:0;
+        padding-top:24px;
+        
+    }
+
+  .v-card__t-ext {
     display: inline-block;
     position: absolute;
     top: 0;

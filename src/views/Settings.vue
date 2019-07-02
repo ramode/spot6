@@ -8,14 +8,21 @@
           <v-form ref="settings_form" v-model="valid">
             <v-container py-0>
               
-              <v-layout wrap>
+              <v-layout column>
+                
+
                 
                 <v-flex xs12 md12>
-                  <v-checkbox v-model="settings_form.reg_enable" :label="$t('Settings.reg_enable')"></v-checkbox>
+                  <v-text-field  v-model="settings_form.session_time" :label="'Remember login for time'"></v-text-field >
+                </v-flex>
+
+
+                <v-flex xs12 md12>
+                  <v-checkbox v-model="settings_form.reg_enabled" :label="$t('Settings.reg_enable')"></v-checkbox>
                 </v-flex>
 
                 <v-flex xs12 md12>
-                  <v-checkbox v-model="settings_form.reg_users_need_activation" :label="$t('Settings.reg_users_need_activation')"></v-checkbox>
+                  <v-checkbox v-model="settings_form.reg_activation_needed" :label="$t('Settings.reg_users_need_activation')"></v-checkbox>
                 </v-flex>
 
                 <v-flex xs12 md6>
@@ -27,7 +34,7 @@
                 </v-flex>
                 
                 <v-flex xs12 text-xs-right>
-                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
+                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Save</v-btn> -->
                   <v-btn class="mx-0 font-weight-light" color="blue darken-3" @click="save_settings">{{ $t('Common.save') }}</v-btn>
                 </v-flex>
 
@@ -39,7 +46,7 @@
 
       </v-flex>
 
-      <v-flex xs12 md12 xl6 v-if="['super', 'admin'].includes($auth.user().role)">
+      <!--v-flex xs12 md12 xl6 v-if="['super', 'admin'].includes($auth.user().role)">
         
         <material-card color="blue darken-1" :title="$t('Settings.auth_types')" :text="$t('Settings.auth_types_small')">
 
@@ -99,7 +106,7 @@
 
                
                 <v-flex xs12 text-xs-right>
-                  <v-btn  class="mx-0 font-weight-light" color="blue darken-1" @click="save_auth_type">
+                  <v-btn color="blue darken-1" @click="save_auth_type">
                     <template v-if="v_add">
                       {{ $t('Common.add') }}
                     </template>
@@ -115,7 +122,7 @@
 
             </v-container>
           </v-form>
-        </material-card>
+        </material-card-->
 
       </v-flex>
       

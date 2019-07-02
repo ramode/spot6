@@ -24,6 +24,11 @@
 
       <v-flex sm12 md12 lg6>
         Здесь будет.. .Что... График траффика?
+
+4 года думал - хз что тут нужно ещё)
+
+добавь пользователей за месяц, за сегодня, пользователей онлайн (по аккаунтингу)
+
       </v-flex>
 
       <!-- <v-flex sm12 md12 lg6>
@@ -84,14 +89,12 @@
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="orange"
-          icon="mdi-content-copy"
+          icon="mdi-account-group"
           :title="$t('Dashboard.admin_cnt') + '/' + $t('Dashboard.manager_cnt')"
           :value="`${dashboard.admins}/${dashboard.managers}`"
           small-value="accs"
-          sub-icon="mdi-alert"
-          sub-icon-color="error"
+          sub-icon="mdi-account-group"
           sub-text="Account management"
-          sub-text-color="text-primary"
         />
       </v-flex>
 
@@ -131,7 +134,7 @@
             axisX: {
               showGrid: false
             },
-            // low: 0,
+            low: 0,
             // high: 1000,
             chartPadding: {
               top: 0,
@@ -139,7 +142,7 @@
               bottom: 0,
               left: 0
             },
-            // height: '300px'
+            //height: '300px',
             seriesBarDistance: 10,
           },
         

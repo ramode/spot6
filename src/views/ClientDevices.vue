@@ -15,14 +15,12 @@
               
                 <template v-slot:activator='{ on }'>
                   
-                  <v-text-field v-model="start_date" label="Start date" prepend-icon="event" readonly v-on="on"></v-text-field>
+                  <v-text-field v-model="start_date" label="Start date" prepend-icon="event" v-on="on" readonly type="date"></v-text-field>
 
                 </template>
                 
-                <v-date-picker v-model="start_date" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="menu_start_date = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.menu_start_date.save(start_date)">OK</v-btn>
+                <v-date-picker v-model="start_date" no-title scrollable show-current  @input="menu_start_date = false">
+
                 </v-date-picker>
 
               </v-menu>
@@ -38,18 +36,13 @@
               
                 <template v-slot:activator='{ on }'>
                   
-                  <v-text-field v-model="end_date" label="End date" prepend-icon="event" readonly v-on="on"></v-text-field>
+                  <v-text-field v-model="end_date" label="End date" prepend-icon="event" readonly type="date" v-on="on"></v-text-field>
 
                 </template>
-                
-                <v-date-picker v-model="end_date" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="menu_end_date = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.menu_end_date.save(end_date)">OK</v-btn>
+               
+                <v-date-picker v-model="end_date" no-title scrollable show-current  @input="menu_end_date = false">
                 </v-date-picker>
-
               </v-menu>
-
             </v-flex>
 
             <v-flex xs12 md2>
@@ -65,7 +58,7 @@
 
             
 
-            <v-flex xs12 md6>
+            <v-flex xs12 md3>
               <v-text-field v-model="search" append-icon="search" label="Filter" single-line hide-details></v-text-field>
             </v-flex>
 
@@ -75,10 +68,11 @@
 
           
 
-          <v-data-table :headers="headers" :items="items" :search="search" loading>
+          <v-data-table :headers="headers" :items="items" :search="search" loading  :rows-per-page-items="[10]">
             
             <template slot="headerCell" slot-scope="{ header }">
-              <span class="font-weight-light" v-text="header.text" />
+              <span
+                class="subheading text-info text--darken-3" v-text="header.text" />
             </template>
             
             <template slot="items" slot-scope="{ index, item }">
@@ -124,6 +118,7 @@
       start_date: null,
       end_date: new Date().toISOString().substr(0, 10),
       
+      pagination: {}, 
 
       search: "",
       
@@ -186,6 +181,9 @@
           return d;
         })();
 
+        this.getData()
+
+
       },
 
       getData() {
@@ -215,8 +213,6 @@
 
 <style>
 
-  .v-btn__content {
-    color: black;
-  }
+
 
 </style>

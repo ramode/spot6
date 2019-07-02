@@ -3,22 +3,24 @@
     v-bind="$attrs"
     :style="styles"
     v-on="$listeners"
+
+    
   >
 
     <v-progress-linear
         :indeterminate="loading===true"
         :value="(loading===true)? 0: ((loading===false)?100:loading)"
-        style="paddind:0;margin:-16px -16px -16px 0"
+        style="paddind:0;margin:0 -16px -16px 0"
         :color="color"/>
-    <v-card-title :color="color" v-if="!$slots.offset">
 
+    <v-card-title  v-if="!$slots.offset">
         <slot
           v-if="!title && !text"
           name="header"
         />
-        <span v-else>
+        <span v-else >
           <h3
-            class=""
+           
             v-text="title"
           />
           <p
@@ -32,40 +34,6 @@
         name="offset"
       />
  <v-divider v-if="!$slots.offset"/>
-
-    <!--helper-offset
-      v-if="hasOffset"
-      :inline="inline"
-      :full-width="fullWidth"
-      :offset="offset"
-    >
-      <!--v-card
-        v-if="!$slots.offset"
-        :color="color"
-        :class="`elevation-${elevation}`"
-        class="v-card--material__header"
-        dark
-      >
-        <!--slot
-          v-if="!title && !text"
-          name="header"
-        />
-        <span v-else>
-          <h4
-            class="title font-weight-light mb-2"
-            v-text="title"
-          />
-          <p
-            class="category font-weight-thin"
-            v-text="text"
-          />
-        </span>
-      </v-card>
-      <slot
-        v-else
-        name="offset"
-      /-->
-    </helper-offset-->
 
     <v-card-text>
       <slot />
@@ -141,11 +109,5 @@ export default {
 </script>
 
 <style lang="scss">
-  .v-card--material {
-    &__header {
-      &.v-card {
-        border-radius: 4px;
-      }
-    }
-  }
+
 </style>

@@ -35,12 +35,15 @@
         </router-link> -->
         
 
-        <v-menu transition="slide-y-transition" bottom>
+        <v-menu transition="slide-y-transition" bottom offset-y left >
 
-          <template v-slot:activator='{ on }'>
-            <v-btn flat small color="tertiary" v-on="on">Lang</v-btn>
-          </template>
 
+          <router-link v-ripple slot="activator" class="toolbar-items" to="#" >
+            <v-icon color="tertiary" >mdi-flag</v-icon>
+
+          </router-link>
+
+            
           <v-list>
             <!-- <v-list-tile v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang"> -->
             <v-list-tile v-for="(item, i) in langs" :key="i" @click="changeLocale(item.lang)">
@@ -61,7 +64,7 @@
             </v-badge>
           </router-link>
 
-          <v-card>
+
             <v-list dense>
               <v-list-tile>
                 <v-list-tile-title @click="clear_notifys">
@@ -73,28 +76,28 @@
                 <v-list-tile-title v-text="notification" />
               </v-list-tile>
             </v-list>
-          </v-card>
+
 
         </v-menu>
 
-        <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition">
+        <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition" allow-overflow>
           
           <router-link v-ripple slot="activator" class="toolbar-items" to="#">
             <v-badge color="error" overlap>
-              <!-- <template slot="badge">
+<!--              
+                <template slot="badge">
                 {{ user_menu.length }}
               </template> -->
               <v-icon color="tertiary">mdi-account</v-icon>
             </v-badge>
           </router-link>
-          <v-card>
+
             <v-list dense>
-              <v-list-tile>{{ $auth.user().login }}</v-list-tile>
+              <v-list-tile>{{ $auth.user().profile.full_name || $auth.user().profile.login }}</v-list-tile>
               <v-list-tile @click="LogOut">
                 <v-list-tile-title>Log Out</v-list-tile-title>
               </v-list-tile>
             </v-list>
-          </v-card>
 
         </v-menu>
 

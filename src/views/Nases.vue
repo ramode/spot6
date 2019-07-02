@@ -9,7 +9,7 @@
             
             <template slot="headerCell" slot-scope="{ header }">
               <span
-                class="subheading font-weight-light text-success text--darken-3" v-text="header.text" />
+                class="subheading text-info text--darken-3" v-text="header.text" />
             </template>
             
             <template slot="items" slot-scope="{ item }">
