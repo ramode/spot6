@@ -7,9 +7,9 @@
 	"phone":			"Телефон",
 	"mac":				"MAC",
 	"nas":				"NAS",
-	"time_start":		"Время начала",
-	"time_end":			"Время окончания",
-	"uptime":			"Время в сети",
+	"time_start":		"Начало",
+	"time_end":			"Окончание",
+	"uptime":			"В сети",
 	"ip":				"IP-адрес",
 	"traffic":			"Траффик",
 	"profile":			"Профиль"

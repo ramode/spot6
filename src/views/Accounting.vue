@@ -65,13 +65,13 @@
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
               <!-- <td>{{ item.nas }} / {{ item.ip }} / {{ item.called_station_id }}</td> -->
-              <td>{{ [ item.nas, item.ip, item.called_station_id ].join(' / ')}}</td>
+              <td>{{ [ item.nas, item.nas_ip, item.called_station_id ].join(' / ')}}</td>
               <td>{{ item.time_start | moment("YYYY-MM-DD, HH:MM") }}</td>
               <td>{{ item.time_end | moment("YYYY-MM-DD, HH:MM") }}</td>
               <td>{{ item.uptime }}</td>
               <td>{{ item.ip }}</td>
-              <td>↓ {{ item.download }} ↑ {{ item.upload }}</td>
-              <td>{{ item.profile }}</td>
+              <td>↓ {{ item.download | prettyBytes }} ↑ {{ item.upload | prettyBytes }}</td>
+              <td><router-link :to="{ name: 'profile_edit', params: { id: item.profile_id } }">{{ item.profile }}</router-link></td>
             </template>
 
           </v-data-table>
@@ -191,7 +191,7 @@
         // get Devices list:
         API.getAccounting(this.start_date, this.end_date).then(
           res => {
-            console.log(res);
+            // console.log(res);
             this.items = res.data;
             this.loading = false;
           },

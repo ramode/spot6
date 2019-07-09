@@ -18,6 +18,9 @@ import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
 // import qwe from 'moment-precise-range-plugin'
 
+// 2019-07-09, https://github.com/sainf/vue-filter-pretty-bytes
+import vueFilterPrettyBytes from 'vue-filter-pretty-bytes'
+
 // 2019-06-11, my custom
 import "@/lib/mf"
 
@@ -91,6 +94,9 @@ Vue.use(VueAuth, {
 Vue.use(VueMoment, {
 	moment,
 })
+
+// 2019-07-09, https://github.com/sainf/vue-filter-pretty-bytes
+Vue.use(vueFilterPrettyBytes)
 
 
 /* eslint-disable no-new */
