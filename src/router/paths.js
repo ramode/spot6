@@ -125,6 +125,15 @@ export default [
     meta: {
       auth: true,
     },
-  }
+  },
+
+  {
+    path: '/accounting',
+    view: 'Accounting',
+    name: 'accounting',
+    meta: {
+      auth: true,
+    },
+  },
 
 ]

@@ -4,6 +4,7 @@
       <v-flex md12>
 
         <material-card color="blue-grey" :title="$t('Profile.profile_list')" :text="$t('Profile.profile_list_small')" :loading="loading">
+
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -37,10 +38,31 @@
               </td>
             </template>
 
+
+
           </v-data-table>
+
+
+
         </material-card>
 
-        <v-btn color="success" class="right" :to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)">Add</v-btn>
+<v-fab-transition>
+      <v-btn
+
+
+        dark
+        fab
+        fixed
+        bottom
+        right
+        color="primary"
+:to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
+        <v-btn color="primary" class="right" :to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)">Add</v-btn>
 
       </v-flex>
     </v-layout>
@@ -92,14 +114,16 @@
             res.data.forEach((item, i) => {
               this.auth_types[ item['id'] ] = item['label'];
             });
+            // TODO есть смысл переделать на http://postgrest.org/en/v5.2/api.html#resource-embedding а апдейт без жоина
 
             // После того, как справочник auth_types заполнен, получаем список с севрака и заеняем ID на NAME:
             // Не делал JOIN на серваке, чтобы можно было UDPATE'ить VIEW'ху
             API.getProfiles().then(
               res => {
-                res.data.forEach((item, i) => {
-                  this.items.push(item);
-                });
+                   this.items = res.data
+//                res.data.forEach((item, i) => {
+//                  this.items.push(item);
+//                });
                 this.loading += 50
               },
               err => this.$store.commit("error", err)

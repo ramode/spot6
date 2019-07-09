@@ -4,5 +4,6 @@
 	"profiles":			"Profiles",
 	"nases":			"Nases",
 	"client_devices":	"Client Devices",
-	"settings":			"Settings"
+	"settings":			"Settings",
+	"accounting":		"Accounting"
 }

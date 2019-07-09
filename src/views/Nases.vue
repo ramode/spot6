@@ -38,7 +38,7 @@
           </v-data-table>
         </material-card>
 
-        <v-btn color="success" class="right" :to='{ name: "nas_add" }'>{{ $t('Common.add') }}</v-btn>
+        <v-btn color="primary" class="right" :to='{ name: "nas_add" }'>{{ $t('Common.add') }}</v-btn>
 
       </v-flex>
     </v-layout>

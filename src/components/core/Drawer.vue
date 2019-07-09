@@ -121,6 +121,13 @@ export default {
         roles: ["super", "admin", "manager"],
       },
       {
+        to: { name: "accounting" },
+        // icon: "mdi-coin",
+        icon: "mdi-counter",
+        text: this.$t('Menu.accounting'),
+        roles: ["super", "admin", "manager"],
+      },
+      {
         to: { name: "settings" },
         icon: 'mdi-settings',
         text: this.$t('Menu.settings'),

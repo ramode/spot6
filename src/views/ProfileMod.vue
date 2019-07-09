@@ -6,7 +6,7 @@
             <v-layout wrap>
 
 <v-flex xs12 lg6>
-        <material-card  color="blue-grey" :title="$t('Profile.edit_profile')+': '+ form.label" :text="$t('Profile.edit_profile_small')" :loading="loading">
+        <material-card  color="blue-grey" :title="form.label? $t('Profile.edit_profile')+': '+ form.label: $t('Profile.add_profile')" :text="$t('Profile.edit_profile_small')" :loading="loading">
 
             <v-container py-0>
               
@@ -84,10 +84,9 @@
                 </v-flex>
                 
 
-                <v-flex xs12 text-xs-right>
-                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn class="" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
-                </v-flex>
+                <!--v-flex xs12 text-xs-right>
+                  <v-btn class="" color="primary" @click="submit">{{ $t('Form.save') }}</v-btn>
+                </v-flex-->
 
               </v-layout>
 
@@ -96,7 +95,7 @@
         </material-card>
 </v-flex>
 <v-flex xs12 lg6>
-        <material-card color="blue-grey" :title="$t('Profile.template_params')+': '+ form.label" :loading="loading"  v-if="form.theme">
+        <material-card color="blue-grey" :title="$t('Profile.template_params')+': '+ (form.label||'')" :loading="loading" >
 
             <v-container py-0>
               
@@ -112,10 +111,9 @@
                   <v-textarea auto-grow clearable :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='textarea'" />
                   <v-text-field :label="v.label" v-model="form.template[v.name]" required v-if="v.type=='text'" />
                 </v-flex>
-                <v-flex xs12 text-xs-right>
-                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn class="" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
-                </v-flex>
+                <!--v-flex xs12 text-xs-right>
+                  <v-btn class="" color="primary" @click="submit">{{ $t('Form.save') }}</v-btn>
+                </v-flex-->
               </v-layout>
 
             </v-container>
@@ -124,6 +122,25 @@
               </v-layout>
 
             </v-container>
+
+
+<v-fab-transition>
+
+      <v-btn
+        dark
+        fab
+        fixed
+        bottom
+        right
+        color="primary"
+        @click="submit"
+        :title="$t('Form.save')"
+        :loading='loading===true|loading!=100'
+      >
+        <v-icon>mdi-content-save</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
 
           </v-form>
 
@@ -182,9 +199,6 @@
 
     },
 
-    computed: {
-    },
-
     mounted () {
       this.load();
     },
@@ -202,7 +216,14 @@
 
         data.limit_bytes = data.limit_bytes * traffic_unit_ratio;
         data.limit_speed = data.limit_speed * speed_unit_rario;
+
+        if (data.limit_bytes == 0) {
+            data.limit_bytes = null
+        }
         
+        if (data.limit_speed == 0) {
+            data.limit_speed = null
+        }
 
         return data;
 
@@ -210,6 +231,8 @@
 
       convert_from_bits_bytes(data) {
 
+        if ( data.limit_bytes == null) {}
+        else
         // Если меньше 1 Gb:
         if ( data.limit_bytes < this.traffic_units.filter( obj => obj.id == 1)[0].ratio ) {
           this.traffic_unit = 2;
@@ -220,6 +243,8 @@
         var traffic_unit_ratio = this.traffic_units.filter( obj => obj.id == this.traffic_unit )[0].ratio;
         data.limit_bytes = data.limit_bytes / traffic_unit_ratio;
         
+        if ( data.limit_speed == null) {}
+        else
         // Если меньше 1 Mbit/sec:
         if ( data.limit_speed < this.speed_units.filter( obj => obj.id == 1)[0].ratio ) {
           this.speed_unit = 2;
@@ -283,6 +308,7 @@
             )
 
           } else {
+            this.loading += 40;
             this.form.template = {};
           };
 

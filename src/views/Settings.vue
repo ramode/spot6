@@ -35,7 +35,7 @@
                 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Save</v-btn> -->
-                  <v-btn class="mx-0 font-weight-light" color="blue darken-3" @click="save_settings">{{ $t('Common.save') }}</v-btn>
+                  <v-btn color="primary" @click="save_settings">{{ $t('Common.save') }}</v-btn>
                 </v-flex>
 
               </v-layout>

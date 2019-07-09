@@ -116,7 +116,7 @@ export default {
 		return axios.get('/hotspot_themes');
 	},
 
-	getClientDevices(start_date, end_date, date_field) {
+	getClientDevices(start_date, end_date) {
 		var config = {
 			headers: {
 				// "Range-Unit": "items",
@@ -125,7 +125,8 @@ export default {
 		};
 		// return axios.get(`/hotspot_devices?time_seen=ov.[${start_date},${end_date}]`, config);
 		// return axios.get(`/hotspot_devices?time_seen=gte.${start_date}&time_seen=lte.${end_date}`, config);
-		return axios.get(`/hotspot_devices?${date_field}=gte.${start_date}&${date_field}=lte.${end_date}`, config);
+
+		return axios.get(`/hotspot_devices?or=(and(time_seen.gte.${start_date},time_seen.lte.${end_date}),and(time_registred.gte.${start_date},time_registred.lte.${end_date}))`, config);
 	},
 
 	Dashboard() {
@@ -171,6 +172,13 @@ export default {
 	updateNas(data) {
 		var nas_id = data.id;
 		return axios.patch(`/hotspot_nases?id=eq.${nas_id}`, data);
+	},
+
+	getAccounting(start_date, end_date) {
+		return axios.get(`/accounting?and=(
+			time_end.gte.${start_date},
+			time_end.lte.${end_date}
+		)`);
 	},
 
 }

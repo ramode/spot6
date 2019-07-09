@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="light-green" :title="$t('ClientDevices.title')" :text="$t('ClientDevices.small_text')" :loading="loading">
+        <material-card color="light-green" :title="$t('Accounting.title')" :text="$t('Accounting.small_text')" :loading="loading">
 
           <v-layout justify-center wrap>
             <v-flex xs12 md2>
@@ -15,7 +15,7 @@
               
                 <template v-slot:activator='{ on }'>
                   
-                  <v-text-field v-model="start_date" label="Start date" prepend-icon="event" v-on="on" readonly type="date"></v-text-field>
+                  <v-text-field v-model="start_date" :label="$t('Accounting.start_date')" prepend-icon="event" v-on="on" readonly type="date"></v-text-field>
 
                 </template>
                 
@@ -36,7 +36,7 @@
               
                 <template v-slot:activator='{ on }'>
                   
-                  <v-text-field v-model="end_date" label="End date" readonly type="date" v-on="on"></v-text-field>
+                  <v-text-field v-model="end_date" :label="$t('Accounting.end_date')" readonly type="date" v-on="on"></v-text-field>
 
                 </template>
                
@@ -49,14 +49,8 @@
               <v-btn @click="getData">{{ $t('Form.search') }}</v-btn>
             </v-flex>
 
-            <!--v-flex xs12 md5>
-              <v-radio-group v-model="date_field" :messages="$t('ClientDevices.db_date_filed')" row>
-                <v-radio :label="$t('ClientDevices.time_seen')" value="time_seen"></v-radio>
-                <v-radio :label="$t('ClientDevices.time_register')" value="time_registred"></v-radio>
-              </v-radio-group>
-            </v-flex-->
             <v-flex xs12 md3>
-              <v-text-field v-model="search" append-icon="mdi-filter" label="Filter" single-line hide-details></v-text-field>
+              <v-text-field v-model="search" append-icon="mdi-filter" :label="$t('Form.filter')" single-line hide-details></v-text-field>
             </v-flex>
           </v-layout>
           <v-data-table :headers="headers" :items="items" :search="search" loading  :rows-per-page-items="[10]">
@@ -68,12 +62,16 @@
             
             <template slot="items" slot-scope="{ index, item }">
               <!-- <td>{{ index + 1 }}</td> -->
-              <td>{{ item.username }}</td>
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
-              <td>{{ item.time_registred | moment("YYYY-MM-DD, HH:MM") }}</td>
-              <td>{{ item.time_seen | moment("YYYY-MM-DD, HH:MM") }}</td>
-              <td><router-link :to="{name:'profile_edit', params: {id: item.profile_id} }" >{{ profiles[item.profile_id] }}</router-link></td>
+              <!-- <td>{{ item.nas }} / {{ item.ip }} / {{ item.called_station_id }}</td> -->
+              <td>{{ [ item.nas, item.ip, item.called_station_id ].join(' / ')}}</td>
+              <td>{{ item.time_start | moment("YYYY-MM-DD, HH:MM") }}</td>
+              <td>{{ item.time_end | moment("YYYY-MM-DD, HH:MM") }}</td>
+              <td>{{ item.uptime }}</td>
+              <td>{{ item.ip }}</td>
+              <td>↓ {{ item.download }} ↑ {{ item.upload }}</td>
+              <td>{{ item.profile }}</td>
             </template>
 
           </v-data-table>
@@ -97,12 +95,8 @@
   export default {
 
     data: () => ({
-      profiles: {},
-
+      
       loading: false,
-
-      // Search field in DB: time_seen or time_registred
-      date_field: "time_seen",
       
       menu_start_date: false,
       menu_end_date: false,
@@ -110,7 +104,7 @@
       start_date: null,
       end_date: new Date().toISOString().substr(0, 10),
       
-      pagination: {}, 
+      pagination: {},
 
       search: "",
       
@@ -124,33 +118,48 @@
         return [
           {
             sortable: false,
-            text: this.$t('ClientDevices.username'),
-            value: 'username'
-          },
-          {
-            sortable: false,
-            text: this.$t('ClientDevices.phone'),
+            text: this.$t('Accounting.phone'),
             value: 'phone'
           },
           {
             sortable: false,
-            text: this.$t('ClientDevices.mac'),
+            text: this.$t('Accounting.mac'),
             value: 'mac'
           },
           {
             sortable: false,
-            text: this.$t('ClientDevices.time_register'),
-            value: 'time_register'
+            text: this.$t('Accounting.nas'),
+            value: 'nas'
           },
           {
             sortable: false,
-            text: this.$t('ClientDevices.time_seen'),
-            value: 'time_seen'
+            text: this.$t('Accounting.time_start'),
+            value: 'time_start'
           },
           {
             sortable: false,
-            text: this.$t('ClientDevices.profile_seen'),
-            value: 'profile_seen'
+            text: this.$t('Accounting.time_end'),
+            value: 'time_end'
+          },
+          {
+            sortable: false,
+            text: this.$t('Accounting.uptime'),
+            value: 'uptime'
+          },
+          {
+            sortable: false,
+            text: this.$t('Accounting.ip'),
+            value: 'ip'
+          },
+          {
+            sortable: false,
+            text: this.$t('Accounting.traffic'),
+            value: 'download'
+          },
+          {
+            sortable: false,
+            text: this.$t('Accounting.profile'),
+            value: 'profile'
           },
         ];
       },
@@ -172,20 +181,7 @@
           d = d.toISOString().substr(0, 10);
           return d;
         })();
-            // TODO есть смысл переделать на http://postgrest.org/en/v5.2/api.html#resource-embedding
-            API.getProfiles().then(
-              res => {
-                res.data.forEach((item, i) => {
-                  this.profiles[ item['id'] ] = item['label'];
-                });
-                this.loading = 15
-                this.getData()
-              },
-              err => this.$store.commit("error", err)
-            );
-
-
-
+        
       },
 
       getData() {
@@ -193,9 +189,9 @@
         this.loading = true;
 
         // get Devices list:
-        API.getClientDevices(this.start_date, this.end_date).then(
+        API.getAccounting(this.start_date, this.end_date).then(
           res => {
-            // console.log(res);
+            console.log(res);
             this.items = res.data;
             this.loading = false;
           },
