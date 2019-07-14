@@ -3,3 +3,6 @@ insert into common.users (login,password,role,id,parent, group_id) values ('root
 
 
 ALTER USER authenticator with password 'pass123';
+ALTER USER dba with password 'adminpass';
+ALTER USER radius with password 'raddpass';
+
