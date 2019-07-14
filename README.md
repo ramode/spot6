@@ -42,12 +42,32 @@ killall -SIGUSR1 postgrest
 
 ### Exampels for debug:
 ```
-set role admin; set request.jwt.claim.role = 'admin'; set request.jwt.claim.login = 'test@eth0.pro'; set request.jwt.claim.uid = '3'; set request.jwt.claim.gid = '1';
-set role super; set request.jwt.claim.role = 'super'; set request.jwt.claim.login = 'morfair@gmail.com'; set request.jwt.claim.uid = '1'; set request.jwt.claim.gid = '0';
+SET search_path = 'api', 'public';
+SET "role" = 'super';
+SET "request.jwt.claim.exp" = '1561947535';
+SET "request.jwt.claim.uid" = '0';
+SET "request.jwt.claim.role" = 'super';
+SET "request.jwt.claim.seq" = '2'; -- номер сессии
+SET "request.jwt.claim.gid" = '0';
+
 ```
+
+Http Locals
+
 ```
-SHOW current_setting('request.jwt.claim.email');
-```
-```
-select * from basic_auth.user_id();
+SET LOCAL "request.header.x-forwarded-host" = 'localhost:8080';
+SET LOCAL "request.header.x-forwarded-proto" = 'http';SET LOCAL "request.header.x-forwarded-port" = '8080';SET LOCAL "request.header.x-forwarded-for" = '127.0.0.1';
+SET LOCAL "request.header.x-compress" = 'null';
+SET LOCAL "request.header.accept-language" = 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7';
+SET LOCAL "request.header.accept-encoding" = 'gzip, deflate, br';
+SET LOCAL "request.header.referer" = 'http://localhost:8080/users/9';
+SET LOCAL "request.header.content-type" = 'application/json;charset=UTF-8';
+SET LOCAL "request.header.dnt" = '1';
+SET LOCAL "request.header.user-agent" = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.170';
+SET LOCAL "request.header.origin" = 'http://localhost:8080';
+SET LOCAL "request.header.accept" = 'application/json, text/plain, */*';
+SET LOCAL "request.header.cache-control" = 'no-cache';SET LOCAL "request.header.pragma" = 'no-cache';
+SET LOCAL "request.header.content-length" = '33';SET LOCAL "request.header.connection" = 'close';
+SET LOCAL "request.header.host" = 'localhost:5000';SET LOCAL "request.cookie.rememberMe" = 'false';
+
 ```
