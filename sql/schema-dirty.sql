@@ -68,15 +68,6 @@ CREATE SCHEMA api;
 ALTER SCHEMA api OWNER TO postgres;
 
 --
--- Name: basic_auth; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA basic_auth;
-
-
-ALTER SCHEMA basic_auth OWNER TO postgres;
-
---
 -- Name: common; Type: SCHEMA; Schema: -; Owner: dba
 --
 
@@ -84,15 +75,6 @@ CREATE SCHEMA common;
 
 
 ALTER SCHEMA common OWNER TO dba;
-
---
--- Name: db; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA db;
-
-
-ALTER SCHEMA db OWNER TO postgres;
 
 --
 -- Name: hotspot; Type: SCHEMA; Schema: -; Owner: postgres
@@ -178,17 +160,6 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 --
--- Name: jwt_token; Type: TYPE; Schema: basic_auth; Owner: postgres
---
-
-CREATE TYPE basic_auth.jwt_token AS (
-	token text
-);
-
-
-ALTER TYPE basic_auth.jwt_token OWNER TO postgres;
-
---
 -- Name: jwt_token; Type: TYPE; Schema: common; Owner: postgres
 --
 
@@ -259,41 +230,6 @@ $$;
 ALTER FUNCTION api.login(username character varying, password character varying) OWNER TO dba;
 
 --
--- Name: login_back(character varying, character varying); Type: FUNCTION; Schema: api; Owner: postgres
---
-
-CREATE FUNCTION api.login_back(login character varying, pass character varying) RETURNS basic_auth.jwt_token
-    LANGUAGE plpgsql SECURITY DEFINER
-    AS $$
-declare
-  _role name;
-  result basic_auth.jwt_token;
-begin
-  -- check email and password
-  select basic_auth.user_role(login, pass) into _role;
-  if _role is null then
-    raise invalid_password using message = 'Invalid login or password';
-  end if;
-
-  select public.sign(
-      row_to_json(r), current_setting('app.jwt_secret')
-    ) as token
-    from (
-      select _role as role,
-      login.login as login,
-      ( select user_id from basic_auth.user_id(login) ) as uid,
-      ( select group_id from basic_auth.users where basic_auth.users.login = login.login ) as gid,
-	  extract(epoch from now())::integer + 60*60 as exp
-    ) r
-    into result;
-  return result;
-end;
-$$;
-
-
-ALTER FUNCTION api.login_back(login character varying, pass character varying) OWNER TO postgres;
-
---
 -- Name: passwd(integer, text); Type: FUNCTION; Schema: api; Owner: dba
 --
 
@@ -302,6 +238,9 @@ CREATE FUNCTION api.passwd(user_id integer, newpassword text) RETURNS boolean
     AS $$
 begin
     update common.users set password = passwd.newpassword where id = user_id and id in (select id from common.users_tree);
+    
+    -- id in (select id from common.users_tree); переместить на row security
+    
     return true;
 end
 $$;
@@ -348,231 +287,95 @@ $$;
 ALTER FUNCTION api.refresh() OWNER TO dba;
 
 --
--- Name: reg_back(character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: api; Owner: postgres
+-- Name: refresh(integer); Type: FUNCTION; Schema: api; Owner: dba
 --
 
-CREATE FUNCTION api.reg_back(login character varying, pass character varying, reg_secret character varying, email character varying DEFAULT NULL::character varying, phone character varying DEFAULT NULL::character varying) RETURNS boolean
+CREATE FUNCTION api.refresh(group_id integer) RETURNS common.jwt_token
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 declare
-  _settings record;
- _reg_secret varchar;
+  _user record;
+  _payload record;
+  result common.jwt_token;
 begin
-	-- Got error: It could refer to either a PL/pgSQL variable or a table column.
-	-- column reference "reg_secret" is ambiguous
-	_reg_secret = reg_secret;
-	for _settings in
-		select * from db.settings where db.settings.reg_secret = _reg_secret and db.settings.reg_enable = 'True' limit 1
-	loop
-		insert into basic_auth.users (login, pass, role, disabled, full_name, parent_id, email, phone)
- 			values (login, pass, _settings.reg_role, _settings.reg_users_need_activation, 'self-reged', _settings.user_id, email, phone);
- 		return true;
- 	end loop;
-	raise exception 'Error during registration (mf)';
+  -- check email and password
+  select users.* , settings.session_time from common.users LEFT OUTER JOIN common.settings ON (users.id = settings.id) where
+    users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer AND users.disabled = false
+    into _user;
+  if _user.role is null then
+    raise invalid_password using message = 'invalid user or password';
+  end if;
+
+  if _user.session_time is null then
+    _user.session_time = '1:00:00'::interval;
+  end if;
+
+  select _user.role as role, _user.id as uid, group_id as gid,(current_setting('request.jwt.claim.seq'::text, true))::integer as seq,
+         extract(epoch from (now() + _user.session_time ))::integer as exp into _payload;
+
+  select public.sign(
+      row_to_json(_payload), current_setting('app.jwt_secret')
+    ) as token
+    into result;
+  return result;
 end
 $$;
 
 
-ALTER FUNCTION api.reg_back(login character varying, pass character varying, reg_secret character varying, email character varying, phone character varying) OWNER TO postgres;
+ALTER FUNCTION api.refresh(group_id integer) OWNER TO dba;
+
+--
+-- Name: reg(character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: api; Owner: postgres
+--
+
+CREATE FUNCTION api.reg(login character varying, pass character varying, reg_secret character varying, email character varying DEFAULT NULL::character varying, phone character varying DEFAULT NULL::character varying) RETURNS boolean
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+declare
+  _settings record;
+  _new_id integer;
+begin
+
+		select * from common.settings where settings.reg_secret = reg.reg_secret and settings.reg_enabled = TRUE limit 1 into _settings;
+	
+	    if _settings.id isnull then
+            raise exception 'Error during registration (mf)';
+        end if;
+	
+		insert into common.users (login, password, role, disabled, label, parent, email, phone)
+ 			values (login, pass, _settings.reg_role, _settings.reg_activation_needed, login||' (self-reged)', _settings.id, email, phone)
+ 			returning id into _new_id;
+
+
+        update hotspot.auth_types set group_ids = array_append(group_ids, _new_id) where auth_types.id = any( _settings.reg_auth_types);
+
+		return _settings.reg_activation_needed;
+
+
+end
+$$;
+
+
+ALTER FUNCTION api.reg(login character varying, pass character varying, reg_secret character varying, email character varying, phone character varying) OWNER TO postgres;
 
 --
 -- Name: user(); Type: FUNCTION; Schema: api; Owner: dba
 --
 
-CREATE FUNCTION api."user"(OUT profile record, OUT role character varying) RETURNS record
+CREATE FUNCTION api."user"(OUT profile record, OUT role character varying, OUT group_id integer) RETURNS record
     LANGUAGE plpgsql
     AS $$
-
-    begin
+begin
 
         select * from api.user_profile limit 1 into profile;
         role = (current_setting('request.jwt.claim.role'::text, true));
+        group_id = (current_setting('request.jwt.claim.gid'::text, true))::integer;
         return;
     end
 $$;
 
 
-ALTER FUNCTION api."user"(OUT profile record, OUT role character varying) OWNER TO dba;
-
---
--- Name: user_back(); Type: FUNCTION; Schema: api; Owner: postgres
---
-
-CREATE FUNCTION api.user_back(OUT id integer, OUT login character varying, OUT role character varying) RETURNS record
-    LANGUAGE plpgsql
-    AS $$
-begin
-  select ba.id from basic_auth.users as ba where ba.login = current_setting('request.jwt.claim.login'::text) limit 1 into id;
-  select ba.role from basic_auth.users as ba where ba.login = current_setting('request.jwt.claim.login'::text) limit 1 into role;
-  login := current_setting('request.jwt.claim.login'::text);
-  return;  
-end;
-$$;
-
-
-ALTER FUNCTION api.user_back(OUT id integer, OUT login character varying, OUT role character varying) OWNER TO postgres;
-
---
--- Name: append_user_id(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.append_user_id() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-declare
-  _email text := current_setting('request.jwt.claim.email', true);
-  _user_id int;
-begin
-  if tg_op = 'INSERT' then
-    select id into _user_id from basic_auth.users where email = _email;
-    new.user_id = _user_id;
-  end if;
-  return new;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.append_user_id() OWNER TO postgres;
-
---
--- Name: check_role_exists(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.check_role_exists() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-  if not exists (select 1 from pg_roles as r where r.rolname = new.role) then
-    raise foreign_key_violation using message =
-      'unknown database role: ' || new.role;
-    return null;
-  end if;
-  return new;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.check_role_exists() OWNER TO postgres;
-
---
--- Name: encrypt_pass(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.encrypt_pass() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-  if tg_op = 'INSERT' or new.pass <> old.pass then
-    new.pass = crypt(new.pass, gen_salt('bf'));
-  end if;
-  return new;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.encrypt_pass() OWNER TO postgres;
-
---
--- Name: parent_id(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.parent_id() RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
-declare
-  _login varchar := current_setting('request.jwt.claim.email', true);
-  _parent_id int;
-begin
-  select partent_id into _parent_id from basic_auth.users where login = _login;
-  return _parent_id;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.parent_id() OWNER TO postgres;
-
---
--- Name: security_check(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.security_check() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-	if
-		-- Не надо пугаться web_anon, у него все равно нет доступа на api.users,
-		-- он не сможет сделать write эту таблицу, тока через функци api.reg()
-		current_setting('request.jwt.claim.role') not in ('super','web_anon') 
-		and
-		(
-			( tg_op = 'INSERT' and new.role != 'manager' )
-			or
-			( tg_op = 'UPDATE' and old.role != new.role )
-		)
-	then
-		RAISE exception 'security violation (mf)';
-	end if;
-	return new;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.security_check() OWNER TO postgres;
-
---
--- Name: user_id(character varying); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.user_id(_login character varying DEFAULT current_setting('request.jwt.claim.login'::text, true)) RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
-declare
-  -- _login varchar := current_setting('request.jwt.claim.login', true);
-  _user_id int;
-begin
-  select basic_auth.users.id into _user_id from basic_auth.users where login = _login;
-  return _user_id;
-end
-$$;
-
-
-ALTER FUNCTION basic_auth.user_id(_login character varying) OWNER TO postgres;
-
---
--- Name: user_role(character varying, character varying); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.user_role(login character varying, pass character varying) RETURNS name
-    LANGUAGE plpgsql
-    AS $$
-begin
-  return (
-  select role from basic_auth.users
-   where users.login = user_role.login
-     and users.pass = public.crypt(user_role.pass, users.pass)
-     and USERS.DISABLED = FALSE
-  );
-end;
-$$;
-
-
-ALTER FUNCTION basic_auth.user_role(login character varying, pass character varying) OWNER TO postgres;
-
---
--- Name: users_append_columns(); Type: FUNCTION; Schema: basic_auth; Owner: postgres
---
-
-CREATE FUNCTION basic_auth.users_append_columns() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-	begin
-		update basic_auth.users set group_id = new.id, label = new.login where id = new.id;
-		return new;
-	end
-$$;
-
-
-ALTER FUNCTION basic_auth.users_append_columns() OWNER TO postgres;
+ALTER FUNCTION api."user"(OUT profile record, OUT role character varying, OUT group_id integer) OWNER TO dba;
 
 --
 -- Name: encrypt_pass(); Type: FUNCTION; Schema: common; Owner: postgres
@@ -635,6 +438,36 @@ $$;
 ALTER FUNCTION common.login(username text, password text) OWNER TO postgres;
 
 --
+-- Name: security_check(); Type: FUNCTION; Schema: common; Owner: dba
+--
+
+CREATE FUNCTION common.security_check() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+	if
+		-- Не надо пугаться web_anon, у него все равно нет доступа на api.users,
+		-- он не сможет сделать write эту таблицу, тока через функци api.reg()
+		current_setting('request.jwt.claim.role') not in ('super', 'web_anon')
+		and
+		(
+			(new.role not in ('manager','guest') )
+			or
+			( old.role != new.role )
+		    or
+			( new.id = current_setting('request.jwt.claim.uid')::int)
+		)
+	then
+		RAISE exception 'security violation (mf)';
+	end if;
+	return new;
+end
+$$;
+
+
+ALTER FUNCTION common.security_check() OWNER TO dba;
+
+--
 -- Name: user_label(); Type: FUNCTION; Schema: common; Owner: dba
 --
 
@@ -675,24 +508,6 @@ $$;
 ALTER FUNCTION common.user_new_settings() OWNER TO dba;
 
 --
--- Name: init_settings(); Type: FUNCTION; Schema: db; Owner: postgres
---
-
-CREATE FUNCTION db.init_settings() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-	begin
-		if ( TG_OP = 'INSERT' and new.role in ('su', 'super') ) THEN
-			insert into db.settings (user_id) values (new.id);
-		end if;
-		return new;
-	end
-$$;
-
-
-ALTER FUNCTION db.init_settings() OWNER TO postgres;
-
---
 -- Name: update_accounting(); Type: FUNCTION; Schema: radius; Owner: dba
 --
 
@@ -721,7 +536,7 @@ ALTER FUNCTION radius.update_accounting() OWNER TO dba;
 --
 
 CREATE FUNCTION radius.update_radius() RETURNS trigger
-    LANGUAGE plpgsql
+    LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 BEGIN
         REFRESH MATERIALIZED VIEW radius.hotspot_group_reply;
@@ -737,6 +552,217 @@ ALTER FUNCTION radius.update_radius() OWNER TO dba;
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: abonents; Type: TABLE; Schema: hotspot; Owner: dba
+--
+
+CREATE TABLE hotspot.abonents (
+    id bigint NOT NULL,
+    username character varying,
+    password character varying DEFAULT (public.uuid_generate_v4())::character varying NOT NULL,
+    phone character varying,
+    time_registred timestamp without time zone DEFAULT now(),
+    time_seen timestamp without time zone DEFAULT now(),
+    group_id integer,
+    profile_id integer
+);
+
+
+ALTER TABLE hotspot.abonents OWNER TO dba;
+
+--
+-- Name: devices; Type: TABLE; Schema: hotspot; Owner: dba
+--
+
+CREATE TABLE hotspot.devices (
+    abonent_id integer,
+    mac macaddr,
+    auth_id integer,
+    time_registred timestamp without time zone DEFAULT now(),
+    time_seen timestamp without time zone DEFAULT now(),
+    useragent character varying,
+    profile_id integer
+);
+
+
+ALTER TABLE hotspot.devices OWNER TO dba;
+
+--
+-- Name: hotspot_devices; Type: VIEW; Schema: api; Owner: dba
+--
+
+CREATE VIEW api.hotspot_devices AS
+ SELECT abonents.username,
+    devices.mac,
+    devices.time_seen,
+    devices.time_registred,
+    abonents.phone,
+    devices.profile_id
+   FROM (hotspot.devices
+     JOIN hotspot.abonents ON ((devices.abonent_id = abonents.id)))
+  WHERE (abonents.group_id = (current_setting('request.jwt.claim.gid'::text))::integer)
+  ORDER BY abonents.time_seen DESC;
+
+
+ALTER TABLE api.hotspot_devices OWNER TO dba;
+
+--
+-- Name: profiles; Type: TABLE; Schema: hotspot; Owner: dba
+--
+
+CREATE TABLE hotspot.profiles (
+    id integer NOT NULL,
+    profile character varying NOT NULL,
+    group_id integer DEFAULT (current_setting('request.jwt.claim.gid'::text, true))::integer NOT NULL,
+    label character varying,
+    auth_types integer[],
+    theme character varying DEFAULT 'default'::character varying,
+    template json DEFAULT '{}'::json NOT NULL,
+    mac_auth boolean DEFAULT true NOT NULL,
+    limit_ports smallint DEFAULT 3,
+    limit_speed integer DEFAULT (5120 * 1024),
+    filter_id character varying,
+    address_list character varying,
+    limit_bytes bigint,
+    redirect_url character varying,
+    billing boolean DEFAULT false NOT NULL,
+    limit_time interval DEFAULT '23:59:59'::interval,
+    ad_url character varying,
+    disabled boolean DEFAULT false NOT NULL,
+    login_button boolean DEFAULT false NOT NULL,
+    registration_timeout interval DEFAULT '1 mon'::interval,
+    shared_check boolean DEFAULT true,
+    CONSTRAINT limit_check CHECK ((((limit_time IS NULL) OR (date_part('epoch'::text, limit_time) > (0)::double precision)) AND ((limit_ports IS NULL) OR (limit_ports > 0)) AND ((limit_bytes IS NULL) OR (limit_bytes > 0)) AND ((limit_speed IS NULL) OR (limit_speed > 0)))),
+    CONSTRAINT profile_check CHECK (((profile)::text ~* '^[A-Za-z][0-9a-zA-z._-]*$'::text))
+);
+
+
+ALTER TABLE hotspot.profiles OWNER TO dba;
+
+--
+-- Name: COLUMN profiles.profile; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.profile IS 'стоит чек на ^[A-Za-z][0-9A-Za-z._-]&';
+
+
+--
+-- Name: COLUMN profiles.limit_speed; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.limit_speed IS 'bit/s';
+
+
+--
+-- Name: COLUMN profiles.limit_bytes; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.limit_bytes IS 'MB';
+
+
+--
+-- Name: COLUMN profiles.redirect_url; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.redirect_url IS 'url';
+
+
+--
+-- Name: COLUMN profiles.billing; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.billing IS 'пока скрой';
+
+
+--
+-- Name: COLUMN profiles.ad_url; Type: COMMENT; Schema: hotspot; Owner: dba
+--
+
+COMMENT ON COLUMN hotspot.profiles.ad_url IS 'url
+';
+
+
+--
+-- Name: accounting; Type: TABLE; Schema: radius; Owner: dba
+--
+
+CREATE TABLE radius.accounting (
+    username character varying,
+    mac macaddr,
+    nas character varying,
+    called character varying,
+    time_start timestamp without time zone DEFAULT now() NOT NULL,
+    time_end timestamp without time zone DEFAULT now(),
+    ip inet,
+    nas_ip inet,
+    upload bigint,
+    download bigint,
+    group_id integer,
+    upload_packets bigint,
+    download_packets bigint,
+    termination_cause integer,
+    uptime interval,
+    location_id uuid,
+    location_name character varying,
+    profile_id integer,
+    session bytea,
+    class uuid,
+    nas_ip_port smallint
+);
+
+
+ALTER TABLE radius.accounting OWNER TO dba;
+
+--
+-- Name: COLUMN accounting.nas; Type: COMMENT; Schema: radius; Owner: dba
+--
+
+COMMENT ON COLUMN radius.accounting.nas IS 'хостнейм наса, для отбора и жойнов используй location_id';
+
+
+--
+-- Name: COLUMN accounting.called; Type: COMMENT; Schema: radius; Owner: dba
+--
+
+COMMENT ON COLUMN radius.accounting.called IS 'чаще всего совпадает с именем профайла, но не на всех насах';
+
+
+--
+-- Name: COLUMN accounting.upload; Type: COMMENT; Schema: radius; Owner: dba
+--
+
+COMMENT ON COLUMN radius.accounting.upload IS 'B';
+
+
+--
+-- Name: accounting; Type: VIEW; Schema: api; Owner: postgres
+--
+
+CREATE VIEW api.accounting AS
+ SELECT hotspot_devices.phone,
+    accounting.mac,
+    accounting.nas,
+    accounting.nas_ip,
+    accounting.called AS called_station_id,
+    min(accounting.time_start) AS time_start,
+    sum(accounting.uptime) AS uptime,
+    max(accounting.time_end) AS time_end,
+    accounting.ip,
+    sum(accounting.download) AS download,
+    sum(accounting.upload) AS upload,
+    profiles.label AS profile,
+    accounting.profile_id,
+    accounting.termination_cause
+   FROM ((radius.accounting
+     JOIN hotspot.profiles ON ((profiles.id = accounting.profile_id)))
+     JOIN api.hotspot_devices ON ((hotspot_devices.mac = accounting.mac)))
+  WHERE (accounting.group_id = (current_setting('request.jwt.claim.gid'::text))::integer)
+  GROUP BY (date_trunc('day'::text, accounting.time_start)), (date_trunc('day'::text, accounting.time_end) + '00:00:01'::interval), hotspot_devices.phone, accounting.mac, accounting.nas, accounting.nas_ip, accounting.called, accounting.ip, profiles.label, accounting.profile_id, accounting.termination_cause
+  ORDER BY (min(accounting.time_start)) DESC, (max(accounting.time_end)) DESC;
+
+
+ALTER TABLE api.accounting OWNER TO postgres;
 
 --
 -- Name: auth_drivers; Type: TABLE; Schema: hotspot; Owner: dba
@@ -864,60 +890,6 @@ CREATE VIEW api.auth_types_list AS
 ALTER TABLE api.auth_types_list OWNER TO dba;
 
 --
--- Name: abonents; Type: TABLE; Schema: hotspot; Owner: dba
---
-
-CREATE TABLE hotspot.abonents (
-    id bigint NOT NULL,
-    username character varying,
-    password character varying DEFAULT (public.uuid_generate_v4())::character varying NOT NULL,
-    phone character varying,
-    time_registred timestamp without time zone DEFAULT now(),
-    time_seen timestamp without time zone DEFAULT now(),
-    group_id integer,
-    profile_id integer
-);
-
-
-ALTER TABLE hotspot.abonents OWNER TO dba;
-
---
--- Name: devices; Type: TABLE; Schema: hotspot; Owner: dba
---
-
-CREATE TABLE hotspot.devices (
-    abonent_id integer,
-    mac macaddr,
-    auth_id integer,
-    time_registred timestamp without time zone DEFAULT now(),
-    time_seen timestamp without time zone DEFAULT now(),
-    useragent character varying,
-    profile_id integer
-);
-
-
-ALTER TABLE hotspot.devices OWNER TO dba;
-
---
--- Name: hotspot_devices; Type: VIEW; Schema: api; Owner: dba
---
-
-CREATE VIEW api.hotspot_devices AS
- SELECT abonents.username,
-    devices.mac,
-    devices.time_seen,
-    devices.time_registred,
-    abonents.phone,
-    devices.profile_id
-   FROM (hotspot.devices
-     JOIN hotspot.abonents ON ((devices.abonent_id = abonents.id)))
-  WHERE (abonents.group_id = (current_setting('request.jwt.claim.gid'::text))::integer)
-  ORDER BY abonents.time_seen DESC;
-
-
-ALTER TABLE api.hotspot_devices OWNER TO dba;
-
---
 -- Name: nases; Type: TABLE; Schema: hotspot; Owner: dba
 --
 
@@ -952,80 +924,6 @@ CREATE VIEW api.hotspot_nases AS
 
 
 ALTER TABLE api.hotspot_nases OWNER TO dba;
-
---
--- Name: profiles; Type: TABLE; Schema: hotspot; Owner: dba
---
-
-CREATE TABLE hotspot.profiles (
-    id integer NOT NULL,
-    profile character varying NOT NULL,
-    group_id integer DEFAULT (current_setting('request.jwt.claim.gid'::text, true))::integer NOT NULL,
-    label character varying,
-    auth_types integer[],
-    theme character varying DEFAULT 'default'::character varying,
-    template json DEFAULT '{}'::json NOT NULL,
-    mac_auth boolean DEFAULT true NOT NULL,
-    limit_ports smallint DEFAULT 3,
-    limit_speed integer DEFAULT (5120 * 1024),
-    filter_id character varying,
-    address_list character varying,
-    limit_bytes bigint,
-    redirect_url character varying,
-    billing boolean DEFAULT false NOT NULL,
-    limit_time interval DEFAULT '23:59:59'::interval,
-    ad_url character varying,
-    disabled boolean DEFAULT false NOT NULL,
-    login_button boolean DEFAULT false NOT NULL,
-    CONSTRAINT limit_check CHECK ((((limit_time IS NULL) OR (date_part('epoch'::text, limit_time) > (0)::double precision)) AND ((limit_ports IS NULL) OR (limit_ports > 0)) AND ((limit_bytes IS NULL) OR (limit_bytes > 0)) AND ((limit_speed IS NULL) OR (limit_speed > 0)))),
-    CONSTRAINT profile_check CHECK (((profile)::text ~* '^[A-Za-z][0-9a-zA-z._-]*$'::text))
-);
-
-
-ALTER TABLE hotspot.profiles OWNER TO dba;
-
---
--- Name: COLUMN profiles.profile; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.profile IS 'стоит чек на ^[A-Za-z][0-9A-Za-z._-]&';
-
-
---
--- Name: COLUMN profiles.limit_speed; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.limit_speed IS 'bit/s';
-
-
---
--- Name: COLUMN profiles.limit_bytes; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.limit_bytes IS 'MB';
-
-
---
--- Name: COLUMN profiles.redirect_url; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.redirect_url IS 'url';
-
-
---
--- Name: COLUMN profiles.billing; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.billing IS 'пока скрой';
-
-
---
--- Name: COLUMN profiles.ad_url; Type: COMMENT; Schema: hotspot; Owner: dba
---
-
-COMMENT ON COLUMN hotspot.profiles.ad_url IS 'url
-';
-
 
 --
 -- Name: hotspot_profiles; Type: VIEW; Schema: api; Owner: dba
@@ -1063,42 +961,84 @@ COMMENT ON COLUMN api.hotspot_profiles.profile IS 'стоит чек на ^[A-Za
 
 
 --
--- Name: users; Type: TABLE; Schema: basic_auth; Owner: postgres
+-- Name: users; Type: TABLE; Schema: common; Owner: postgres
 --
 
-CREATE TABLE basic_auth.users (
+CREATE TABLE common.users (
     id integer NOT NULL,
-    login character varying NOT NULL,
-    pass character varying NOT NULL,
-    role name DEFAULT 'manager'::name NOT NULL,
-    disabled boolean DEFAULT false NOT NULL,
-    full_name character varying,
-    parent_id integer DEFAULT (current_setting('request.jwt.claim.uid'::text, true))::integer NOT NULL,
-    group_id integer DEFAULT 0 NOT NULL,
-    label character varying,
+    login character varying,
+    label character varying DEFAULT 'Пользователь'::character varying,
     email character varying,
-    phone character varying(11) DEFAULT NULL::character varying
+    phone character varying,
+    password character varying,
+    parent integer DEFAULT (current_setting('request.jwt.claim.uid'::text, true))::integer,
+    group_id integer,
+    deleted boolean DEFAULT false NOT NULL,
+    role name DEFAULT 'guest'::name NOT NULL,
+    disabled boolean DEFAULT false NOT NULL,
+    full_name character varying
 );
 
 
-ALTER TABLE basic_auth.users OWNER TO postgres;
+ALTER TABLE common.users OWNER TO postgres;
 
 --
--- Name: users; Type: VIEW; Schema: api; Owner: dba
+-- Name: TABLE users; Type: COMMENT; Schema: common; Owner: postgres
 --
 
-CREATE VIEW api.users AS
+COMMENT ON TABLE common.users IS 'пользователи продукта, админы';
+
+
+--
+-- Name: users_tree; Type: VIEW; Schema: common; Owner: dba
+--
+
+CREATE VIEW common.users_tree AS
+ WITH RECURSIVE r AS (
+         SELECT users.id,
+            users.parent,
+            users.group_id,
+            users.deleted
+           FROM common.users
+          WHERE ((users.parent = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR (users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer))
+        UNION
+         SELECT users.id,
+            users.parent,
+            users.group_id,
+            users.deleted
+           FROM (common.users
+             JOIN r r_1 ON ((users.parent = r_1.id)))
+        )
+ SELECT r.id,
+    r.parent,
+    r.group_id
+   FROM r
+  WHERE (r.deleted = false);
+
+
+ALTER TABLE common.users_tree OWNER TO dba;
+
+--
+-- Name: user_users; Type: VIEW; Schema: api; Owner: dba
+--
+
+CREATE VIEW api.user_users AS
  SELECT users.id,
-    users.login AS email,
-    users.pass,
-    users.role,
+    users.login,
+    users.label,
+    users.email,
+    users.phone,
+    users.parent,
+    users.group_id,
     users.disabled,
+    users.role,
     users.full_name
-   FROM basic_auth.users
-  WHERE ((users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR (users.parent_id = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR ((current_setting('request.jwt.claim.role'::text) = 'super'::text) AND (users.id > 0)));
+   FROM common.users
+  WHERE (users.id IN ( SELECT users_tree.id
+           FROM common.users_tree));
 
 
-ALTER TABLE api.users OWNER TO dba;
+ALTER TABLE api.user_users OWNER TO dba;
 
 --
 -- Name: dashboard; Type: VIEW; Schema: api; Owner: postgres
@@ -1108,11 +1048,11 @@ CREATE VIEW api.dashboard AS
  SELECT ( SELECT count(*) AS count
            FROM api.hotspot_devices) AS client_devices,
     ( SELECT count(*) AS count
-           FROM api.users
-          WHERE (users.role = 'admin'::name)) AS admins,
+           FROM api.user_users
+          WHERE ((user_users.role = 'admin'::name) OR (user_users.role = 'super'::name))) AS admins,
     ( SELECT count(*) AS count
-           FROM api.users
-          WHERE (users.role = 'manager'::name)) AS managers,
+           FROM api.user_users
+          WHERE ((user_users.role = 'manager'::name) OR (user_users.role = 'guest'::name))) AS managers,
     ( SELECT count(*) AS count
            FROM api.hotspot_nases) AS nases,
     ( SELECT count(*) AS count
@@ -1209,37 +1149,6 @@ CREATE VIEW api.roles AS
 ALTER TABLE api.roles OWNER TO postgres;
 
 --
--- Name: settings; Type: TABLE; Schema: db; Owner: postgres
---
-
-CREATE TABLE db.settings (
-    id integer NOT NULL,
-    user_id integer,
-    reg_enable boolean DEFAULT true NOT NULL,
-    reg_users_need_activation boolean DEFAULT false NOT NULL,
-    reg_role character varying DEFAULT 'manager'::character varying,
-    reg_secret character varying DEFAULT to_hex((date_part('epoch'::text, now()))::integer) NOT NULL
-);
-
-
-ALTER TABLE db.settings OWNER TO postgres;
-
---
--- Name: settings; Type: VIEW; Schema: api; Owner: postgres
---
-
-CREATE VIEW api.settings AS
- SELECT settings.reg_enable,
-    settings.reg_users_need_activation,
-    settings.reg_role,
-    settings.reg_secret
-   FROM db.settings
-  WHERE (settings.user_id = (current_setting('request.jwt.claim.uid'::text, true))::integer);
-
-
-ALTER TABLE api.settings OWNER TO postgres;
-
---
 -- Name: stat_cl_devices_cnt_by_month; Type: VIEW; Schema: api; Owner: postgres
 --
 
@@ -1275,35 +1184,6 @@ CREATE VIEW api.stat_cl_devices_regs_cnt_by_month AS
 ALTER TABLE api.stat_cl_devices_regs_cnt_by_month OWNER TO postgres;
 
 --
--- Name: users; Type: TABLE; Schema: common; Owner: postgres
---
-
-CREATE TABLE common.users (
-    id integer NOT NULL,
-    login character varying,
-    label character varying DEFAULT 'Пользователь'::character varying,
-    email character varying,
-    phone character varying,
-    password character varying,
-    parent integer DEFAULT (current_setting('request.jwt.claim.uid'::text, true))::integer,
-    group_id integer,
-    deleted boolean DEFAULT false NOT NULL,
-    role name DEFAULT 'guest'::name NOT NULL,
-    disabled boolean DEFAULT false NOT NULL,
-    full_name character varying
-);
-
-
-ALTER TABLE common.users OWNER TO postgres;
-
---
--- Name: TABLE users; Type: COMMENT; Schema: common; Owner: postgres
---
-
-COMMENT ON TABLE common.users IS 'пользователи продукта, админы';
-
-
---
 -- Name: user_groups; Type: VIEW; Schema: api; Owner: dba
 --
 
@@ -1332,6 +1212,13 @@ CREATE VIEW api.user_profile AS
 ALTER TABLE api.user_profile OWNER TO dba;
 
 --
+-- Name: VIEW user_profile; Type: COMMENT; Schema: api; Owner: dba
+--
+
+COMMENT ON VIEW api.user_profile IS 'для менеджеров и гостей, чтоб указывали только свои данные';
+
+
+--
 -- Name: settings; Type: TABLE; Schema: common; Owner: dba
 --
 
@@ -1341,7 +1228,8 @@ CREATE TABLE common.settings (
     reg_enabled boolean DEFAULT false NOT NULL,
     reg_activation_needed boolean DEFAULT false,
     reg_role name DEFAULT 'guest'::name,
-    reg_secret character varying
+    reg_secret character varying DEFAULT public.uuid_generate_v4(),
+    reg_auth_types integer[] DEFAULT ARRAY[]::integer[] NOT NULL
 );
 
 
@@ -1356,85 +1244,13 @@ CREATE VIEW api.user_settings AS
     settings.reg_enabled,
     settings.reg_activation_needed,
     settings.reg_role,
-    settings.reg_secret
+    settings.reg_secret,
+    settings.reg_auth_types
    FROM common.settings
   WHERE (settings.id = (current_setting('request.jwt.claim.uid'::text, true))::integer);
 
 
 ALTER TABLE api.user_settings OWNER TO dba;
-
---
--- Name: users_tree; Type: VIEW; Schema: common; Owner: dba
---
-
-CREATE VIEW common.users_tree AS
- WITH RECURSIVE r AS (
-         SELECT users.id,
-            users.parent,
-            users.group_id,
-            users.deleted
-           FROM common.users
-          WHERE ((users.parent = (current_setting('request.jwt.claim.uid'::text, true))::integer) OR (users.id = (current_setting('request.jwt.claim.uid'::text, true))::integer))
-        UNION
-         SELECT users.id,
-            users.parent,
-            users.group_id,
-            users.deleted
-           FROM (common.users
-             JOIN r r_1 ON ((users.parent = r_1.id)))
-        )
- SELECT r.id,
-    r.parent,
-    r.group_id
-   FROM r
-  WHERE (r.deleted = false);
-
-
-ALTER TABLE common.users_tree OWNER TO dba;
-
---
--- Name: user_users; Type: VIEW; Schema: api; Owner: dba
---
-
-CREATE VIEW api.user_users AS
- SELECT users.id,
-    users.login,
-    users.label,
-    users.email,
-    users.phone,
-    users.parent,
-    users.group_id,
-    users.disabled,
-    users.role,
-    users.full_name
-   FROM common.users
-  WHERE (users.id IN ( SELECT users_tree.id
-           FROM common.users_tree));
-
-
-ALTER TABLE api.user_users OWNER TO dba;
-
---
--- Name: users_id_seq; Type: SEQUENCE; Schema: basic_auth; Owner: postgres
---
-
-CREATE SEQUENCE basic_auth.users_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE basic_auth.users_id_seq OWNER TO postgres;
-
---
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: basic_auth; Owner: postgres
---
-
-ALTER SEQUENCE basic_auth.users_id_seq OWNED BY basic_auth.users.id;
-
 
 --
 -- Name: token_seq; Type: SEQUENCE; Schema: common; Owner: dba
@@ -1471,28 +1287,6 @@ ALTER TABLE common.users_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE common.users_id_seq OWNED BY common.users.id;
-
-
---
--- Name: settings_id_seq; Type: SEQUENCE; Schema: db; Owner: postgres
---
-
-CREATE SEQUENCE db.settings_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE db.settings_id_seq OWNER TO postgres;
-
---
--- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: db; Owner: postgres
---
-
-ALTER SEQUENCE db.settings_id_seq OWNED BY db.settings.id;
 
 
 --
@@ -1626,36 +1420,6 @@ ALTER SEQUENCE hotspot.profile_id_seq OWNED BY hotspot.profiles.id;
 
 
 --
--- Name: accounting; Type: TABLE; Schema: radius; Owner: dba
---
-
-CREATE TABLE radius.accounting (
-    username character varying,
-    mac macaddr,
-    nas character varying,
-    called character varying,
-    time_start timestamp without time zone DEFAULT now() NOT NULL,
-    time_end timestamp without time zone DEFAULT now(),
-    ip inet,
-    nas_ip inet,
-    upload bigint,
-    download bigint,
-    group_id integer,
-    upload_packets bigint,
-    download_packets bigint,
-    termination_cause integer,
-    uptime interval,
-    location_id uuid,
-    location_name character varying,
-    profile_id integer,
-    session bytea,
-    class uuid
-);
-
-
-ALTER TABLE radius.accounting OWNER TO dba;
-
---
 -- Name: client_id_seq; Type: SEQUENCE; Schema: radius; Owner: dba
 --
 
@@ -1676,6 +1440,33 @@ ALTER TABLE radius.client_id_seq OWNER TO dba;
 
 ALTER SEQUENCE radius.client_id_seq OWNED BY radius.client.id;
 
+
+--
+-- Name: collector; Type: TABLE; Schema: radius; Owner: dba
+--
+
+CREATE UNLOGGED TABLE radius.collector (
+    input smallint NOT NULL,
+    output smallint NOT NULL,
+    pkts integer NOT NULL,
+    octets integer NOT NULL,
+    "time" tsrange NOT NULL,
+    sport smallint NOT NULL,
+    dport smallint NOT NULL,
+    prot smallint NOT NULL,
+    sensor_port smallint NOT NULL,
+    sequence integer NOT NULL,
+    sensor inet NOT NULL,
+    srcaddr inet NOT NULL,
+    dstaddr inet NOT NULL,
+    nexthop inet NOT NULL,
+    srcmac macaddr NOT NULL,
+    dstmac macaddr NOT NULL
+)
+WITH (fillfactor='100', autovacuum_enabled='false');
+
+
+ALTER TABLE radius.collector OWNER TO dba;
 
 --
 -- Name: hotspot_auth_check; Type: VIEW; Schema: radius; Owner: dba
@@ -1766,13 +1557,6 @@ CREATE TABLE web.sessions (
 ALTER TABLE web.sessions OWNER TO dba;
 
 --
--- Name: users id; Type: DEFAULT; Schema: basic_auth; Owner: postgres
---
-
-ALTER TABLE ONLY basic_auth.users ALTER COLUMN id SET DEFAULT nextval('basic_auth.users_id_seq'::regclass);
-
-
---
 -- Name: users id; Type: DEFAULT; Schema: common; Owner: postgres
 --
 
@@ -1784,13 +1568,6 @@ ALTER TABLE ONLY common.users ALTER COLUMN id SET DEFAULT nextval('common.users_
 --
 
 ALTER TABLE ONLY common.users ALTER COLUMN group_id SET DEFAULT currval('common.users_id_seq'::regclass);
-
-
---
--- Name: settings id; Type: DEFAULT; Schema: db; Owner: postgres
---
-
-ALTER TABLE ONLY db.settings ALTER COLUMN id SET DEFAULT nextval('db.settings_id_seq'::regclass);
 
 
 --
@@ -1847,14 +1624,6 @@ ALTER TABLE ONLY hotspot.profiles ALTER COLUMN profile SET DEFAULT (('hotspot'::
 --
 
 ALTER TABLE ONLY radius.client ALTER COLUMN id SET DEFAULT nextval('radius.client_id_seq'::regclass);
-
-
---
--- Name: users email_un; Type: CONSTRAINT; Schema: basic_auth; Owner: postgres
---
-
-ALTER TABLE ONLY basic_auth.users
-    ADD CONSTRAINT email_un UNIQUE (login);
 
 
 --
@@ -1918,7 +1687,7 @@ ALTER TABLE ONLY hotspot.auth_types
 --
 
 ALTER TABLE ONLY hotspot.devices
-    ADD CONSTRAINT devices_pk UNIQUE (abonent_id, mac);
+    ADD CONSTRAINT devices_pk UNIQUE (abonent_id, mac, profile_id);
 
 
 --
@@ -1994,6 +1763,13 @@ ALTER TABLE ONLY web.sessions
 
 
 --
+-- Name: settings_reg_secret_uindex; Type: INDEX; Schema: common; Owner: dba
+--
+
+CREATE UNIQUE INDEX settings_reg_secret_uindex ON common.settings USING btree (reg_secret);
+
+
+--
 -- Name: users_login_uindex; Type: INDEX; Schema: common; Owner: postgres
 --
 
@@ -2036,13 +1812,6 @@ CREATE INDEX auth_types_type_index ON hotspot.auth_types USING btree (driver);
 
 
 --
--- Name: accounting_end_index; Type: INDEX; Schema: radius; Owner: dba
---
-
-CREATE INDEX accounting_end_index ON radius.accounting USING btree (time_end);
-
-
---
 -- Name: accounting_group_index; Type: INDEX; Schema: radius; Owner: dba
 --
 
@@ -2057,10 +1826,10 @@ CREATE INDEX accounting_nas_index ON radius.accounting USING btree (nas);
 
 
 --
--- Name: accounting_start_index; Type: INDEX; Schema: radius; Owner: dba
+-- Name: accounting_time_index; Type: INDEX; Schema: radius; Owner: dba
 --
 
-CREATE INDEX accounting_start_index ON radius.accounting USING btree (time_start);
+CREATE INDEX accounting_time_index ON radius.accounting USING brin (time_start, time_end);
 
 
 --
@@ -2071,38 +1840,10 @@ CREATE INDEX accounting_username_termination_cause_index ON radius.accounting US
 
 
 --
--- Name: users append_columns; Type: TRIGGER; Schema: basic_auth; Owner: postgres
+-- Name: collector_time_index; Type: INDEX; Schema: radius; Owner: dba
 --
 
-CREATE TRIGGER append_columns AFTER INSERT ON basic_auth.users FOR EACH ROW EXECUTE PROCEDURE basic_auth.users_append_columns();
-
-
---
--- Name: users encrypt_pass; Type: TRIGGER; Schema: basic_auth; Owner: postgres
---
-
-CREATE TRIGGER encrypt_pass BEFORE INSERT OR UPDATE ON basic_auth.users FOR EACH ROW EXECUTE PROCEDURE basic_auth.encrypt_pass();
-
-
---
--- Name: users ensure_user_role_exists; Type: TRIGGER; Schema: basic_auth; Owner: postgres
---
-
-CREATE CONSTRAINT TRIGGER ensure_user_role_exists AFTER INSERT OR UPDATE ON basic_auth.users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE basic_auth.check_role_exists();
-
-
---
--- Name: users init_settings; Type: TRIGGER; Schema: basic_auth; Owner: postgres
---
-
-CREATE TRIGGER init_settings AFTER INSERT ON basic_auth.users FOR EACH ROW EXECUTE PROCEDURE db.init_settings();
-
-
---
--- Name: users security_check; Type: TRIGGER; Schema: basic_auth; Owner: postgres
---
-
-CREATE TRIGGER security_check BEFORE INSERT OR UPDATE ON basic_auth.users FOR EACH ROW EXECUTE PROCEDURE basic_auth.security_check();
+CREATE INDEX collector_time_index ON radius.collector USING brin ("time");
 
 
 --
@@ -2117,6 +1858,13 @@ CREATE TRIGGER encrypt_pass BEFORE INSERT OR UPDATE ON common.users FOR EACH ROW
 --
 
 CREATE TRIGGER label BEFORE INSERT ON common.users FOR EACH ROW EXECUTE PROCEDURE common.user_label();
+
+
+--
+-- Name: users security_check; Type: TRIGGER; Schema: common; Owner: postgres
+--
+
+CREATE TRIGGER security_check BEFORE INSERT OR UPDATE ON common.users FOR EACH ROW EXECUTE PROCEDURE common.security_check();
 
 
 --
@@ -2138,6 +1886,14 @@ CREATE TRIGGER update_radius AFTER INSERT OR DELETE OR UPDATE ON hotspot.profile
 --
 
 CREATE TRIGGER update_accounting BEFORE INSERT OR UPDATE ON radius.accounting FOR EACH ROW EXECUTE PROCEDURE radius.update_accounting();
+
+
+--
+-- Name: settings settings_users_id_fk; Type: FK CONSTRAINT; Schema: common; Owner: dba
+--
+
+ALTER TABLE ONLY common.settings
+    ADD CONSTRAINT settings_users_id_fk FOREIGN KEY (id) REFERENCES common.users(id);
 
 
 --
@@ -2181,13 +1937,6 @@ ALTER TABLE ONLY hotspot.profiles
 
 
 --
--- Name: users su_all; Type: POLICY; Schema: basic_auth; Owner: postgres
---
-
-CREATE POLICY su_all ON basic_auth.users TO super USING (true) WITH CHECK (true);
-
-
---
 -- Name: DATABASE spot6; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -2207,16 +1956,6 @@ GRANT ALL ON SCHEMA api TO dba;
 
 
 --
--- Name: SCHEMA basic_auth; Type: ACL; Schema: -; Owner: postgres
---
-
-GRANT USAGE ON SCHEMA basic_auth TO web_anon;
-GRANT USAGE ON SCHEMA basic_auth TO manager;
-GRANT USAGE ON SCHEMA basic_auth TO admin;
-GRANT USAGE ON SCHEMA basic_auth TO super;
-
-
---
 -- Name: SCHEMA common; Type: ACL; Schema: -; Owner: dba
 --
 
@@ -2224,13 +1963,6 @@ GRANT ALL ON SCHEMA common TO postgres;
 GRANT USAGE ON SCHEMA common TO admin;
 GRANT USAGE ON SCHEMA common TO super;
 GRANT USAGE ON SCHEMA common TO manager;
-
-
---
--- Name: SCHEMA db; Type: ACL; Schema: -; Owner: postgres
---
-
-GRANT USAGE ON SCHEMA db TO super;
 
 
 --
@@ -2277,13 +2009,36 @@ GRANT ALL ON FUNCTION api.refresh() TO guest;
 
 
 --
--- Name: FUNCTION "user"(OUT profile record, OUT role character varying); Type: ACL; Schema: api; Owner: dba
+-- Name: TABLE hotspot_devices; Type: ACL; Schema: api; Owner: dba
 --
 
-GRANT ALL ON FUNCTION api."user"(OUT profile record, OUT role character varying) TO super;
-GRANT ALL ON FUNCTION api."user"(OUT profile record, OUT role character varying) TO admin;
-GRANT ALL ON FUNCTION api."user"(OUT profile record, OUT role character varying) TO manager;
-GRANT ALL ON FUNCTION api."user"(OUT profile record, OUT role character varying) TO guest;
+GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO super;
+GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO admin;
+GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO manager;
+GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO guest;
+
+
+--
+-- Name: TABLE profiles; Type: ACL; Schema: hotspot; Owner: dba
+--
+
+GRANT SELECT,REFERENCES ON TABLE hotspot.profiles TO radius;
+
+
+--
+-- Name: TABLE accounting; Type: ACL; Schema: radius; Owner: dba
+--
+
+GRANT SELECT,INSERT,REFERENCES,UPDATE ON TABLE radius.accounting TO radius;
+
+
+--
+-- Name: TABLE accounting; Type: ACL; Schema: api; Owner: postgres
+--
+
+GRANT SELECT ON TABLE api.accounting TO super;
+GRANT SELECT ON TABLE api.accounting TO admin;
+GRANT SELECT ON TABLE api.accounting TO manager;
 
 
 --
@@ -2315,16 +2070,6 @@ GRANT SELECT,REFERENCES ON TABLE api.auth_types_list TO guest;
 
 
 --
--- Name: TABLE hotspot_devices; Type: ACL; Schema: api; Owner: dba
---
-
-GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO super;
-GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO admin;
-GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO manager;
-GRANT SELECT,REFERENCES ON TABLE api.hotspot_devices TO guest;
-
-
---
 -- Name: TABLE hotspot_nases; Type: ACL; Schema: api; Owner: dba
 --
 
@@ -2332,13 +2077,6 @@ GRANT SELECT,INSERT,REFERENCES,UPDATE ON TABLE api.hotspot_nases TO super;
 GRANT SELECT,INSERT,REFERENCES,UPDATE ON TABLE api.hotspot_nases TO admin;
 GRANT SELECT,INSERT,REFERENCES,UPDATE ON TABLE api.hotspot_nases TO manager;
 GRANT SELECT,REFERENCES ON TABLE api.hotspot_nases TO guest;
-
-
---
--- Name: TABLE profiles; Type: ACL; Schema: hotspot; Owner: dba
---
-
-GRANT SELECT,REFERENCES ON TABLE hotspot.profiles TO radius;
 
 
 --
@@ -2352,23 +2090,13 @@ GRANT SELECT,REFERENCES ON TABLE api.hotspot_profiles TO guest;
 
 
 --
--- Name: TABLE users; Type: ACL; Schema: basic_auth; Owner: postgres
+-- Name: TABLE user_users; Type: ACL; Schema: api; Owner: dba
 --
 
-GRANT SELECT ON TABLE basic_auth.users TO web_anon;
-GRANT SELECT ON TABLE basic_auth.users TO admin;
-GRANT SELECT ON TABLE basic_auth.users TO manager;
-GRANT SELECT,INSERT,UPDATE ON TABLE basic_auth.users TO super;
-
-
---
--- Name: TABLE users; Type: ACL; Schema: api; Owner: dba
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.users TO admin;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.users TO super;
-GRANT SELECT ON TABLE api.users TO manager;
-GRANT SELECT ON TABLE api.users TO guest;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.user_users TO super;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.user_users TO admin;
+GRANT SELECT ON TABLE api.user_users TO manager;
+GRANT SELECT ON TABLE api.user_users TO guest;
 
 
 --
@@ -2420,20 +2148,6 @@ GRANT SELECT ON TABLE api.roles TO super;
 
 
 --
--- Name: TABLE settings; Type: ACL; Schema: db; Owner: postgres
---
-
-GRANT INSERT ON TABLE db.settings TO super;
-
-
---
--- Name: TABLE settings; Type: ACL; Schema: api; Owner: postgres
---
-
-GRANT SELECT,UPDATE ON TABLE api.settings TO super;
-
-
---
 -- Name: TABLE stat_cl_devices_cnt_by_month; Type: ACL; Schema: api; Owner: postgres
 --
 
@@ -2473,29 +2187,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.user_profile TO guest;
 -- Name: TABLE user_settings; Type: ACL; Schema: api; Owner: dba
 --
 
-GRANT SELECT,INSERT,UPDATE ON TABLE api.user_settings TO web_anon;
 GRANT SELECT,INSERT,UPDATE ON TABLE api.user_settings TO super;
 GRANT SELECT,INSERT,UPDATE ON TABLE api.user_settings TO admin;
 GRANT SELECT,INSERT,UPDATE ON TABLE api.user_settings TO manager;
 GRANT SELECT,INSERT,UPDATE ON TABLE api.user_settings TO guest;
-
-
---
--- Name: TABLE user_users; Type: ACL; Schema: api; Owner: dba
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.user_users TO super;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.user_users TO admin;
-GRANT SELECT ON TABLE api.user_users TO manager;
-GRANT SELECT ON TABLE api.user_users TO guest;
-
-
---
--- Name: SEQUENCE users_id_seq; Type: ACL; Schema: basic_auth; Owner: postgres
---
-
-GRANT USAGE ON SEQUENCE basic_auth.users_id_seq TO super;
-GRANT USAGE ON SEQUENCE basic_auth.users_id_seq TO admin;
 
 
 --
@@ -2504,13 +2199,6 @@ GRANT USAGE ON SEQUENCE basic_auth.users_id_seq TO admin;
 
 GRANT SELECT,USAGE ON SEQUENCE common.users_id_seq TO admin;
 GRANT SELECT,USAGE ON SEQUENCE common.users_id_seq TO super;
-
-
---
--- Name: SEQUENCE settings_id_seq; Type: ACL; Schema: db; Owner: postgres
---
-
-GRANT USAGE ON SEQUENCE db.settings_id_seq TO super;
 
 
 --
@@ -2523,10 +2211,10 @@ GRANT USAGE ON SEQUENCE hotspot.profile_id_seq TO manager;
 
 
 --
--- Name: TABLE accounting; Type: ACL; Schema: radius; Owner: dba
+-- Name: TABLE collector; Type: ACL; Schema: radius; Owner: dba
 --
 
-GRANT SELECT,INSERT,REFERENCES,UPDATE ON TABLE radius.accounting TO radius;
+GRANT INSERT ON TABLE radius.collector TO radius;
 
 
 --
