@@ -7,13 +7,6 @@
     margin-left: $toolbar-margin-left;
   }
 
-  @include toolbar-colors('bg-danger', $brand-danger);
-  @include toolbar-colors('bg-warning', $brand-warning);
-  @include toolbar-colors('bg-primary', $brand-primary);
-  @include toolbar-colors('bg-info', $brand-info);
-  @include toolbar-colors('bg-success', $brand-success);
-  @include toolbar-colors('bg-default', $gray-light);
-
   &[class*="bg-"] {
     .v-toolbar__title,
     .v-btn__content,

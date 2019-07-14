@@ -13,7 +13,6 @@
         <v-btn
           v-if="responsive"
           class="default v-btn--simple"
-          dark
           icon
           @click.stop="onClickBtn"
         >

@@ -1,6 +1,3 @@
-.theme--light.application {
-  background: $body-color;
-}
 
 a {
   text-transform: none;
@@ -15,9 +12,6 @@ html {
   font-size: $font-size-general;
 }
 
-.theme--light.v-icon {
-  color: $gray-light;
-}
 
 blockquote {
   display: block;
@@ -47,8 +41,3 @@ strong {
   height: auto;
 }
 
-@include drawer-active-colors('primary', $brand-primary);
-@include drawer-active-colors('success', $brand-success);
-@include drawer-active-colors('danger', $brand-danger);
-@include drawer-active-colors('info', $brand-info);
-@include drawer-active-colors('warning', $brand-warning);

@@ -9,11 +9,11 @@
     mobile-break-point="991"
     width="260"
   >
-    <v-img
+    <!--v-img
       :src="image"
       :gradient="sidebarOverlayGradiant"
       height="100%"
-    >
+    -->
       <v-layout
         class="fill-height"
         tag="v-list"
@@ -32,7 +32,7 @@
         <v-divider/>
 
         <v-list-tile v-if="responsive">
-          <v-text-field class="purple-input search-input" label="Search..." color="purple" />
+          <v-text-field class="purple-input search-input" label="Search..." color="primary" />
         </v-list-tile>
         
         <v-list-tile
@@ -51,7 +51,7 @@
         
 
       </v-layout>
-    </v-img>
+    <!--/v-img-->
   </v-navigation-drawer>
 </template>
 
@@ -66,7 +66,7 @@ export default {
     logo: '/img/ramode_logo.gif',
     responsive: false,
     image: "/img/sidebar-3.3a54f533.jpg",
-    color: "success",
+    color: "primary",
   }),
   computed: {
     // ...mapState('app', ['image', 'color']),
