@@ -158,6 +158,10 @@ export default {
 		return axios.get('/stat_cl_devices_regs_cnt_by_month', config);
 	},
 
+	getStatMonthTrafic() {
+		return axios.get('/stat_month_trafic');
+	},
+
 	getNases() {
 		return axios.get('/hotspot_nases')
 	},

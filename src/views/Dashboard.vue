@@ -11,23 +11,36 @@
           type="Bar"
         >
           <h4 class="title font-weight-light">{{ $t('Dashboard.cldev_per_month') }}</h4>
-          <p class="category d-inline-flex font-weight-light">Last Campaign Performance</p>
+          <!-- <p class="category d-inline-flex font-weight-light">Last Campaign Performance</p> -->
 
-          <template slot="actions">
+          <!-- <template slot="actions">
             <v-icon class="mr-2" small>
               mdi-clock-outline
             </v-icon>
             <span class="caption grey--text font-weight-light">updated 10 minutes ago</span>
-          </template>
+          </template> -->
         </material-chart-card>
       </v-flex>
 
       <v-flex sm12 md12 lg6>
-        Здесь будет.. .Что... График траффика?
 
-4 года думал - хз что тут нужно ещё)
+        <material-chart-card
+          :data="trafficInLastMonth.data"
+          :options="trafficInLastMonth.options"
+          :responsive-options="trafficInLastMonth.responsiveOptions"
+          color="red"
+          type="Line"
+        >
+          <h4 class="title font-weight-light">{{ $t('Dashboard.month_trafic') }}, Gb</h4>
+          <!-- <p class="category d-inline-flex font-weight-light">Last Campaign Performance</p> -->
 
-добавь пользователей за месяц, за сегодня, пользователей онлайн (по аккаунтингу)
+          <!-- <template slot="actions">
+            <v-icon class="mr-2" small>
+              mdi-clock-outline
+            </v-icon>
+            <span class="caption grey--text font-weight-light">updated 10 minutes ago</span>
+          </template> -->
+        </material-chart-card>
 
       </v-flex>
 
@@ -163,44 +176,30 @@
         }, // clientDevicesCntByMonth {}
 
 
-        // clientDevicesRegsCntByMonth: {
+        trafficInLastMonth: {
 
-        //   data: {
-        //     labels: [],
-        //     series: [
-        //       []
-        //     ]
-        //   },
+          data: {
+            labels: [],
+            series: [
+              [], []
+            ]
+            // series: [
+            //   {
+            //     name: "download",
+            //     data: [] // {x: new Date(143134652600), y: 53},
+            //   },
+            //   {
+            //     name: "upload",
+            //     data: [] // {x: new Date(143134652600), y: 53},
+            //   },
+            // ]
+          },
        
-        //   options: {
-        //     axisX: {
-        //       showGrid: false
-        //     },
-        //     low: 0,
-        //     // high: 1000,
-        //     chartPadding: {
-        //       top: 0,
-        //       right: 5,
-        //       bottom: 0,
-        //       left: 0
-        //     }
-        //   },
-        
-        //   responsiveOptions: [
-        //     [
-        //       // 'screen and (max-width: 640px)',
-        //       {
-        //         seriesBarDistance: 5,
-        //         axisX: {
-        //           labelInterpolationFnc: function (value) {
-        //             return value[0]
-        //           }
-        //         }
-        //       }
-        //     ]
-        //   ]
+          options: {
+            showArea: true,
+          },
 
-        // }, // clientDevicesCntByMonth {}
+        }
 
       }
     },
@@ -264,6 +263,42 @@
           err => this.$store.commit("error", err)
         );
 
+        API.getStatMonthTrafic().then(
+          res => {
+            console.log(res);
+            res.data.forEach((item, i) => {
+              // this.trafficInLastMonth.data.labels.unshift( this.$moment(item.day).format("D MMM") ); // "2019-06-16T00:00:00"
+              // this.trafficInLastMonth.data.labels.unshift( this.$moment(item.day).format("D") );
+
+              // Чтобы по-реже сделать подписи по оси X, а то перекрываются
+              var x_value = this.$moment(item.day).format("D");
+              if ( ["1", "10", "20"].includes(x_value) ) {
+                x_value = this.$moment(item.day).format("D MMM");
+              } else {
+                x_value = null;
+              };
+              this.trafficInLastMonth.data.labels.push( x_value );
+
+              this.trafficInLastMonth.data.series[0].push( Math.floor(item.download/1073741824) );
+              this.trafficInLastMonth.data.series[1].push( Math.floor(item.upload/1073741824) );
+
+              // this.trafficInLastMonth.data.series[0].unshift( Math.round( Math.floor(item.download/1048579) * 100 ) / 100 );
+              // this.trafficInLastMonth.data.series[1].unshift( Math.round( Math.floor(item.upload/1048579) * 100 ) / 100 );
+              
+              // this.trafficInLastMonth.data.series[0].data.unshift({
+              //   x: new Date(item.day),
+              //   y: Math.floor(item.download/1048579) 
+              // });
+              // this.trafficInLastMonth.data.series[1].data.unshift({
+              //   x: new Date(item.day),
+              //   y: Math.floor(item.upload/1048579) 
+              // });
+
+            })
+          },
+          err => this.$store.commit("error", err)
+        )
+
       },
 
       test_notify() {
@@ -281,6 +316,20 @@
   .ct-series-b .ct-bar {
     /* Colour of your bars */
     stroke: #FFC107; /* amber */
+  }
+
+  .ct-series-a .ct-point {
+    /* Size of your points */
+    stroke-width: 2px;
+    /* Make your points appear as squares */
+    stroke-linecap: square;
+  }
+
+  .ct-series-b .ct-point {
+    /* Size of your points */
+    stroke-width: 2px;
+    /* Make your points appear as squares */
+    stroke-linecap: square;
   }
 
 </style>
