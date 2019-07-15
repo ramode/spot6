@@ -80,7 +80,7 @@
           { text: this.$t("Nases.nas_ident"), value: 'ident', sortable: false, },
           // { text: this.$t("Nases.nas_location_id"), value: 'location_id', sortable: false, },
           // { text: this.$t("Nases.nas_location_name"), value: 'location_name', sortable: false, },
-          {}
+          { value: null }
         ];
       },
 

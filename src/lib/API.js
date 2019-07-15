@@ -179,11 +179,26 @@ export default {
 		return axios.patch(`/hotspot_nases?id=eq.${nas_id}`, data);
 	},
 
+	// getAccounting(start_date, end_date) {
+	// 	return axios.get(`/accounting?and=(
+	// 		time_end.gte.${start_date},
+	// 		time_end.lte.${end_date}
+	// 	)`);
+	// },
+
 	getAccounting(start_date, end_date) {
-		return axios.get(`/accounting?and=(
-			time_end.gte.${start_date},
-			time_end.lte.${end_date}
-		)`);
+		return axios.get(`/accounting?
+			or=(
+				and(
+					time_start.gte.${start_date},
+					time_start.lte.${end_date}
+				),
+				and(
+					time_end.gte.${start_date},
+					time_end.lte.${end_date}
+				)
+			)
+		`);
 	},
 
 }

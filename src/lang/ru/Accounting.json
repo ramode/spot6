@@ -1,6 +1,6 @@
 {
 	"title":			"Аккаунтинг",
-	"small_text":		"The RADIUS server also collects a variety of information sent by the NAS that can be used for accounting and for reporting on network activity",
+	"small_text":		"Собранные сведения (учётные данные) об использованных ресурсах",
 	"start_date":		"От",
 	"end_date":			"До",
 	"client":			"Клиент",

@@ -137,7 +137,7 @@
         if ( ! this.v_add ) {
           API.getMyAuthType(this.$route.params.id).then(
             res => {
-              console.log(res);
+              // console.log(res);
               this.form = res.data[0];
             },
             err => this.$store.commit("error", err)

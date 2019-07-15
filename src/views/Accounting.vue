@@ -60,10 +60,11 @@
                 class="subheading text-info text--darken-3" v-text="header.text" />
             </template>
             
-            <template slot="items" slot-scope="{ index, item }">
+            <template slot="items" slot-scope="{ index, item }" selected="true">
               <!-- <td>{{ index + 1 }}</td> -->
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
+              <td><v-icon v-if="item.termination_cause == null">mdi-lan-connect</v-icon></td>
               <!-- <td>{{ item.nas }} / {{ item.ip }} / {{ item.called_station_id }}</td> -->
               <td>{{ [ item.nas, item.nas_ip, item.called_station_id ].join(' / ')}}</td>
               <td>{{ item.time_start | moment("YYYY-MM-DD, HH:MM") }}</td>
@@ -125,6 +126,10 @@
             sortable: false,
             text: this.$t('Accounting.mac'),
             value: 'mac'
+          },
+          {
+            sortable: false,
+            value: null
           },
           {
             sortable: false,
