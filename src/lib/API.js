@@ -72,7 +72,12 @@ export default {
 		return axios.get('/auth_types');
 	},
 
+	getMyAuthType(auth_type_id) {
+		return axios.get(`/auth_types?id=eq.${auth_type_id}`);
+	},
+
 	addAuthType(data) {
+		delete data.id;
 		return axios.post('/auth_types', data);
 	},
 

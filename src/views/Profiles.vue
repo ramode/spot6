@@ -46,23 +46,22 @@
 
         </material-card>
 
-<v-fab-transition>
+    <v-fab-transition>
       <v-btn
-
-
         dark
         fab
         fixed
         bottom
         right
         color="primary"
-:to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)"
+        :to='{ name: "profile_add" }'
+        v-if="['super', 'admin','manager'].includes($auth.user().role)"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-fab-transition>
 
-        <v-btn color="primary" class="right" :to='{ name: "profile_add" }' v-if="['super', 'admin'].includes($auth.user().role)">Add</v-btn>
+
 
       </v-flex>
     </v-layout>
@@ -96,7 +95,7 @@
           { text: this.$t("DB.limit_time"), value: 'limit_time', sortable: false, },
           { text: this.$t("DB.limit_speed"), value: 'limit_speed', sortable: false, },
           { text: this.$t("DB.auth_types"), value: 'auth_types', sortable: false, },
-          {}
+          { value: null }
         ];
       },
 
@@ -120,11 +119,12 @@
             // Не делал JOIN на серваке, чтобы можно было UDPATE'ить VIEW'ху
             API.getProfiles().then(
               res => {
-                   this.items = res.data
+                // console.log(res);
+                this.items = res.data;
 //                res.data.forEach((item, i) => {
 //                  this.items.push(item);
 //                });
-                this.loading += 50
+                this.loading += 50;
               },
               err => this.$store.commit("error", err)
             );

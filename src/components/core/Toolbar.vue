@@ -18,7 +18,8 @@
         >
           <v-icon>mdi-view-list</v-icon>
         </v-btn>
-        {{ title }}
+        <!-- {{ title }} -->
+        Серебрянный Город
       </v-toolbar-title>
     </div>
 
@@ -152,6 +153,9 @@ export default {
   mounted () {
     this.onResponsiveInverted()
     window.addEventListener('resize', this.onResponsiveInverted)
+
+    this.changeLocale(localStorage.getItem('lang') || 'ru')
+
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.onResponsiveInverted)
@@ -189,6 +193,8 @@ export default {
       // console.log(lang);
       this.$i18n.locale = lang;
       this.$moment.locale(lang);
+      this.$vuetify.lang.current = lang;
+      localStorage.setItem('lang', lang)
     },
 
   }
@@ -196,7 +202,5 @@ export default {
 </script>
 
 <style>
-  #core-toolbar a {
-    text-decoration: none;
-  }
+
 </style>

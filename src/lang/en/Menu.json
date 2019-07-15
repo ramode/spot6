@@ -5,5 +5,6 @@
 	"nases":			"Nases",
 	"client_devices":	"Client Devices",
 	"settings":			"Settings",
-	"accounting":		"Accounting"
+	"accounting":		"Accounting",
+	"auth_types":		"Auth Types"
 }

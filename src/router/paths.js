@@ -119,6 +119,37 @@ export default [
   },
 
   {
+    path: '/auth_types',
+    view: 'AuthTypes',
+    name: 'auth_types',
+    meta: {
+      auth: {
+        roles: ['super', 'admin'],
+      }
+    },
+  },
+  {
+    path: '/auth_types/add',
+    view: 'AuthTypesMod',
+    name: 'auth_types_add',
+    meta: {
+      auth: {
+        roles: ['super', 'admin'],
+      }
+    },
+  },
+  {
+    path: '/auth_types/:id',
+    view: 'AuthTypesMod',
+    name: 'auth_types_edit',
+    meta: {
+      auth: {
+        roles: ['super', 'admin'],
+      }
+    },
+  },
+
+  {
     path: '/client_devices',
     view: 'ClientDevices',
     name: 'client_devices',

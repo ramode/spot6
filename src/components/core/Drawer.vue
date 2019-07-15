@@ -65,7 +65,7 @@ export default {
     // logo: '/img/vuetifylogo.png',
     logo: '/img/ramode_logo.gif',
     responsive: false,
-    image: "/img/sidebar-3.3a54f533.jpg",
+    // image: "/img/sidebar-3.3a54f533.jpg",
     color: "primary",
   }),
   computed: {
@@ -107,6 +107,12 @@ export default {
         icon: 'receipt',
         text: this.$t('Menu.profiles'),
         roles: ["super", "admin", "manager"],
+      },
+      {
+        to: { name: "auth_types" },
+        icon: 'mdi-credit-card-wireless',
+        text: this.$t('Menu.auth_types'),
+        roles: ["super", "admin"],
       },
       {
         to: { name: "nases" },

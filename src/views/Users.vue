@@ -27,14 +27,14 @@
                 </v-tooltip-->
 
                 <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'user_edit', params: {id: item.id}}">
+                  <v-btn slot="activator" icon :to="{name: 'user_edit', params: {id: item.id}}">
                     <v-icon color="primary">mdi-pencil</v-icon>
                   </v-btn>
                   <span>Edit</span>
                 </v-tooltip>
 
                 <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon @click="change_item(item)">
+                  <v-btn slot="activator" icon @click="change_item(item)">
                     <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
                   </v-btn>
                   <span>Disable</span>
@@ -46,7 +46,22 @@
           </v-data-table>
         </material-card>
 
-        <v-btn color="primary" class="right" :to='{ name: "user_add" }'>Add User</v-btn>
+    <v-fab-transition>
+      <v-btn
+        dark
+        fab
+        fixed
+        bottom
+        right
+        color="primary"
+        :to='{ name: "user_add" }'
+        v-if="['super', 'admin'].includes($auth.user().role)"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
+
 
       </v-flex>
     </v-layout>

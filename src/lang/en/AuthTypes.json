@@ -1,0 +1,7 @@
+{
+	"title":			"Auth Types",
+	"title_add":		"Add authentication type",
+	"title_small":		"Authhentication types for your profiles",
+	"label":			"Name",
+	"driver":			"Driver"
+}

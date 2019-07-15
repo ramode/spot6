@@ -38,7 +38,20 @@
           </v-data-table>
         </material-card>
 
-        <v-btn color="primary" class="right" :to='{ name: "nas_add" }'>{{ $t('Common.add') }}</v-btn>
+    <v-fab-transition>
+      <v-btn
+        dark
+        fab
+        fixed
+        bottom
+        right
+        color="primary"
+        :to='{ name: "nas_add" }'
+        v-if="['super', 'admin','manager'].includes($auth.user().role)"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
 
       </v-flex>
     </v-layout>

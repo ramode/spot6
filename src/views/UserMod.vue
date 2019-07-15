@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
         
-        <material-card color="green" :title="'Edit User: '+form.label" text="Complete your profile">
+        <material-card color="green" :title="v_edit ? 'Edit User: '+form.label : 'New user'" text="Complete your profile">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
@@ -125,6 +125,8 @@
      
       load() {
 
+          console.log(this.$route.params)
+
           API.getRoles().then(
             res => {
               // console.log(res);
@@ -144,14 +146,13 @@
               res.data.forEach((item, i) => {
                   this.groups.push(item);
               });
-
             },
             // err => console.log(err)
             err => this.$store.commit("error", err)
           );
 
           // For EDIT action:
-          if ( this.$route.params.id ) {
+          if ( !isNaN(this.$route.params.id )) {
             this.v_edit = true
           };
 

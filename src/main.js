@@ -1,3 +1,7 @@
+// for old browsers support
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 // https://vuetifyjs.com/en/framework/icons
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
