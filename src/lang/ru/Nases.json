@@ -7,5 +7,5 @@
 	"nas_location_id":		"RADIUS Location ID",
 	"nas_location_name":	"RADIUS Location Name",
 	"edit_nas":				"Редактирование NAS'а",
-	"edit_nas_small":		"edit_nas_small"
+	"edit_nas_small":		"Настрока параметров вашего устройства доступа"
 }

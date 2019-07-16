@@ -13,5 +13,6 @@
 	"auth_type_key1":				"Открытый ключ",
 	"auth_type_key2":				"Закрытый ключ",
 	"web_hook":						"Web Hook",
-	"auth_type_button_title":		"Надпись на кнопке"
+	"auth_type_button_title":		"Надпись на кнопке",
+	"session_time":					"Время web-сессии пользователей в админке (JWT exp)"
 }

@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex xs12 md12 xl8>
         
-        <material-card color="green" :title="v_edit ? 'Edit User: '+form.label : 'New user'" text="Complete your profile">
+        <material-card color="green" :title="v_edit ? $t('Users.title_edit') + ': ' + form.label : $t('Users.title_add')" :text="$t('Users.title_small_mod')">
           <v-form ref="form" v-model="valid">
             <v-container py-0>
               
@@ -11,52 +11,52 @@
 
 
                 <v-flex xs12 md4>
-                  <v-text-field label="Label" class="purple-input" v-model="form.label" :rules="labelRules" required />
+                  <v-text-field :label="$t('Users.label')" class="purple-input" v-model="form.label" :rules="labelRules" required />
                 </v-flex>                
 
                 <v-flex xs12 md4>
-                  <v-text-field label="Username" class="purple-input" v-model="form.login" :rules="identRules" required />
+                  <v-text-field :label="$t('Users.login')" class="purple-input" v-model="form.login" :rules="identRules" required />
                 </v-flex>
 
                 <v-flex xs12 md4>
-                  <v-text-field label="Password" class="purple-input" v-model="password.pass1"/>
+                  <v-text-field :label="$t('Users.pass')" class="purple-input" v-model="password.pass1"/>
                 </v-flex>
 
                 <v-flex xs12 md4>
-                  <v-text-field label="Repeat password" class="purple-input" v-model="password.pass2" :rules="pass2Rules"/>
+                  <v-text-field :label="$t('Users.pass_repeat')" class="purple-input" v-model="password.pass2" :rules="pass2Rules"/>
                 </v-flex>
 
                 <v-flex xs12 md8>
-                  <v-text-field label="Full Name" class="purple-input" v-model="form.full_name" />
+                  <v-text-field :label="$t('Users.full_name')" class="purple-input" v-model="form.full_name" />
                 </v-flex>
 
                 <v-flex xs12 md4>
-                  <v-text-field label="E-Mail" class="purple-input" v-model="form.email" :rules="emailRules"/>
+                  <v-text-field :label="$t('Users.email')" class="purple-input" v-model="form.email" :rules="emailRules"/>
                 </v-flex>
                 
                 <v-flex xs12 md4>
-                  <v-text-field label="Phone" class="purple-input" v-model="form.phone" />
+                  <v-text-field :label="$t('Users.phone')" class="purple-input" v-model="form.phone" />
                 </v-flex>
                 
 
                 <v-flex xs12 md6>
-                  <v-checkbox v-model="form.disabled" label="Disabled"></v-checkbox>
+                  <v-checkbox v-model="form.disabled" :label="$t('Form.disabled')"></v-checkbox>
                 </v-flex>
 
                 <!-- <v-flex xs12 md6 v-if="$auth.user().role === 'su'"> -->
                 <v-flex xs12 md6 v-if="['admin','super'].indexOf($auth.user().role) >= 0">
-                  <v-select label="Role" class="purple-input" :items="roles" v-model="form.role" required  ></v-select>
+                  <v-select :label="$t('Users.role')" class="purple-input" :items="roles" v-model="form.role" required  ></v-select>
                 </v-flex>
 
                  <v-flex xs12 md6 v-if="['admin', 'super'].indexOf($auth.user().role) >= 0">
-                  <v-select label="Group" class="purple-input" :items="groups" v-model="form.group_id" item-value="id" item-text="label"></v-select>
+                  <v-select :label="$t('Users.group')" class="purple-input" :items="groups" v-model="form.group_id" item-value="id" item-text="label"></v-select>
                 </v-flex>               
 
                 
 
                 <v-flex xs12 text-xs-right>
                   <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Save</v-btn> -->
-                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">Save</v-btn>
+                  <v-btn class="mx-0 font-weight-light" color="success" @click="submit">{{ $t('Form.save') }}</v-btn>
                 </v-flex>
 
               </v-layout>

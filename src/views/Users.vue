@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="green" title="User List" text="Users, who can log in in the system">
+        <material-card color="green" :title="$t('Users.title')" :text="$t('Users.title_small')">
           <v-data-table :headers="headers" :items="items" hide-actions>
             
             <template slot="headerCell" slot-scope="{ header }">
@@ -30,14 +30,14 @@
                   <v-btn slot="activator" icon :to="{name: 'user_edit', params: {id: item.id}}">
                     <v-icon color="primary">mdi-pencil</v-icon>
                   </v-btn>
-                  <span>Edit</span>
+                  <span>{{ $t('Form.edit') }}</span>
                 </v-tooltip>
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" icon @click="change_item(item)">
                     <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
                   </v-btn>
-                  <span>Disable</span>
+                  <span>{{ $t('Form.disable') }}</span>
                 </v-tooltip>
 
               </td>
@@ -76,43 +76,23 @@
 
     data: () => ({
       
-      headers: [
-        {
-          sortable: true,
-          text: 'Name',
-          value: 'label'
-        },
-        {
-          sortable: false,
-          text: 'Login',
-          value: 'login'
-        },
-
-        {
-          sortable: false,
-          text: 'Phone',
-          value: 'phone'
-        },
-
-        {
-          sortable: false,
-          text: 'Email',
-          value: 'email'
-        },
-        {
-          sortable: true,
-          text: 'Role',
-          value: 'role'
-        },
-        {
-          sortable: false,
-          align: 'right'
-        }
-      ],
-
       items: [],
 
     }),
+
+    computed: {
+
+      headers: function() {
+        return [
+          { text: this.$t("Users.label"), value: 'label', sortable: true, },
+          { text: this.$t("Users.login"), value: 'login', sortable: true, },
+          { text: this.$t("Users.phone"), value: 'phone', sortable: true, },
+          { text: this.$t("Users.email"), value: 'email', sortable: true, },
+          { text: this.$t("Users.role"), value: 'role', sortable: true, },
+          { value: null }
+        ]
+      }
+    },
 
     mounted () {
       this.load();

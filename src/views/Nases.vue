@@ -22,14 +22,14 @@
                   <v-btn slot="activator" class="v-btn--simple" icon :to="{ name: 'nas_edit', params: {id: item.id} }">
                     <v-icon color="success">mdi-pencil</v-icon>
                   </v-btn>
-                  <span>Edit</span>
+                  <span>{{ $t('Form.edit') }}</span>
                 </v-tooltip>
 
                 <v-tooltip top content-class="top">
                   <v-btn slot="activator" class="v-btn--simple" icon @click="change_item(item)">
                     <v-icon :color="item.disabled ? 'pink' : 'grey'" >mdi-block-helper</v-icon>
                   </v-btn>
-                  <span>Disable</span>
+                  <span>{{ $t('Form.disable') }}</span>
                 </v-tooltip>
 
               </td>

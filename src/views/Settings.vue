@@ -8,7 +8,7 @@
           <v-form ref="settings_form" v-model="valid">
                 
                 <v-flex xs12 md12>
-                  <v-text-field  v-model="settings_form.session_time" :label="'Remember login for time'"></v-text-field >
+                  <v-text-field  v-model="settings_form.session_time" :label="$t('Settings.session_time')"></v-text-field >
                 </v-flex>
 
 

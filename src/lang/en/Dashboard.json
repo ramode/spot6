@@ -2,8 +2,7 @@
 	"admin_cnt":			"Admins",
 	"manager_cnt":			"Managers",
 	"cldev_cnt":			"Client Devices",
-	"cldev_per_month":		"Clients/registrations in last 12 months",
-	"cldev_regs_per_month":	"Client Registrations in last 12 months",
+	"cldev_per_month":		"Registrations/Clients in last year",
 	"nas_cnt":				"NAS count",
 	"profile_cnt":			"Profiles",
 	"month_trafic":			"Month Trafic"

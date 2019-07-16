@@ -69,45 +69,36 @@
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="light-green"
-          icon="mdi-store"
+          icon="mdi-cellphone"
           :title="$t('Dashboard.cldev_cnt')"
           :value="dashboard.client_devices"
-          sub-icon="mdi-calendar"
-          sub-text="In your admin's area"
         />
       </v-flex>
 
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="grey"
-          icon="mdi-store"
+          icon="mdi-access-point-network"
           :title="$t('Dashboard.nas_cnt')"
           :value="dashboard.nases"
-          sub-icon="mdi-calendar"
-          sub-text="In your admin's area"
         />
       </v-flex>
 
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="blue-grey"
-          icon="mdi-store"
+          icon="receipt"
           :title="$t('Dashboard.profile_cnt')"
           :value="dashboard.profiles"
-          sub-icon="mdi-calendar"
-          sub-text="In your admin's area"
         />
       </v-flex>
 
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
           color="orange"
-          icon="mdi-account-group"
+          icon="mdi-account"
           :title="$t('Dashboard.admin_cnt') + '/' + $t('Dashboard.manager_cnt')"
           :value="`${dashboard.admins}/${dashboard.managers}`"
-          small-value="accs"
-          sub-icon="mdi-account-group"
-          sub-text="Account management"
         />
       </v-flex>
 
@@ -215,7 +206,7 @@
         // Maybe on API change to function for GRANT RULE issues:
         API.Dashboard().then(
           res => {
-            console.log(res);
+            // console.log(res);
             res.data[0].client_devices = res.data[0].client_devices.toString();
             res.data[0].nases = res.data[0].nases.toString();
             res.data[0].profiles = res.data[0].profiles.toString();
@@ -231,7 +222,7 @@
             var min = null;
             res.data.forEach((item, i) => {
               this.clientDevicesCntByMonth.data.labels.unshift( this.$moment(item.month).format("MMM") );
-              this.clientDevicesCntByMonth.data.series[0].unshift(item.cnt);
+              this.clientDevicesCntByMonth.data.series[1].unshift(item.cnt);
               
               // Чтобы график начинался не с ноля и не занимал много места:
               if ( min == null || min > item.cnt ) {
@@ -251,7 +242,7 @@
 
               // this.clientDevicesRegsCntByMonth.data.labels.unshift( this.$moment(item.month).format("MMM") );
               // this.clientDevicesRegsCntByMonth.data.series[0].unshift(item.cnt);
-              this.clientDevicesCntByMonth.data.series[1].unshift(item.cnt);
+              this.clientDevicesCntByMonth.data.series[0].unshift(item.cnt);
 
               // Чтобы график начинался не с ноля и не занимал много места:
               if ( this.clientDevicesCntByMonth.options.low > item.cnt ) {
@@ -265,7 +256,7 @@
 
         API.getStatMonthTrafic().then(
           res => {
-            console.log(res);
+            // console.log(res);
             res.data.forEach((item, i) => {
               // this.trafficInLastMonth.data.labels.unshift( this.$moment(item.day).format("D MMM") ); // "2019-06-16T00:00:00"
               // this.trafficInLastMonth.data.labels.unshift( this.$moment(item.day).format("D") );

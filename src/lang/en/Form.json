@@ -2,5 +2,8 @@
 	"submit":	"Submit",
     "save":		"Save",
     "search":	"Search",
-    "filter":	"Filter"
+    "filter":	"Filter",
+    "disable":	"Disable",
+    "disabled":	"Disabled",
+    "edit":		"Edit"
 }

@@ -135,7 +135,6 @@
         color="primary"
         @click="submit"
         :title="$t('Form.save')"
-        :loading='loading===true|loading!=100'
       >
         <v-icon>mdi-content-save</v-icon>
       </v-btn>
@@ -211,8 +210,8 @@
           traffic_unit_ratio = this.traffic_units.filter( obj => obj.id == this.traffic_unit )[0].ratio,
           speed_unit_rario = this.speed_units.filter( obj => obj.id == this.speed_unit )[0].ratio;
 
-        console.log(traffic_unit_ratio);
-        console.log(speed_unit_rario);
+        // console.log(traffic_unit_ratio);
+        // console.log(speed_unit_rario);
 
         data.limit_bytes = data.limit_bytes * traffic_unit_ratio;
         data.limit_speed = data.limit_speed * speed_unit_rario;

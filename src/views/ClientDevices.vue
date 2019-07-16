@@ -56,7 +56,7 @@
               </v-radio-group>
             </v-flex-->
             <v-flex xs12 md3>
-              <v-text-field v-model="search" append-icon="mdi-filter" label="Filter" single-line hide-details></v-text-field>
+              <v-text-field v-model="search" append-icon="mdi-filter" :label="$t('Form.filter')" single-line hide-details></v-text-field>
             </v-flex>
           </v-layout>
           <v-data-table :headers="headers" :items="items" :search="search" loading  :rows-per-page-items="[10]">

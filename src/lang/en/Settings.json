@@ -13,5 +13,6 @@
 	"auth_type_key1":				"Public key",
 	"auth_type_key2":				"Private key",
 	"web_hook":						"Web Hook",
-	"auth_type_button_title":		"Button Title"
+	"auth_type_button_title":		"Button Title",
+	"session_time":					"Remember login for time (JWT exp)"
 }
