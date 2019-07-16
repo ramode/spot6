@@ -6,6 +6,10 @@ ALTER USER authenticator with password 'pass123';
 ALTER USER dba with password 'adminpass';
 ALTER USER radius with password 'raddpass';
 
+INSERT INTO "radius"."client" ("id", "nasname", "shortname", "type", "ports", "secret", "server", "community", "description")
+VALUES (DEFAULT, 0.0.0.0/0, 'shared', 'other', null, 'fwrthkolammchuuw', 'hotspot', '', 'hotspot')
+
+
 INSERT INTO hotspot.themes (name, variables, label) VALUES ('default', '[{
 "name": "header",
 "label": "Вставка HTML сверху",
