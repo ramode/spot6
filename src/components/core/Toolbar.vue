@@ -19,7 +19,7 @@
           <v-icon>mdi-view-list</v-icon>
         </v-btn>
         <!-- {{ title }} -->
-        Серебрянный Город
+
       </v-toolbar-title>
     </div>
 

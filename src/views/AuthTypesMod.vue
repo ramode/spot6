@@ -3,7 +3,7 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="blue darken-1" :title="title_add" :text="$t('AuthTypes.title_small')">
+        <material-card color="blue darken-1" :title="title_add" :text="$t('AuthTypes.title_small')" :loading="loading">
 
           <v-form ref="form" v-model="valid">
             <v-container py-0>
@@ -38,31 +38,34 @@
 
 
                 <v-flex xs12 md12>
-                  <template v-if="v_add">
-                    <v-text-field :label="$t('Settings.web_hook')" class="purple-input" :value="'/'+ form.driver + '/'+ form.id" disabled />
-                  </template>
-                  <template v-else>
-                    <span class="body-2">{{ $t('Settings.web_hook') }}</span>: {{ form.web_hook }}
-                  </template>
+                    <v-text-field :label="$t('Settings.web_hook')" :value="'/uam/callback/'+ form.driver + '/'+ form.id" disabled />
                 </v-flex>
 
                 <v-flex xs12 md6>
                   <v-text-field :label="$t('Settings.auth_type_button_title')" class="purple-input" v-model="form.button" required />
                 </v-flex>
 
-               
-                <v-flex xs12 text-xs-right>
-                  <v-btn color="blue darken-1" @click="save_auth_type">
-                    <template v-if="v_add">
-                      {{ $t('Common.add') }}
-                    </template>
-                    <template v-else>
-                      {{ $t('Common.save') }}
-                    </template>
-                  </v-btn>
+                <v-flex xs12 md12>
+                  <v-select :label="$t('Users.group')"  :items="groups" item-text="label" item-value="id" v-model="form.group_ids" multiple chips required></v-select>
                 </v-flex>
 
-                <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
+
+<v-fab-transition>
+
+      <v-btn
+        dark
+        fab
+        fixed
+        bottom
+        right
+        color="primary"
+        @click="submit"
+        :title="v_add? $t('Common.add') : $t('Common.save')"
+      >
+        <v-icon>{{v_add? 'mdi-plus':'mdi-content-save'}}</v-icon>
+      </v-btn>
+    </v-fab-transition>
+
 
               </v-layout>
 
@@ -86,6 +89,7 @@
     data: () => ({
 
       loading: true,
+      groups: [],
 
       form: {
         id:     "_future_id_", // Чтобы при Add не писался undefined
@@ -120,10 +124,25 @@
 
         this.loading = 0
 
+
+          API.getGroups().then(
+            res => {
+              // console.log(res);
+              res.data.forEach((item, i) => {
+                  this.groups.push(item);
+                  this.loading += 30
+              });
+            },
+            // err => console.log(err)
+            err => this.$store.commit("error", err)
+          );
+
+
         API.getAuthDrivers().then(
           res => {
             // console.log(res);
             this.auth_drivers = res.data;
+            this.loading += 30;
           },
           err => this.$store.commit("error", err)
         );
@@ -139,14 +158,17 @@
             res => {
               // console.log(res);
               this.form = res.data[0];
+              this.loading += 40;
             },
             err => this.$store.commit("error", err)
           );
+        } else {
+            this.loading += 40;
         };
 
       },
 
-      save_auth_type() {
+      submit() {
 
         this.loading = true;
         

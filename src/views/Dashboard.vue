@@ -7,7 +7,7 @@
           :data="clientDevicesCntByMonth.data"
           :options="clientDevicesCntByMonth.options"
           :responsive-options="clientDevicesCntByMonth.responsiveOptions"
-          color="light-green"
+          color="red"
           type="Bar"
         >
           <h4 class="title font-weight-light">{{ $t('Dashboard.cldev_per_month') }}</h4>
@@ -28,7 +28,7 @@
           :data="trafficInLastMonth.data"
           :options="trafficInLastMonth.options"
           :responsive-options="trafficInLastMonth.responsiveOptions"
-          color="red"
+          color="grey"
           type="Line"
         >
           <h4 class="title font-weight-light">{{ $t('Dashboard.month_trafic') }}, Gb</h4>
@@ -44,27 +44,17 @@
 
       </v-flex>
 
-      <!-- <v-flex sm12 md12 lg6>
+      <v-flex sm12 md12 lg6>
         <material-chart-card
-          :data="clientDevicesRegsCntByMonth.data"
-          :options="clientDevicesRegsCntByMonth.options"
-          :responsive-options="clientDevicesRegsCntByMonth.responsiveOptions"
-          color="blue-grey"
-          type="Bar"
+          :data="devVendorStat.data"
+          :options="devVendorStat.options"
+          :responsive-options="devVendorStat.responsiveOptions"
+          color="light-green"
+          type="Pie"
         >
-          <h4 class="title font-weight-light">{{ $t('Dashboard.cldev_regs_per_month') }}</h4>
-          <p class="category d-inline-flex font-weight-light">Last Campaign Performance</p>
-
-          <template slot="actions">
-            <v-icon class="mr-2" small>
-              mdi-clock-outline
-            </v-icon>
-            <span class="caption grey--text font-weight-light">updated 10 minutes ago</span>
-          </template>
+          <h4 class="title font-weight-light">{{ $t('Dashboard.dev_vendors_title') }}</h4>
         </material-chart-card>
-      </v-flex> -->
-
-
+      </v-flex>
 
       <v-flex xs12 sm6 md6 lg3>
         <material-stats-card
@@ -190,7 +180,24 @@
             showArea: true,
           },
 
-        }
+        },
+
+
+        devVendorStat: {
+
+          data: {
+            labels: [],
+            series: []
+          },
+       
+          options: {
+            // labelInterpolationFnc: function(value) {
+            //   return value[0]
+            // },
+          },
+
+        },
+
 
       }
     },
@@ -288,7 +295,23 @@
             })
           },
           err => this.$store.commit("error", err)
-        )
+        );
+
+        API.getStatDevVendor().then(
+          res => {
+            // console.log(res);
+            var percent_modulus = 100;
+            res.data.forEach((item, i) => {
+              // this.devVendorStat.data.labels.push(`${item.company.split(' ')[0]}\n\r(${item.percent}%)`);
+              this.devVendorStat.data.labels.push(`${item.company.split(' ')[0]}`);
+              this.devVendorStat.data.series.push(item.percent);
+              percent_modulus = percent_modulus - item.percent;
+            });
+            this.devVendorStat.data.labels.push(this.$t('Dashboard.dev_vendor_other'));
+            this.devVendorStat.data.series.push(percent_modulus);
+          },
+          err => this.$store.commit("error", err)
+        );
 
       },
 

@@ -43,7 +43,7 @@
 
 
                 <v-flex xs9 md4>
-                  <v-text-field :label="$t('DB.limit_speed')"  v-model="form.limit_speed" type="number">
+                  <v-text-field :label="$t('DB.limit_speed')"  v-model="form.limit_speed" type="number" >
 
                     </v-text-field>
                 </v-flex>
@@ -216,13 +216,8 @@
         data.limit_bytes = data.limit_bytes * traffic_unit_ratio;
         data.limit_speed = data.limit_speed * speed_unit_rario;
 
-        if (data.limit_bytes == 0) {
-            data.limit_bytes = null
-        }
-        
-        if (data.limit_speed == 0) {
-            data.limit_speed = null
-        }
+
+
 
         return data;
 
@@ -230,8 +225,8 @@
 
       convert_from_bits_bytes(data) {
 
-        if ( data.limit_bytes == null) {}
-        else
+        if ( data.limit_bytes == null) {
+        } else
         // Если меньше 1 Gb:
         if ( data.limit_bytes < this.traffic_units.filter( obj => obj.id == 1)[0].ratio ) {
           this.traffic_unit = 2;
@@ -240,8 +235,11 @@
           this.traffic_unit = 1;
         }
         var traffic_unit_ratio = this.traffic_units.filter( obj => obj.id == this.traffic_unit )[0].ratio;
-        data.limit_bytes = data.limit_bytes / traffic_unit_ratio;
-        
+
+        if ( data.limit_bytes != null) {
+            data.limit_bytes /= traffic_unit_ratio;
+        }        
+
         if ( data.limit_speed == null) {}
         else
         // Если меньше 1 Mbit/sec:
@@ -251,8 +249,9 @@
           this.speed_unit = 1;
         }
         var speed_unit_ratio = this.speed_units.filter( obj => obj.id == this.speed_unit)[0].ratio;
-        data.limit_speed = data.limit_speed / speed_unit_ratio;
-
+        if ( data.limit_speed != null) {
+                data.limit_speed /= speed_unit_ratio;
+        }
         return data;
 
       },
@@ -312,8 +311,6 @@
           };
 
       },
-
-
       renewThemeVars(theme) {
         
         this.themes.forEach( (item, i) => {
@@ -321,9 +318,31 @@
             this.theme_var_list = item.variables;
           };
         });
-
       },
 
+      set_nulls(data){
+        if (data.limit_bytes <= 0) {
+            data.limit_bytes = null
+        }
+        
+        if (data.limit_speed <= 0) {
+            data.limit_speed = null
+        }
+
+        if (data.limit_ports <= 0 ) {
+            data.limit_ports = null
+        }
+
+         for (var key in data) {
+                console.log(key)
+                console.log(data[key])
+              if (data[key] === "") {
+                data[key] = null
+              }
+         }
+
+        return data
+      },
 
       submit() {
 
@@ -331,6 +350,7 @@
         var data = Object.assign({}, this.form);
 
         data = this.convert_to_bits_bytes(data);
+        data = this.set_nulls(data);
 
         var ApiMethod;
           // If "add":

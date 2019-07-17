@@ -5,5 +5,7 @@
 	"cldev_per_month":		"Registrations/Clients in last year",
 	"nas_cnt":				"NAS count",
 	"profile_cnt":			"Profiles",
-	"month_trafic":			"Month Trafic"
+	"month_trafic":			"Month Trafic",
+	"dev_vendors_title":	"Device vendors",
+	"dev_vendor_other":		"other"
 }

@@ -5,5 +5,7 @@
 	"cldev_per_month":		"Регистраций/Клиентов за последний год",
 	"nas_cnt":				"Устройств доступа",
 	"profile_cnt":			"Профилей",
-	"month_trafic":			"Трафик за месяц"
+	"month_trafic":			"Трафик за месяц",
+	"dev_vendors_title":	"Производители устройств",
+	"dev_vendor_other":		"другие"
 }

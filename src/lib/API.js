@@ -162,6 +162,10 @@ export default {
 		return axios.get('/stat_month_trafic');
 	},
 
+	getStatDevVendor() {
+		return axios.get('/stat_dev_vendor_last_month_v_percent_gte_10')
+	},
+
 	getNases() {
 		return axios.get('/hotspot_nases')
 	},

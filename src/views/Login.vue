@@ -6,10 +6,10 @@
 		    <v-layout align-center justify-center >
 
 			    <v-flex xs12 sm8 md4>
-
+				    <v-form @submit.prevent="logIn">
                    <material-card color="primary" title="Login form" :loading="p.loading">
 
-					    <v-form>
+	
 
 						    <v-text-field
 							    prepend-icon="person"
@@ -27,17 +27,17 @@
 							    v-model="user.password">
 						    </v-text-field>
 
-					    </v-form>
+
 
 
 					    <slot slot="actions">
-						    <v-btn flat color="primary" :to="{ name: 'Registration' }">Регистрация</v-btn>
+						    <v-btn flat :to="{ name: 'Registration' }">Регистрация</v-btn>
 						    <v-spacer></v-spacer>
-						    <v-btn color="primary" v-on:click="logIn">Login</v-btn>
+						    <v-btn color="primary" type="submit" >Login</v-btn>
 					    </slot>
 
 				    </material-card>
-
+					    </v-form>
 
 				    <v-alert
 					    :value="p.login_error"
