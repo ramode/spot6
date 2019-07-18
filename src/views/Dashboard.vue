@@ -191,6 +191,9 @@
           },
        
           options: {
+  donutWidth: 60,
+  donutSolid: true,
+            donut: true,
             // labelInterpolationFnc: function(value) {
             //   return value[0]
             // },
@@ -326,6 +329,13 @@
 </script>
 
 <style>
+
+  .ct-label {
+
+	color: #090909;
+    fill:unset;
+
+  }
 
   .ct-series-b .ct-bar {
     /* Colour of your bars */

@@ -118,7 +118,21 @@
 
             </v-container>
 
-        </material-card></v-flex>
+        </material-card>
+
+</v-flex>
+
+
+<v-flex xs12 lg6>
+        <material-card color="blue-grey" :title="$t('Profile.template_review')+': '+ (form.label||'')" :loading="loading" >
+            <div>
+            <iframe frameborder="0" :src="'/uam/register/?mac=00:00:00:00:00:01&linklogin=%2Fuam%2F&linkorig=http%3A%2F%2Fya.ru&called='+form.profile" height="600" width="100%" />
+            </div>
+        </material-card>
+
+</v-flex>
+
+
               </v-layout>
 
             </v-container>
