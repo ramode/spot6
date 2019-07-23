@@ -22,15 +22,15 @@
               <td class="text-xs-right">
 
                 <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'profile_edit', params: {id: item.id}}">
-                    <v-icon color="primary">mdi-pencil</v-icon>
+                  <v-btn slot="activator" icon :to="{name: 'profile_edit', params: {id: item.id}}">
+                    <v-icon small color="primary">mdi-pencil</v-icon>
                   </v-btn>
                   <span>{{ $t('Form.edit') }}</span>
                 </v-tooltip>
 
                 <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon @click="change_item(item)">
-                    <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
+                  <v-btn slot="activator" icon @click="change_item(item)">
+                    <v-icon small :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
                   </v-btn>
                   <span>{{ $t('Form.disable') }}</span>
                 </v-tooltip>
@@ -46,7 +46,10 @@
 
         </material-card>
 
-    <v-fab-transition>
+    <v-fab-transition  v-if="['super', 'admin','manager'].includes($auth.user().role)">
+ 
+    <v-tooltip top content-class="top">
+<template v-slot:activator="{ on }">
       <v-btn
         dark
         fab
@@ -55,10 +58,14 @@
         right
         color="primary"
         :to='{ name: "profile_add" }'
-        v-if="['super', 'admin','manager'].includes($auth.user().role)"
+       
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
+      </template>
+        <span>{{ $t('Common.add') }}</span>
+
+    </v-tooltip>
     </v-fab-transition>
 
 

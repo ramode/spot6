@@ -51,6 +51,9 @@ Vue.config.productionTip = false
 
 // https://github.com/websanova/vue-auth/blob/master/docs/StepByStepGuide.md
 Vue.axios.defaults.baseURL = '/api/v1/';
+axios.defaults.headers.common['Prefer'] = 'return=representation';
+
+
 // Vue.http.options.root = 'http://api-demo/api/v1';
 Vue.router = router
 

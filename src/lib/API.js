@@ -195,18 +195,9 @@ export default {
 	// },
 
 	getAccounting(start_date, end_date) {
-		return axios.get(`/accounting?
-			or=(
-				and(
-					time_start.gte.${start_date},
-					time_start.lte.${end_date}
-				),
-				and(
-					time_end.gte.${start_date},
-					time_end.lte.${end_date}
-				)
-			)
-		`);
+        return axios.get(`/accounting?time=ov.[${start_date},${end_date})`);
+
+		//return axios.get(`/accounting?and=(time_end.gte.${start_date},time_start.lte.${end_date})`);
 	},
 
 }

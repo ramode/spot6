@@ -5,49 +5,40 @@
 
         <material-card color="light-green" :title="$t('Accounting.title')" :text="$t('Accounting.small_text')" :loading="loading">
 
-          <v-layout justify-center wrap>
-            <v-flex xs12 md2>
-              
-              <v-menu ref="menu_start_date" v-model="menu_start_date"
-                :close-on-content-click="false" nudge-right="40" lazy transition="scale-transition"
-                offset-y full-width max-width="290px" min-width="290px"
-              >
-              
-                <template v-slot:activator='{ on }'>
-                  
-                  <v-text-field v-model="start_date" :label="$t('Accounting.start_date')" prepend-icon="event" v-on="on" readonly type="date"></v-text-field>
-
-                </template>
-                
-                <v-date-picker v-model="start_date" no-title scrollable show-current  @input="menu_start_date = false">
-
-                </v-date-picker>
-
-              </v-menu>
-
-            </v-flex>
-
-            <v-flex xs12 md2>
-              
-              <v-menu ref="menu_end_date" v-model="menu_end_date"
-                :close-on-content-click="false" nudge-right="40" lazy transition="scale-transition"
-                offset-y full-width max-width="290px" min-width="290px"
-              >
-              
-                <template v-slot:activator='{ on }'>
-                  
-                  <v-text-field v-model="end_date" :label="$t('Accounting.end_date')" readonly type="date" v-on="on"></v-text-field>
-
-                </template>
-               
-                <v-date-picker v-model="end_date" no-title scrollable show-current  @input="menu_end_date = false">
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
-
-            <v-flex xs12 md2>
-              <v-btn @click="getData">{{ $t('Form.search') }}</v-btn>
-            </v-flex>
+          <v-layout wrap>
+  <v-flex xs12 md3>
+      <v-menu
+        ref="period_menu"
+        v-model="period_menu"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        :return-value.sync="start_date"
+        lazy
+        offset-y
+        full-width
+        max-width="290px"
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-model="start_date"
+            :label="$t('Accounting.period')"
+            prepend-inner-icon="event"
+            readonly
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="start_date"
+          type="month"
+          no-title
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="$refs.period_menu.save(start_date); getData()">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
+    </v-flex>
 
             <v-flex xs12 md3>
               <v-text-field v-model="search" append-icon="mdi-filter" :label="$t('Form.filter')" single-line hide-details></v-text-field>
@@ -62,17 +53,18 @@
             
             <template slot="items" slot-scope="{ index, item }" selected="true">
               <!-- <td>{{ index + 1 }}</td> -->
+              <td><v-icon v-if="item.termination_cause == null">mdi-lan-connect</v-icon></td>
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
-              <td><v-icon v-if="item.termination_cause == null">mdi-lan-connect</v-icon></td>
-              <!-- <td>{{ item.nas }} / {{ item.ip }} / {{ item.called_station_id }}</td> -->
-              <td>{{ [ item.nas, item.nas_ip, item.called_station_id ].join(' / ')}}</td>
-              <td>{{ item.time_start | moment("YYYY-MM-DD, HH:MM") }}</td>
-              <td>{{ item.time_end | moment("YYYY-MM-DD, HH:MM") }}</td>
-              <td>{{ item.uptime }}</td>
               <td>{{ item.ip }}</td>
-              <td>↓ {{ item.download | prettyBytes }} ↑ {{ item.upload | prettyBytes }}</td>
-              <td><router-link :to="{ name: 'profile_edit', params: { id: item.profile_id } }">{{ item.profile }}</router-link></td>
+              <!-- <td>{{ item.nas }} / {{ item.ip }} / {{ item.called_station_id }}</td> -->
+              <td>{{ [ item.nas, item.nas_ip ].join(' / ')}}</td>
+              <td>{{ item.time_start | moment("YYYY‑MM‑DD, HH:mm") }}</td>
+              <td>{{ item.time_end | moment("YYYY‑MM‑DD, HH:mm") }}</td>
+              <td>{{ item.uptime }}</td>
+
+              <td>↓&nbsp;{{ item.download | prettyBytes(1) }} ↑&nbsp;{{ item.upload | prettyBytes(1) }}</td>
+              <td><router-link :to="{ name: 'profile_edit', params: { id: item.profile_id } }">{{ item.profile_label }}</router-link></td>
             </template>
 
           </v-data-table>
@@ -99,11 +91,9 @@
       
       loading: false,
       
-      menu_start_date: false,
-      menu_end_date: false,
+      period_menu: false,
 
       start_date: null,
-      end_date: new Date().toISOString().substr(0, 10),
       
       pagination: {},
 
@@ -115,8 +105,19 @@
 
     computed: {
 
+      end_date:  function() {
+            var d = new Date(this.start_date+'-01')
+            d.setMonth(d.getMonth()+1)
+            d = d.toISOString().substr(0, 7);
+            return d
+            },
+
       headers: function() {
         return [
+          {
+            sortable: false,
+            value: null
+          },
           {
             sortable: false,
             text: this.$t('Accounting.phone'),
@@ -129,8 +130,10 @@
           },
           {
             sortable: false,
-            value: null
+            text: this.$t('Accounting.ip'),
+            value: 'ip'
           },
+
           {
             sortable: false,
             text: this.$t('Accounting.nas'),
@@ -151,11 +154,7 @@
             text: this.$t('Accounting.uptime'),
             value: 'uptime'
           },
-          {
-            sortable: false,
-            text: this.$t('Accounting.ip'),
-            value: 'ip'
-          },
+
           {
             sortable: false,
             text: this.$t('Accounting.traffic'),
@@ -182,10 +181,12 @@
         // В computed нельзя совать, т.к. иначе потому не сетится, только читается:
         this.start_date = ( function() {
           var d = new Date();
-          d.setMonth( d.getMonth() - 1 );
-          d = d.toISOString().substr(0, 10);
+          d.setDate(1)
+          d = d.toISOString().substr(0, 7);
           return d;
         })();
+
+        this.getData() 
         
       },
 
@@ -194,7 +195,7 @@
         this.loading = true;
 
         // get Devices list:
-        API.getAccounting(this.start_date, this.end_date).then(
+        API.getAccounting(this.start_date+'-01', this.end_date+'-01').then(
           res => {
             // console.log(res);
             this.items = res.data;

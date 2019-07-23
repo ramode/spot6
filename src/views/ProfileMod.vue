@@ -124,9 +124,9 @@
 
 
 <v-flex xs12 lg6>
-        <material-card color="blue-grey" :title="$t('Profile.template_review')+': '+ (form.label||'')" :loading="loading" >
+        <material-card color="blue-grey" :title="$t('Profile.preview')+': '+ (form.label||'')" :loading="loading" >
             <div>
-            <iframe frameborder="0" :src="'/uam/register/?mac=00:00:00:00:00:01&linklogin=%2Fuam%2F&linkorig=http%3A%2F%2Fya.ru&called='+form.profile" height="600" width="100%" />
+            <iframe frameborder="0" :src="'/uam/register/?mac=02:00:00:00:00:01&linklogin=%2Fuam%2Ffakelogin&linkorig=http%3A%2F%2Fya.ru&called='+form.profile" height="600" width="100%" />
             </div>
         </material-card>
 
@@ -378,9 +378,15 @@
         if (this.$refs.form.validate()) {
           this.loading = true;
           ApiMethod(data).then(
-            res => {
-             this.loading = 100;
-             this.$router.push({name: "profiles"})
+              res => {
+                this.loading += 40;
+                this.form = this.convert_from_bits_bytes(res.data[0]);
+                if (this.themes) {
+                    this.renewThemeVars(this.form.theme);
+                }
+                if (res.data[0].id) this.v_edit = true;
+                this.loading = 100;
+                //this.$router.push({name: "profiles"})
             },
             err => this.$store.commit("error", err)
           )

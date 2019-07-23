@@ -62,10 +62,8 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   data: () => ({
-    // logo: '/img/vuetifylogo.png',
     logo: '/img/ramode_logo.gif',
     responsive: false,
-    // image: "/img/sidebar-3.3a54f533.jpg",
     color: "primary",
   }),
   computed: {
@@ -118,7 +116,7 @@ export default {
         to: { name: "nases" },
         icon: 'mdi-access-point-network',
         text: this.$t('Menu.nases'),
-        roles: ["super"],
+        roles: ["super", "admin", "manager"],
       },
       {
         to: { name: "client_devices" },
@@ -137,7 +135,7 @@ export default {
         to: { name: "settings" },
         icon: 'mdi-settings',
         text: this.$t('Menu.settings'),
-        roles: ["super"],
+        roles: ["super","admin"],
       },
 
     ]},

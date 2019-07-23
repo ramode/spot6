@@ -71,8 +71,8 @@
               <td>{{ item.username }}</td>
               <td>{{ item.phone }}</td>
               <td>{{ item.mac }}</td>
-              <td>{{ item.time_registred | moment("YYYY-MM-DD, HH:MM") }}</td>
-              <td>{{ item.time_seen | moment("YYYY-MM-DD, HH:MM") }}</td>
+              <td>{{ item.time_registred | moment("YYYY-MM-DD, HH:mm") }}</td>
+              <td>{{ item.time_seen | moment("YYYY-MM-DD, HH:mm") }}</td>
               <td><router-link :to="{name:'profile_edit', params: {id: item.profile_id} }" >{{ profiles[item.profile_id] }}</router-link></td>
             </template>
 

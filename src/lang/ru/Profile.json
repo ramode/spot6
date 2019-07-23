@@ -8,5 +8,6 @@
 	"limits":				"Ограничения",
 	"traffic_unit":			"",
 	"speed_unit":			"",
-	"http_redirects":		"HTTP перенаправления"
+	"http_redirects":		"HTTP перенаправления",
+    "preview":              "Предросмотр страницы"
 }

@@ -4,7 +4,7 @@
 	"title_edit":		"Edit user",
 	"title_small":		"Users, who can log in in the system",
 	"title_small_mod":	"It will be able to log in with the specified role",
-	"label":			"External Name",
+	"label":			"Users profile name",
 	"login":			"Login",
 	"phone":			"Phone",
 	"email":			"E-Mail",

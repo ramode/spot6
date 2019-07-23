@@ -19,14 +19,18 @@
           name="header"
         />
         <span v-else >
-          <h3
-           
+        <v-tooltip right>
+        <template v-slot:activator="{ on }">
+          <h3 v-on="on"
             v-text="title"
           />
-          <p
+        </template>
+
+          <span
             class="category font-weight-thin"
             v-text="text"
           />
+        </v-tooltip>
         </span>
     </v-card-title>
       <slot

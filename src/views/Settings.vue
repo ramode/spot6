@@ -11,6 +11,7 @@
                   <v-text-field  v-model="settings_form.session_time" :label="$t('Settings.session_time')"></v-text-field >
                 </v-flex>
 
+                <v-divider />
 
                 <v-flex xs12 md12>
                   <v-checkbox v-model="settings_form.reg_enabled" :label="$t('Settings.reg_enable')"></v-checkbox>
@@ -22,6 +23,10 @@
 
                 <v-flex xs12 md6>
                   <v-select :label="$t('Settings.reg_role')" class="purple-input" :items="roles" v-model="settings_form.reg_role" required></v-select>
+                </v-flex>
+
+                <v-flex xs12 md6>
+                  <v-select :label="$t('Settings.reg_auth_types')" class="purple-input" :items="auth_types" item-text="label" item-value="id" v-model="settings_form.reg_auth_types" required multiple></v-select>
                 </v-flex>
 
                 <v-flex xs12 md6>
@@ -59,7 +64,6 @@
       v_add: false,
       roles: [],
       auth_types: [],
-      auth_drivers: [],
 
       loading: false,
 
@@ -73,6 +77,19 @@
      
       load() {
 
+          API.getAuthTypes().then(
+            res => {
+              // console.log(res);
+              res.data.forEach((item, i) => {
+                this.auth_types.push(item);
+              });
+            },
+            err => {
+              // console.log(err);
+              // this.$store.commit("addNotify", `${err.response.status}: ${err.response.data.message}`);
+              this.$store.commit("error", err);
+            }
+          );
 
         API.getRoles().then(
           res => {

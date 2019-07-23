@@ -12,5 +12,6 @@
 	"uptime":			"Time Online",
 	"ip":				"IP Address",
 	"traffic":			"Traffic",
-	"profile":			"Profile"
+	"profile":			"Profile",
+    "period":           "Period"
 }
