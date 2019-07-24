@@ -131,7 +131,7 @@
             low: 0,
             // high: 1000,
             chartPadding: {
-              top: 0,
+              top: 30,
               right: 5,
               bottom: 0,
               left: 0
@@ -139,6 +139,8 @@
             //height: '300px',
             seriesBarDistance: 10,
           },
+
+          responsiveOptions: []
         
           // responsiveOptions: [
           //   [
@@ -178,6 +180,9 @@
        
           options: {
             showArea: true,
+            chartPadding: {
+              top: 30,
+            },
           },
 
         },
@@ -191,8 +196,8 @@
           },
        
           options: {
-  donutWidth: 60,
-  donutSolid: true,
+            donutWidth: 60,
+            donutSolid: true,
             donut: true,
             // labelInterpolationFnc: function(value) {
             //   return value[0]
@@ -228,7 +233,6 @@
         API.getStatClDevByMonth().then(
           res => {
 
-            // console.log(res);
             var min = null;
             res.data.forEach((item, i) => {
               this.clientDevicesCntByMonth.data.labels.unshift( this.$moment(item.month).format("MMM") );
@@ -238,8 +242,10 @@
               if ( min == null || min > item.cnt ) {
                 min = item.cnt;
               };
+              // console.log(min);
             })
-            this.clientDevicesCntByMonth.options.low = min;
+            // this.clientDevicesCntByMonth.options.low = min;
+
 
           },
           err => this.$store.commit("error", err)
@@ -280,20 +286,11 @@
               };
               this.trafficInLastMonth.data.labels.push( x_value );
 
-              this.trafficInLastMonth.data.series[0].push( Math.floor(item.download/1073741824) );
-              this.trafficInLastMonth.data.series[1].push( Math.floor(item.upload/1073741824) );
+              // this.trafficInLastMonth.data.series[0].push( Math.floor(item.download/1073741824) );
+              // this.trafficInLastMonth.data.series[1].push( Math.floor(item.upload/1073741824) );
 
-              // this.trafficInLastMonth.data.series[0].unshift( Math.round( Math.floor(item.download/1048579) * 100 ) / 100 );
-              // this.trafficInLastMonth.data.series[1].unshift( Math.round( Math.floor(item.upload/1048579) * 100 ) / 100 );
-              
-              // this.trafficInLastMonth.data.series[0].data.unshift({
-              //   x: new Date(item.day),
-              //   y: Math.floor(item.download/1048579) 
-              // });
-              // this.trafficInLastMonth.data.series[1].data.unshift({
-              //   x: new Date(item.day),
-              //   y: Math.floor(item.upload/1048579) 
-              // });
+              this.trafficInLastMonth.data.series[0].push( Math.floor(item.download/1048579) );
+              this.trafficInLastMonth.data.series[1].push( Math.floor(item.upload/1048579) );
 
             })
           },
