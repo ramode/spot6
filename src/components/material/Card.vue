@@ -13,7 +13,7 @@
         style="paddind:0;margin:0 -16px -16px 0"
         :color="color"/>
 
-    <v-card-title  v-if="!$slots.offset">
+    <v-card-title :color="color" v-if="!$slots.offset">
         <slot
           v-if="!title && !text"
           name="header"
@@ -25,14 +25,17 @@
             v-text="title"
           />
         </template>
-
           <span
             class="category font-weight-thin"
             v-text="text"
           />
         </v-tooltip>
         </span>
+
+        <slot name="top-actions" />
+
     </v-card-title>
+
       <slot
         v-else
         name="offset"

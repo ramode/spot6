@@ -23,7 +23,7 @@
           <v-text-field
             v-model="start_date"
             :label="$t('Accounting.period')"
-            prepend-inner-icon="event"
+            append-icon="mdi-calendar-range"
             readonly
             v-on="on"
           ></v-text-field>
@@ -44,8 +44,14 @@
               <v-text-field v-model="search" append-icon="mdi-filter" :label="$t('Form.filter')" single-line hide-details></v-text-field>
             </v-flex>
           </v-layout>
-          <v-data-table :headers="headers" :items="items" :search="search" loading  :rows-per-page-items="[10]">
+          <v-data-table :headers="headers" :items="items" :search="search"   dense
+:footer-props="{
+      showFirstLastPage: true,
+      itemsPerPageOptions : [30]
+    }">
             
+
+
             <template slot="headerCell" slot-scope="{ header }">
               <span
                 class="subheading text-info text--darken-3" v-text="header.text" />
@@ -63,7 +69,7 @@
               <td>{{ item.time_end | moment("YYYY‑MM‑DD, HH:mm") }}</td>
               <td>{{ item.uptime }}</td>
 
-              <td>↓&nbsp;{{ item.download | prettyBytes(1) }} ↑&nbsp;{{ item.upload | prettyBytes(1) }}</td>
+              <td>↓&nbsp;{{ item.download || 0 | prettyBytes(1) }} ↑&nbsp;{{ item.upload || 0 | prettyBytes(1) }}</td>
               <td><router-link :to="{ name: 'profile_edit', params: { id: item.profile_id } }">{{ item.profile_label }}</router-link></td>
             </template>
 
@@ -181,10 +187,11 @@
         // В computed нельзя совать, т.к. иначе потому не сетится, только читается:
         this.start_date = ( function() {
           var d = new Date();
-          d.setDate(1)
           d = d.toISOString().substr(0, 7);
           return d;
         })();
+
+        console.log(this.start_date)
 
         this.getData() 
         
@@ -216,7 +223,6 @@
 </script>
 
 <style>
-
 
 
 </style>

@@ -1,15 +1,22 @@
-import Vue from 'vue'
-import Vuetify from 'vuetify'
-import theme from './theme'
-import 'vuetify/dist/vuetify.min.css'
-import '@mdi/font/css/materialdesignicons.css'
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 
+import Vue from 'vue'
+import Vuetify, { VListItemIcon }  from 'vuetify/lib'
+
+/*
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+*/
+
+
+
+import theme from './theme'
 
 import en from 'vuetify/src/locale/en.ts'
 import ru from 'vuetify/src/locale/ru.ts'
 
 
-
+/*
 Vue.use(Vuetify, {
   iconfont: 'mdi',
     lang: {
@@ -18,5 +25,25 @@ Vue.use(Vuetify, {
     },
   theme
 })
+*/
 
+const vuetifyOptions = {
 
+  icons:{
+    iconfont: 'mdi'
+    }
+    ,
+    lang: {
+        locales: { en,ru },
+        current: localStorage.getItem('lang') || 'ru'
+    },
+  theme
+}
+
+Vue.use(Vuetify, {
+components: {
+    VListItemIcon
+  }
+})
+
+export default  new Vuetify(vuetifyOptions)  ;

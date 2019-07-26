@@ -2,9 +2,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
-// https://vuetifyjs.com/en/framework/icons
-import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
-
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -13,13 +10,9 @@ import Vue from 'vue'
 // import Vuetify from 'vuetify'
 
 // https://github.com/websanova/vue-auth/blob/master/docs/Installation.md
-import axios from 'axios'
-import VueAxios from 'vue-axios'
+
 import VueAuth from '@websanova/vue-auth'
 
-// https://github.com/brockpetrie/vue-moment
-import VueMoment from 'vue-moment'
-import moment from 'moment-timezone'
 // import qwe from 'moment-precise-range-plugin'
 
 // 2019-07-09, https://github.com/sainf/vue-filter-pretty-bytes
@@ -32,7 +25,7 @@ import "@/lib/mf"
 import './components'
 
 // Plugins
-import './plugins'
+import { vuetify, axios } from './plugins'
 
 // Sync router with store
 import { sync } from 'vuex-router-sync'
@@ -49,16 +42,13 @@ sync(store, router)
 
 Vue.config.productionTip = false
 
-// https://github.com/websanova/vue-auth/blob/master/docs/StepByStepGuide.md
-Vue.axios.defaults.baseURL = '/api/v1/';
-axios.defaults.headers.common['Prefer'] = 'return=representation';
+
 
 
 // Vue.http.options.root = 'http://api-demo/api/v1';
 Vue.router = router
 
-// https://github.com/websanova/vue-auth/blob/master/docs/Installation.md
-Vue.use(VueAxios, axios)
+
 
 Vue.use(VueAuth, {
     // auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
@@ -97,19 +87,18 @@ Vue.use(VueAuth, {
 // })
 
 
-// 2019-06-11:
-Vue.use(VueMoment, {
-	moment,
-})
 
 // 2019-07-09, https://github.com/sainf/vue-filter-pretty-bytes
 Vue.use(vueFilterPrettyBytes)
 
+
+console.log( vuetify);
 
 /* eslint-disable no-new */
 new Vue({
   i18n,
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  vuetify
 }).$mount('#app')

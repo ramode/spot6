@@ -1,88 +1,90 @@
 <template>
-  <v-toolbar
-    id="core-toolbar"
+  <v-app-bar
+elevate-on-scroll
 
-    flat
-    prominent
-    style="background: #eee;"
+color="blue-grey lighten-5 grey--text text--darken-1 font-weight-light"
+
   >
-    <div class="v-toolbar-title">
-      <v-toolbar-title
-        class="tertiary--text font-weight-light"
-      >
+
+<v-app-bar-nav-icon  v-if="responsive">
+
         <v-btn
-          v-if="responsive"
-          class="default v-btn--simple"
           icon
           @click.stop="onClickBtn"
         >
           <v-icon>mdi-view-list</v-icon>
         </v-btn>
-        <!-- {{ title }} -->
 
-      </v-toolbar-title>
-    </div>
+</v-app-bar-nav-icon>
+
+<v-toolbar-title>        
+
+          <v-avatar color="white">
+            <v-img :src="logo" contain />
+          </v-avatar>
+
+                  <span class="title">
+                    {{title}}
+                  </span>
+
+
+</v-toolbar-title>
+
 
     <v-spacer />
 
-    <v-toolbar-items>
-      <v-flex align-center layout py-2>
 
-        <!-- <v-text-field v-if="responsiveInput" class="mr-4 mt-2 purple-input" label="Search..." hide-details color="purple" /> -->
-
-        <!-- <router-link v-ripple class="toolbar-items" to="/">
-          <v-icon color="tertiary">mdi-view-dashboard</v-icon>
-        </router-link> -->
-        
 
         <v-menu transition="slide-y-transition" bottom offset-y left >
 
+            <template  v-slot:activator="{ on }">
 
-          <router-link v-ripple slot="activator" class="toolbar-items" to="#" >
-            <v-icon color="tertiary" >mdi-flag</v-icon>
-
-          </router-link>
-
+          <v-btn icon v-on="on">
+            <v-icon>mdi-flag</v-icon>
+          </v-btn>
+           </template>
             
           <v-list>
-            <!-- <v-list-tile v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang"> -->
-            <v-list-tile v-for="(item, i) in langs" :key="i" @click="changeLocale(item.lang)">
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile>
+            <!-- <v-list-item v-for="(item, i) in langs" :key="i" @click="$i18n.locale = item.lang"> -->
+            <v-list-item v-for="(item, i) in langs" :key="i" @click="changeLocale(item.lang)">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
           </v-list>
 
         </v-menu>
 
-        <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition">
+        <v-menu bottom left offset-y transition="slide-y-transition">
           
-          <router-link v-ripple slot="activator" class="toolbar-items" to="#" >
+
+            <template  v-slot:activator="{ on }">
+          <v-btn icon v-on="on" >
             <v-badge color="error" overlap>
               <template slot="badge" v-if="notifications.length > 0">
                 {{ notifications.length }}
               </template>
               <v-icon color="tertiary">mdi-bell</v-icon>
             </v-badge>
-          </router-link>
-
+          </v-btn>
+           </template>
 
             <v-list dense>
-              <v-list-tile>
-                <v-list-tile-title @click="clear_notifys">
+              <v-list-item>
+                <v-list-item-title @click="clear_notifys">
                   <small><i>{{ $t('Common.clear') }}</i></small>
-                </v-list-tile-title>
-              </v-list-tile>
-              <!-- <v-list-tile v-for="notification in notifications" :key="notification" @click="onClick"> -->
-              <v-list-tile v-for="notification in notifications">
-                <v-list-tile-title v-text="notification" />
-              </v-list-tile>
+                </v-list-item-title>
+              </v-list-item>
+              <!-- <v-list-item v-for="notification in notifications" :key="notification" @click="onClick"> -->
+              <v-list-item v-for="notification in notifications">
+                <v-list-item-title v-text="notification" />
+              </v-list-item>
             </v-list>
 
 
         </v-menu>
 
         <v-menu bottom left content-class="dropdown-menu" offset-y transition="slide-y-transition" allow-overflow>
-          
-          <router-link v-ripple slot="activator" class="toolbar-items" to="#">
+            <template  v-slot:activator="{ on }">
+          <v-btn icon v-on="on" >
             <v-badge color="error" overlap>
 <!--              
                 <template slot="badge">
@@ -90,20 +92,18 @@
               </template> -->
               <v-icon color="tertiary">mdi-account</v-icon>
             </v-badge>
-          </router-link>
-
-            <v-list dense>
-              <v-list-tile>{{ $auth.user().profile.full_name || $auth.user().profile.login }}</v-list-tile>
-              <v-list-tile @click="LogOut">
-                <v-list-tile-title>Log Out</v-list-tile-title>
-              </v-list-tile>
+          </v-btn>
+           </template>
+            <v-list >
+              <v-list-item>{{ $auth.user().profile.full_name || $auth.user().profile.login }}</v-list-item>
+              <v-list-item @click="LogOut">
+                <v-list-item-title>Log Out</v-list-item-title>
+              </v-list-item>
             </v-list>
 
         </v-menu>
 
-      </v-flex>
-    </v-toolbar-items>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
@@ -113,6 +113,7 @@ import {
 } from 'vuex'
 
 export default {
+
   data: () => ({
     // notifications: [
     //   'Mike, John responded to your email',
@@ -121,7 +122,11 @@ export default {
     //   'Another Notification',
     //   'Another One'
     // ],
-    title: null,
+
+    title: document.title,
+
+    logo: '/img/ramode_logo.gif',
+
     responsive: false,
     responsiveInput: false,
 

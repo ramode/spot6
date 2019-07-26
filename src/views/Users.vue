@@ -3,64 +3,22 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="green" :title="$t('Users.title')" :text="$t('Users.title_small')">
-          <v-data-table :headers="headers" :items="items" hide-actions>
-            
-            <template slot="headerCell" slot-scope="{ header }">
-              <span
-                class="subheading text-info text--darken-3"  v-text="header.text" />
-            </template>
-            
-            <template slot="items" slot-scope="{ item }">
-              <td>{{ item.label }}</td>
-              <td>{{ item.login }}</td>
-              <td>{{ item.phone }}</td>
-              <td>{{ item.email }}</td>
-              <td>{{ item.role }}</td>
-              <td class="text-xs-right">
+        <material-table-card 
+            color="green darken-1" 
+            :title="$t('Users.title')" 
+            :text="$t('Users.title_small')" 
+            :loading="loading" 
+            :headers="headers" 
+            :items="items" 
+            :change_item="change_item" 
+            add_item="user_add" 
+            edit_item="user_edit" 
+            :add_roles="['super', 'admin']" 
+            :edit_roles="['super', 'admin']"
+        >
 
-                <!--v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'user_passwd', params: {id: item.id}}">
-                    <v-icon color="success">mdi-lock-reset</v-icon>
-                  </v-btn>
-                  <span>Passwd</span><!- установка пароля через функцию api.passwd(uid,password) !->
-                </v-tooltip-->
+        </material-table-card>
 
-                <v-tooltip top content-class="top">
-                  <v-btn small slot="activator" icon :to="{name: 'user_edit', params: {id: item.id}}">
-                    <v-icon color="primary">mdi-pencil</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.edit') }}</span>
-                </v-tooltip>
-
-                <v-tooltip top content-class="top">
-                  <v-btn small slot="activator" icon @click="change_item(item)">
-                    <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.disable') }}</span>
-                </v-tooltip>
-
-              </td>
-            </template>
-
-          </v-data-table>
-        </material-card>
-
-    <v-fab-transition>
-      <v-btn
-        dark
-        fab
-        fixed
-        bottom
-        right
-        color="primary"
-        :to='{ name: "user_add" }'
-        v-if="['super', 'admin'].includes($auth.user().role)"
-      >
-        <v-icon>mdi-plus</v-icon>
-      <span>{{ $t('Common.add') }}</span>
-      </v-btn>
-    </v-fab-transition>
 
 
 
@@ -76,7 +34,7 @@
   export default {
 
     data: () => ({
-      
+      loading: false,
       items: [],
 
     }),
@@ -90,7 +48,7 @@
           { text: this.$t("Users.phone"), value: 'phone', sortable: true, },
           { text: this.$t("Users.email"), value: 'email', sortable: true, },
           { text: this.$t("Users.role"), value: 'role', sortable: true, },
-          { value: null }
+          { text: '', value: 'actions', align: 'end' }
         ]
       }
     },

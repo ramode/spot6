@@ -4,53 +4,38 @@
     v-model="inputValue"
     app
     dark
-    floating
-    persistent
-    mobile-break-point="991"
-    width="260"
+
+    width=300
+    clipped
   >
-    <!--v-img
-      :src="image"
-      :gradient="sidebarOverlayGradiant"
-      height="100%"
-    -->
-      <v-layout
-        class="fill-height"
-        tag="v-list"
-        column
+
+      <v-list
+        nav
+        
+      class="py-0"
       >
-        
-        <v-list-tile avatar>
-          <v-list-tile-avatar color="white">
-            <v-img :src="logo" height="34" contain/>
-          </v-list-tile-avatar>
-          <v-list-tile-title class="title">
-            RaMode Hot-Spot
-          </v-list-tile-title>
-        </v-list-tile>
 
-        <v-divider/>
-
-        <v-list-tile v-if="responsive">
+        <v-list-item v-if="responsive">
           <v-text-field class="purple-input search-input" label="Search..." color="primary" />
-        </v-list-tile>
+        </v-list-item>
         
-        <v-list-tile
+        <v-list-item 
           v-for="(link, i) in links"
           :key="i" :to="link.to" :active-class="color"
-          avatar class="v-list-item"
           v-if="link.roles.includes($auth.user().role)">
           
-          <v-list-tile-action>
+          <v-list-item-icon>
             <v-icon>{{ link.icon }}</v-icon>
-          </v-list-tile-action>
+          </v-list-item-icon>
+          <v-list-item-content>
+              <v-list-item-title v-text="link.text" />
+          </v-list-item-content>
 
-          <v-list-tile-title v-text="link.text" />
-
-        </v-list-tile>
+        </v-list-item>
         
+      </v-list>
 
-      </v-layout>
+
     <!--/v-img-->
   </v-navigation-drawer>
 </template>
@@ -64,7 +49,7 @@ export default {
   data: () => ({
     logo: '/img/ramode_logo.gif',
     responsive: false,
-    color: "primary",
+    color: "primary white--text",
   }),
   computed: {
     // ...mapState('app', ['image', 'color']),
@@ -102,13 +87,13 @@ export default {
       {
         // to: '/profiles',
         to: { name: "profiles" },
-        icon: 'receipt',
+        icon: 'mdi-tune',
         text: this.$t('Menu.profiles'),
         roles: ["super", "admin", "manager"],
       },
       {
         to: { name: "auth_types" },
-        icon: 'mdi-credit-card-wireless',
+        icon: 'mdi-phone-plus',
         text: this.$t('Menu.auth_types'),
         roles: ["super", "admin"],
       },
@@ -162,29 +147,5 @@ export default {
 </script>
 
 <style lang="scss">
-  #app-drawer {
-    .v-list__tile {
-      border-radius: 4px;
 
-      &--buy {
-        margin-top: auto;
-        margin-bottom: 17px;
-      }
-    }
-
-    .v-image__image--contain {
-      top: 9px;
-      height: 60%;
-    }
-
-    .search-input {
-      margin-bottom: 30px !important;
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-
-    div.v-responsive.v-image > div.v-responsive__content {
-      overflow-y: auto;
-    }
-  }
 </style>

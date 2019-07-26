@@ -3,53 +3,21 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="blue darken-1" :title="$t('AuthTypes.title')" :text="$t('AuthTypes.title_small')" :loading="loading">
 
-          <v-data-table :headers="headers" :items="items" hide-actions>
-            
-            <template slot="headerCell" slot-scope="{ header }">
-              <span
-                class="subheading text-info text--darken-3" v-text="header.text" />
-            </template>
-            
-            <template slot="items" slot-scope="{ item }">
-              <td>{{ item.label }}</td>
-              <td>{{ item.driver }}</td>
-              
-              <td class="text-xs-right">
-
-                <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon :to="{name: 'auth_types_edit', params: {id: item.id}}">
-                    <v-icon color="primary">mdi-pencil</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.edit') }}</span>
-                </v-tooltip>
-
-                <v-tooltip top content-class="top">
-                  <v-btn slot="activator" class="v-btn--simple" icon @click="change_item(item)">
-                    <v-icon :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.disable') }}</span>
-                </v-tooltip>
-
-              </td>
-            </template>
-
-
-
-          </v-data-table>
-
-
-
-        </material-card>
-
-    <v-fab-transition>
-      <v-btn dark fab fixed bottom right color="primary" :to='{ name: "auth_types_add" }' v-if="['super', 'admin'].includes($auth.user().role)">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-    </v-fab-transition>
-
-
+        <material-table-card 
+            color="blue darken-1" 
+            :title="$t('AuthTypes.title')" 
+            :text="$t('AuthTypes.title_small')" 
+            :loading="loading" 
+            :headers="headers" 
+            :items="items" 
+            :change_item="change_item" 
+            add_item="auth_types_add" 
+            edit_item="auth_types_edit" 
+            :add_roles="['super', 'admin']" 
+            :edit_roles="['super', 'admin']"
+        >
+        </material-table-card>
 
       </v-flex>
     </v-layout>
@@ -79,7 +47,7 @@
         return [
           { text: this.$t("AuthTypes.label"), value: 'label', sortable: true, },
           { text: this.$t("AuthTypes.driver"), value: 'driver', sortable: false, },
-          { value: null }
+          { text: '', value: 'actions', align: 'end' }
         ];
       },
 
@@ -92,7 +60,7 @@
         this.loading = 0
 
         API.getMyAuthTypes().then(
-          res => this.items = res.data,
+          res => {this.items = res.data; this.loading = 100},
           err => this.$store.commit("error", err)
         );
 

@@ -3,72 +3,26 @@
     <v-layout justify-center wrap>
       <v-flex md12>
 
-        <material-card color="blue-grey" :title="$t('Profile.profile_list')" :text="$t('Profile.profile_list_small')" :loading="loading">
-
-          <v-data-table :headers="headers" :items="items" hide-actions>
-            
-            <template slot="headerCell" slot-scope="{ header }">
-              <span
-                class="subheading text-info text--darken-3" v-text="header.text" />
-            </template>
-            
-            <template slot="items" slot-scope="{ item }">
-              <td>{{ item.label }}</td>
-              <td>{{ item.theme }}</td>
-              <!-- <td>{{ item.session_time | mf_time_human_duration }}</td> -->
-              <td>{{ item.limit_time }}</td>
-              <td>{{ Math.floor(item.limit_speed/1024/1024) }} Mb/s</td>
-              <td><v-chip v-for="at in item.auth_types" >{{auth_types[at]}}</v-chip></td>
-              <td class="text-xs-right">
-
-                <v-tooltip top content-class="top">
-                  <v-btn slot="activator" icon :to="{name: 'profile_edit', params: {id: item.id}}">
-                    <v-icon small color="primary">mdi-pencil</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.edit') }}</span>
-                </v-tooltip>
-
-                <v-tooltip top content-class="top">
-                  <v-btn slot="activator" icon @click="change_item(item)">
-                    <v-icon small :color="item.disabled ? 'warning' : 'grey'" >mdi-block-helper</v-icon>
-                  </v-btn>
-                  <span>{{ $t('Form.disable') }}</span>
-                </v-tooltip>
-
-              </td>
-            </template>
-
-
-
-          </v-data-table>
-
-
-
-        </material-card>
-
-    <v-fab-transition  v-if="['super', 'admin','manager'].includes($auth.user().role)">
- 
-    <v-tooltip top content-class="top">
-<template v-slot:activator="{ on }">
-      <v-btn
-        dark
-        fab
-        fixed
-        bottom
-        right
-        color="primary"
-        :to='{ name: "profile_add" }'
-       
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      </template>
-        <span>{{ $t('Common.add') }}</span>
-
-    </v-tooltip>
-    </v-fab-transition>
-
-
+        <material-table-card 
+            color="blue-grey" 
+            :title="$t('Profile.profile_list')" 
+            :text="$t('Profile.profile_list_small')" 
+            :loading="loading" 
+            :headers="headers" 
+            :items="items" 
+            :change_item="change_item" 
+            add_item="profile_add" 
+            edit_item="profile_edit" 
+            :add_roles="['super', 'admin','manager']" 
+            :edit_roles="['super', 'admin','manager']"
+        >
+                <template slot="item.limit_speed" slot-scope="{ item }">
+                  {{ Math.floor(item.limit_speed/1024/1024) }} Mb/s
+                </template>
+                <template slot="item.auth_types" slot-scope="{ item }">
+                        <v-chip v-for="at in item.auth_types" >{{auth_types[at]}}</v-chip>
+                </template>
+        </material-table-card>
 
       </v-flex>
     </v-layout>
@@ -102,7 +56,7 @@
           { text: this.$t("DB.limit_time"), value: 'limit_time', sortable: false, },
           { text: this.$t("DB.limit_speed"), value: 'limit_speed', sortable: false, },
           { text: this.$t("DB.auth_types"), value: 'auth_types', sortable: false, },
-          { value: null }
+          { text: '', value: 'actions', align: 'end' }
         ];
       },
 
