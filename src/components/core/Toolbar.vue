@@ -127,9 +127,9 @@
 
       </template>
       <v-list>
-        <v-list-item v-for="g in groups"  @click="relogin(g.id)">
+        <v-list-item v-for="g in groups"  @click="relogin(g.group_id)">
           <v-list-item-icon  >
-            <v-icon v-if="g.id == $auth.user().group_id">mdi-check</v-icon>
+            <v-icon v-if="g.group_id == $auth.user().group_id">mdi-check</v-icon>
             <v-icon v-else-if="g.id == $auth.user().user_id">mdi-account</v-icon>
           </v-list-item-icon>
             
