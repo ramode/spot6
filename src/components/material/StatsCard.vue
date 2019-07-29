@@ -2,41 +2,58 @@
   <material-card
     v-bind="$attrs"
     class="v-card--material-stats"
-    v-on="$listeners"
     :color="color"
+    v-on="$listeners"
+    :icon="icon"
+    :title="title"
   >
-    <v-card-title
-      slot="offset"
-      :color="color"
-      class=""
-      dark
-    >
 
-      <v-icon
-        :color="color"
-        size="40"
+
+
+
+<template slot="topactions" v-if="addItem" >
+
+    <v-fab-transition v-if="addRoles && addRoles.includes($auth.user().role)">
+      <v-tooltip
+        top
+        content-class="top"
       >
-        {{ icon }}
-      </v-icon>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            :to="{ name: addItem }"
+            v-on="on"
+          >
+            <v-icon>mdi-plus</v-icon>
 
-<v-spacer></v-spacer>
-        
+          </v-btn>
+        </template>
+        <span>{{ $t('Common.add') }}</span>
+      </v-tooltip>
+    </v-fab-transition>
 
-      <span
-        :class=" color+'--text text--darken-3 title font-weight-light'"
-        v-text="title"
-      />
+</template>
 
-    </v-card-title>
-    <div class="text-xs-right">
 
-      <span
-        class="display-1  font-weight-light">
+      <template
+        v-for="(_, slot) of $scopedSlots"
+        v-slot:[slot]="scope"
+      >
+        <slot
+          :name="slot"
+          v-bind="scope"
+        />
+      </template>
+
+
+<v-card-text
+        class="display-1  font-weight-light text-right"
+      >
         {{ value }} <small>{{ smallValue }}</small>
-      </span>
-    </div>
 
-    <template slot="actions">
+
+</v-card-text>
+    <template slot="actions" v-if="subText">
       <v-icon
         :color="subIconColor"
         size="20"
@@ -61,6 +78,16 @@ export default {
 
   props: {
     ...Card.props,
+
+    addItem: {
+        type: String,
+    },
+
+    addRoles: {
+        type: Array,
+        default: () => ['super','admin','manager']
+    },
+
     icon: {
       type: String,
       required: true
@@ -98,42 +125,5 @@ export default {
 </script>
 
 <style lang="scss">
-.v-card--material-stats {
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
 
-  .v-offset {
-    display: inline-block;
-    flex: 0 1;
-    margin-top: 0;
-    margin-left: 0;
-    margin-right: auto;
-    margin-bottom: 0 !important;
-    max-width: auto;
-    padding: 0 16px 0;
-  }
-
-  .v-card {
-    flex: 0 1 auto;
-  }
-
-    .v-card__title {
-        padding-bottom:0;
-        padding-top:24px;
-        
-    }
-
-  .v-card__t-ext {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-  }
-
-  .v-card__actions {
-    flex: 1 0 100%;
-  }
-}
 </style>

@@ -2,9 +2,17 @@
 	"dashboard":		"Dashboard",
 	"users":			"Users",
 	"profiles":			"Profiles",
-	"nases":			"Nases",
-	"client_devices":	"Client Devices",
+	"nases":			"Network access servers",
+	"client_devices":	"Client devices",
 	"settings":			"Settings",
 	"accounting":		"Accounting",
-	"auth_types":		"Auth Types"
+	"auth_types":		"Auth types",
+	"nas_edit":			"Network access server",
+    "nas_add":          "New network access server",
+	"user_add": 		"New user",
+	"user_edit":		"User",
+	"profile_add":	    "New profile",
+	"profile_edit":	    "Profile",
+    "auth_types_edit":  "Auth type",
+    "auth_types_add":   "New auth type"
 }

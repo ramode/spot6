@@ -1,10 +1,15 @@
 <template>
-  <v-container fill-height fluid grid-list-xl>
-    <v-layout justify-center wrap>
+  <v-container
+    fill-height
+    fluid
+    grid-list-xl
+  >
+    <v-layout
+      justify-center
+      wrap
+    >
       <v-flex md12>
-
-          404 Not found
-
+        404 Not found
       </v-flex>
     </v-layout>
   </v-container>
@@ -12,24 +17,24 @@
 
 <script>
 
-  import API from '@/lib/API'
+import API from '@/lib/API'
 
-  export default {
+export default {
 
-    data: () => ({
-    }),
+  data: () => ({
+  }),
 
-    mounted () {
-      this.load();
-    },
+  mounted () {
+    this.load()
+  },
 
-    methods: {
-     
-      load() {
-      },
+  methods: {
 
+    load () {
     }
- 
+
   }
+
+}
 
 </script>

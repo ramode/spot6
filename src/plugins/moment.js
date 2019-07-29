@@ -8,5 +8,5 @@ console.log(moment)
 
 // 2019-06-11:
 Vue.use(VueMoment, {
-	moment,
+  moment
 })

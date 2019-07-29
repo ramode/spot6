@@ -1,35 +1,42 @@
 <template>
-  <v-container fill-height fluid grid-list-xl>
-    <v-layout justify-center wrap>
-      <v-flex md12>
-
-          403 Permission Denied
-
-      </v-flex>
+  <v-container
+    fill-height
+    fluid
+    grid-list-xl
+  >
+    <v-layout
+      align-center
+      justify-center
+      fill-height
+      row
+    >
+      <h3>
+        {{ $t('Common.PermissionDenied') }}
+      </h3>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 
-  import API from '@/lib/API'
+import API from '@/lib/API'
 
-  export default {
+export default {
 
-    data: () => ({
-    }),
+  data: () => ({
+  }),
 
-    mounted () {
-      this.load();
-    },
+  mounted () {
+    this.load()
+  },
 
-    methods: {
-     
-      load() {
-      },
+  methods: {
 
+    load () {
     }
- 
+
   }
+
+}
 
 </script>

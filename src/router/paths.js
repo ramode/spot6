@@ -10,8 +10,8 @@ export default [
     view: 'Dashboard',
     name: 'dashboard',
     meta: {
-      auth: true,
-    },
+      auth: true
+    }
   },
 
   {
@@ -20,29 +20,29 @@ export default [
     name: 'users',
     meta: {
       auth: {
-        roles: ['super','admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
   {
     path: '/users/add',
-    view: "UserMod",
+    view: 'UserMod',
     name: 'user_add',
     meta: {
       auth: {
-        roles: ['super','admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
   {
     path: '/users/:id',
-    view: "UserMod",
+    view: 'UserMod',
     name: 'user_edit',
     meta: {
       auth: {
-        roles: ['super','admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
 
   {
@@ -51,9 +51,9 @@ export default [
     name: 'nases',
     meta: {
       auth: {
-        roles: ['super'],
+        roles: ['super','admin','manager']
       }
-    },
+    }
   },
 
   {
@@ -62,9 +62,9 @@ export default [
     name: 'nas_edit',
     meta: {
       auth: {
-        roles: ['super'],
+        roles: ['super','admin']
       }
-    },
+    }
   },
 
   {
@@ -73,9 +73,9 @@ export default [
     name: 'nas_add',
     meta: {
       auth: {
-        roles: ['super'],
+        roles: ['super','admin']
       }
-    },
+    }
   },
 
   {
@@ -84,9 +84,9 @@ export default [
     name: 'settings',
     meta: {
       auth: {
-        roles: ['super'],
+        roles: ['super']
       }
-    },
+    }
   },
 
   {
@@ -94,8 +94,8 @@ export default [
     view: 'Profiles',
     name: 'profiles',
     meta: {
-      auth: true,
-    },
+      auth: true
+    }
   },
   {
     path: '/profiles/add',
@@ -103,9 +103,9 @@ export default [
     name: 'profile_add',
     meta: {
       auth: {
-        roles: ['super', 'admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
   {
     path: '/profiles/:id',
@@ -113,9 +113,9 @@ export default [
     name: 'profile_edit',
     meta: {
       auth: {
-        roles: ['super', 'admin', 'manager'],
+        roles: ['super', 'admin', 'manager']
       }
-    },
+    }
   },
 
   {
@@ -124,9 +124,9 @@ export default [
     name: 'auth_types',
     meta: {
       auth: {
-        roles: ['super', 'admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
   {
     path: '/auth_types/add',
@@ -134,9 +134,9 @@ export default [
     name: 'auth_types_add',
     meta: {
       auth: {
-        roles: ['super', 'admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
   {
     path: '/auth_types/:id',
@@ -144,9 +144,9 @@ export default [
     name: 'auth_types_edit',
     meta: {
       auth: {
-        roles: ['super', 'admin'],
+        roles: ['super', 'admin']
       }
-    },
+    }
   },
 
   {
@@ -154,8 +154,8 @@ export default [
     view: 'ClientDevices',
     name: 'client_devices',
     meta: {
-      auth: true,
-    },
+      auth: true
+    }
   },
 
   {
@@ -163,8 +163,8 @@ export default [
     view: 'Accounting',
     name: 'accounting',
     meta: {
-      auth: true,
-    },
-  },
+      auth: true
+    }
+  }
 
 ]

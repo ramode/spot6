@@ -6,198 +6,198 @@ Vue.use(VueAxios, axios)
 
 export default {
 
-	Registration(data) {
-		// return this.addUser(data);
-		if ( data.pass2 ) {
-			delete data.pass2;
-		};
-		return axios.post('/rpc/reg', data);
-	},
-
-	getRoles() {
-		return axios.get('/roles');
-	},
-
-	getUsers() {
-		return axios.get('/user_users');
-	},
-	getGroups() {
-		return axios.get('/user_groups');
-	},
-
-	getUser(user_id) {
-		return axios.get(`/user_users?id=eq.${user_id}`);
-	},
+  Registration (data) {
+    // return this.addUser(data);
+    if (data.pass2) {
+      delete data.pass2
+    };
+    return axios.post('/rpc/reg', data)
+  },
 
 
-    passwdUser(user_id, password) {
-        var data = {
-            user_id:user_id,
-            newpassword: password
-        }
-        return axios.post("/rpc/passwd", data);
-    },
+  getRoles () {
+    return axios.get('/roles')
+  },
 
-	addUser(data) {
-		// var config = {
-		// 	headers: {
-		// 		"Prefer": "return=minimal",
-		// 	},
-		// };
-		// return axios.post("/users", data, config);
-		if ( data.pass2 ) {
-			delete data.pass2;
-		};
-		return axios.post("/user_users", data, {headers:{Prefer: 'return=representation'}});
-	},
+  getUsers () {
+    return axios.get('/user_users')
+  },
+  getGroups () {
+    return axios.get('/user_groups')
+  },
 
-	updateUser(data) {
-		var user_id = data.id;
-		return axios.patch(`/user_users?id=eq.${user_id}`, data, {headers:{Prefer: 'return=representation'}});
-	},
+  getUser (user_id) {
+    return axios.get(`/user_users?id=eq.${user_id}`)
+  },
 
-	getProfiles() {
-		return axios.get("/hotspot_profiles");
-	},
+  passwdUser (user_id, password) {
+    var data = {
+      user_id: user_id,
+      newpassword: password
+    }
+    return axios.post('/rpc/passwd', data)
+  },
 
-	getProfile(profile_id) {
-		return axios.get(`/hotspot_profiles?id=eq.${profile_id}`);
-	},
+  addUser (data) {
+    // var config = {
+    // 	headers: {
+    // 		"Prefer": "return=minimal",
+    // 	},
+    // };
+    // return axios.post("/users", data, config);
+    if (data.pass2) {
+      delete data.pass2
+    };
+    return axios.post('/user_users', data, { headers: { Prefer: 'return=representation' } })
+  },
 
-	getAuthTypes() {
-		return axios.get('/auth_types_list');
-	},
+  updateUser (data) {
+    var user_id = data.id
+    return axios.patch(`/user_users?id=eq.${user_id}`, data, { headers: { Prefer: 'return=representation' } })
+  },
 
-	getMyAuthTypes() {
-		return axios.get('/auth_types');
-	},
+  getProfiles () {
+    return axios.get('/hotspot_profiles')
+  },
 
-	getMyAuthType(auth_type_id) {
-		return axios.get(`/auth_types?id=eq.${auth_type_id}`);
-	},
+  getProfile (profile_id) {
+    return axios.get(`/hotspot_profiles?id=eq.${profile_id}`)
+  },
 
-	addAuthType(data) {
-		delete data.id;
-		return axios.post('/auth_types', data);
-	},
+  getAuthTypes () {
+    return axios.get('/auth_types_list')
+  },
 
-	updateAuthType(data) {
-		var auth_type_id = data.id;
-		delete data.web_hook;
-		return axios.patch(`/auth_types?id=eq.${auth_type_id}`, data);
-	},
+  getMyAuthTypes () {
+    return axios.get('/auth_types')
+  },
 
-	getAuthDrivers() {
-		return axios.get('/auth_drivers');
-	},
+  getMyAuthType (auth_type_id) {
+    return axios.get(`/auth_types?id=eq.${auth_type_id}`)
+  },
 
-	addProfile(data) {
-		// data._session_time = data.session_time;
-		// delete data.session_time;
+  addAuthType (data) {
+    delete data.id
+    return axios.post('/auth_types', data)
+  },
 
-		return axios.post("/hotspot_profiles", data);
-	},
+  updateAuthType (data) {
+    var auth_type_id = data.id
+    delete data.web_hook
+    return axios.patch(`/auth_types?id=eq.${auth_type_id}`, data)
+  },
 
-	updateProfile(data) {
-		// data._session_time = data.session_time;
-		// delete data.session_time;
+  getAuthDrivers () {
+    return axios.get('/auth_drivers')
+  },
 
-		var profile_id = data.id;
-		return axios.patch(`/hotspot_profiles?id=eq.${profile_id}`, data);
-	},
+  addProfile (data) {
+    // data._session_time = data.session_time;
+    // delete data.session_time;
 
-	createInvite() {
-	},
+    return axios.post('/hotspot_profiles', data)
+  },
 
-	getSettings() {
-		return axios.get('/user_settings');
-	},
+  updateProfile (data) {
+    // data._session_time = data.session_time;
+    // delete data.session_time;
 
-	updateSettings(data) {
-		return axios.patch('/user_settings', data);
-	},
+    var profile_id = data.id
+    return axios.patch(`/hotspot_profiles?id=eq.${profile_id}`, data)
+  },
 
-	getThemes() {
-		return axios.get('/hotspot_themes');
-	},
+  createInvite () {
+  },
 
-	getClientDevices(start_date, end_date) {
-		var config = {
-			headers: {
-				// "Range-Unit": "items",
-				// "Range": "0-19",
-			},
-		};
-		// return axios.get(`/hotspot_devices?time_seen=ov.[${start_date},${end_date}]`, config);
-		// return axios.get(`/hotspot_devices?time_seen=gte.${start_date}&time_seen=lte.${end_date}`, config);
+  getSettings () {
+    return axios.get('/user_settings')
+  },
 
-		return axios.get(`/hotspot_devices?or=(and(time_seen.gte.${start_date},time_seen.lte.${end_date}),and(time_registred.gte.${start_date},time_registred.lte.${end_date}))`, config);
-	},
+  updateSettings (data) {
+    return axios.patch('/user_settings', data)
+  },
 
-	Dashboard() {
-		return axios.get('/dashboard');
-	},
+  getThemes () {
+    return axios.get('/hotspot_themes')
+  },
 
-	getStatClDevByMonth() {
-		var config = {
-			headers: {
-				// "Range-Unit": "items",
-				"Range": "0-11",
-			},
-		};
-		return axios.get('/stat_cl_devices_cnt_by_month', config);
-	},
+  getClientDevices (start_date, end_date) {
+    var config = {
+      headers: {
+        // "Range-Unit": "items",
+        // "Range": "0-19",
+      }
+    }
+    // return axios.get(`/hotspot_devices?time_seen=ov.[${start_date},${end_date}]`, config);
+    // return axios.get(`/hotspot_devices?time_seen=gte.${start_date}&time_seen=lte.${end_date}`, config);
 
-	getStatClDevRegsByMonth() {
-		var config = {
-			headers: {
-				// "Range-Unit": "items",
-				"Range": "0-11",
-			},
-		};
-		return axios.get('/stat_cl_devices_regs_cnt_by_month', config);
-	},
+    return axios.get(`/hotspot_devices?or=(and(time_seen.gte.${start_date},time_seen.lte.${end_date}),and(time_registred.gte.${start_date},time_registred.lte.${end_date}))`, config)
+  },
 
-	getStatMonthTrafic() {
-		return axios.get('/stat_month_trafic');
-	},
+  Dashboard () {
+    return axios.get('/dashboard')
+  },
 
-	getStatDevVendor() {
-		return axios.get('/stat_dev_vendor_last_month_v_percent_gte_10')
-	},
+  getStatClDevByMonth () {
+    var config = {
+      headers: {
+        // "Range-Unit": "items",
+        'Range': '0-11'
+      }
+    }
+    return axios.get('/stat_cl_devices_cnt_by_month', config)
+  },
 
-	getNases() {
-		return axios.get('/hotspot_nases')
-	},
+  getStatClDevRegsByMonth () {
+    var config = {
+      headers: {
+        // "Range-Unit": "items",
+        'Range': '0-11'
+      }
+    }
+    return axios.get('/stat_cl_devices_regs_cnt_by_month', config)
+  },
 
-	getNas(nas_id) {
-		return axios.get(`/hotspot_nases?id=eq.${nas_id}`)
-	},
+  getStatMonthTrafic () {
+    return axios.get('/stat_month_trafic')
+  },
 
-	getNasTypes() {
-		return axios.get('/hotspot_nastypes')
-	},
+  getStatDevVendor () {
+    return axios.get('/stat_dev_vendor_last_month_v_percent_gte_10')
+  },
 
-	addNas(data) {
-		return axios.post('/hotspot_nases', data);
-	},
+  getNases () {
+    return axios.get('/hotspot_nases')
+  },
 
-	updateNas(data) {
-		var nas_id = data.id;
-		return axios.patch(`/hotspot_nases?id=eq.${nas_id}`, data);
-	},
+  getNas (nas_id) {
+    return axios.get(`/hotspot_nases?id=eq.${nas_id}`)
+  },
 
-	// getAccounting(start_date, end_date) {
-	// 	return axios.get(`/accounting?and=(
-	// 		time_end.gte.${start_date},
-	// 		time_end.lte.${end_date}
-	// 	)`);
-	// },
+  getNasTypes () {
+    return axios.get('/hotspot_nastypes')
+  },
 
-	getAccounting(start_date, end_date) {
-        return axios.get(`/accounting?time=ov.[${start_date},${end_date})`);
+  addNas (data) {
+    return axios.post('/hotspot_nases', data)
+  },
 
-		//return axios.get(`/accounting?and=(time_end.gte.${start_date},time_start.lte.${end_date})`);
-	},
+  updateNas (data) {
+    var nas_id = data.id
+    return axios.patch(`/hotspot_nases?id=eq.${nas_id}`, data)
+  },
+
+  // getAccounting(start_date, end_date) {
+  // 	return axios.get(`/accounting?and=(
+  // 		time_end.gte.${start_date},
+  // 		time_end.lte.${end_date}
+  // 	)`);
+  // },
+
+  getAccounting (start_date, end_date) {
+    return axios.get(`/accounting_rows?select=time::json,phone,mac,ip,nas,nas_ip,upload,download,profile_id,profile_label,termination_cause,uptime,location_id&time=ov.[${start_date},${end_date})`)
+
+    // return axios.get(`/accounting?and=(time_end.gte.${start_date},time_start.lte.${end_date})`);
+  }
 
 }

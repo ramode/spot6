@@ -1,8 +1,10 @@
 {
-	"title":			"spot6",
+	"title":			"Spot 6",
 	"clear":			"Очистить",
 	"save":				"Сохранить",
 	"add":				"Добавить",
 	"create":			"Создать",
-	"disabled":			"Отключен"
+	"disabled":			"Отключен",
+    "PermissionDenied": "Доступ запрещен",
+    "NoData": "Недостаточно данных"
 }

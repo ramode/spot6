@@ -36,7 +36,7 @@ Vue.use(Router)
 const router = new Router({
 
   mode: 'history',
-  
+
   routes: [
 
     { path: '/login', name: 'Login', component: Login },
@@ -44,21 +44,24 @@ const router = new Router({
     { path: '/reg/:reg_secret', name: 'Registration2', component: Registration },
 
     {
-      path: '/', name: 'app', component: AppInterface, redirect: { name: 'dashboard' },
+      path: '/',
+      name: 'app',
+      component: AppInterface,
+      redirect: { name: 'dashboard' },
       meta: {
-        auth: true,
+        auth: true
       },
-      children: 
+      children:
         paths.map(path => route(path.path, path.view, path.name, path.meta))
           .concat([
             { path: '*', redirect: '/dashboard' }
           ])
     },
 
-    { path: '/403', view: '403', name: '403', },
-    { path: '/404', view: '404', name: '404', },
+    { path: '/403', view: '403', name: '403' },
+    { path: '/404', view: '404', name: '404' }
 
-  ],
+  ]
 
   // scrollBehavior (to, from, savedPosition) {
   //   if (savedPosition) {
@@ -71,7 +74,6 @@ const router = new Router({
   // }
 
 })
-
 
 Vue.use(Meta)
 

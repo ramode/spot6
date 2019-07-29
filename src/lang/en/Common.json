@@ -1,8 +1,10 @@
 {
-	"title":			"spot6",
+	"title":			"Spot 6",
 	"clear":			"Clear",
 	"save":				"Save",
 	"add":				"Add",
 	"create":			"Create",
-	"disabled":			"Disabled"
+	"disabled":			"Disabled",
+    "PermissionDenied": "Permission denied",
+    "NoData": "No data"
 }

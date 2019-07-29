@@ -4,13 +4,13 @@
 	"title_edit":		"Edit user",
 	"title_small":		"Users, who can log in in the system",
 	"title_small_mod":	"It will be able to log in with the specified role",
-	"label":			"Users profile name",
+	"label":			"Short name",
 	"login":			"Login",
 	"phone":			"Phone",
 	"email":			"E-Mail",
 	"role":				"Role",
 	"pass":				"Password",
 	"pass_repeat":		"Repeat password",
-	"full_name":		"Full Name",
+	"full_name":		"Full name",
 	"group":			"Group"
 }

@@ -1,21 +1,24 @@
 <template>
   <material-card
     v-bind="$attrs"
-    class="v-card--material-chart"
     v-on="$listeners"
   >
-
-
     <chartist
-      slot="header"
       :data="data"
       :event-handlers="eventHandlers"
       :options="options"
       :ratio="ratio"
       :responsive-options="responsiveOptions"
       :type="type"
-
+      v-if="data.labels.length>0"
     />
+
+    <v-card-text v-else class="display-1  font-weight-light " >
+<v-icon>
+ mdi-chart-line
+</v-icon>
+{{$t('Common.NoData')}}
+    </v-card-text>
 
     <slot />
 
@@ -31,6 +34,10 @@ export default {
   inheritAttrs: false,
 
   props: {
+    nodata: {
+       type: Boolean,
+       default: true
+    },
     data: {
       type: Object,
       default: () => ({})
