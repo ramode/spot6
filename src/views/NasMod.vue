@@ -96,21 +96,25 @@
                   />
                 </v-flex>
 
-                <v-flex
-                  xs12
-                  text-xs-right
-                >
-                  <!-- <v-btn class="mx-0 font-weight-light" color="success" :disabled="valid" @click="submit">Submit</v-btn> -->
-                  <v-btn
-                    class="mx-0 font-weight-light"
-                    color="success"
-                    @click="submit"
-                  >
-                    {{ $t('Form.save') }}
-                  </v-btn>
-                </v-flex>
+
               </v-layout>
             </v-container>
+
+      <v-fab-transition>
+        <v-btn
+          dark
+          fab
+          fixed
+          bottom
+          right
+          color="primary"
+          :title="$t('Form.save')"
+          @click="submit"
+        >
+          <v-icon>mdi-content-save</v-icon>
+        </v-btn>
+      </v-fab-transition>
+
           </v-form>
         </material-card>
       </v-flex>
