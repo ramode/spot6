@@ -131,7 +131,7 @@ export default {
     // return axios.get(`/hotspot_devices?time_seen=ov.[${start_date},${end_date}]`, config);
     // return axios.get(`/hotspot_devices?time_seen=gte.${start_date}&time_seen=lte.${end_date}`, config);
 
-    return axios.get(`/hotspot_devices?or=(and(time_seen.gte.${start_date},time_seen.lte.${end_date}),and(time_registred.gte.${start_date},time_registred.lte.${end_date}))`, config)
+    return axios.get(`/hotspot_devices?or=(and(time_seen.gte.${start_date},time_seen.lt.${end_date}),and(time_registred.gte.${start_date},time_registred.lt.${end_date}))`, config)
   },
 
   Dashboard () {
