@@ -52,10 +52,7 @@ fixed
         slot="item.actions"
         slot-scope="{ item }"
       >
-        <v-layout
-          justify-end
-          row
-        >
+	<div class=text-no-wrap>
           <v-tooltip
             top
             content-class="top"
@@ -93,7 +90,7 @@ fixed
             </template>
             <span>{{ $t('Form.disable') }}</span>
           </v-tooltip>
-        </v-layout>
+</div>
       </template>
     </v-data-table>
 

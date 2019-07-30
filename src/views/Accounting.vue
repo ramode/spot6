@@ -190,10 +190,6 @@ export default {
       return [
         {
           sortable: false,
-          value: 'actions'
-        },
-        {
-          sortable: false,
           text: this.$t('Accounting.phone'),
           value: 'phone'
         },

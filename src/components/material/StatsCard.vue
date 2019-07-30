@@ -4,7 +4,6 @@
     class="v-card--material-stats"
     :color="color"
     v-on="$listeners"
-    :icon="icon"
     :title="title"
   >
 
@@ -49,6 +48,9 @@
 <v-card-text
         class="display-1  font-weight-light text-right"
       >
+
+<v-icon v-text="icon" left :color="color" large/> 
+
         {{ value }} <small>{{ smallValue }}</small>
 
 

@@ -3,7 +3,7 @@
     fluid
     grid-list-lg
   >
-    <v-layout wrap>
+    <v-layout wrap >
       <v-flex
         sm12
         md12
@@ -75,10 +75,17 @@
       </v-flex>
 
       <v-flex
+        sm12
+        md12
+        lg6
+      >
+ <v-layout wrap >
+
+      <v-flex
         xs12
         sm6
         md6
-        lg3
+        lg6
       >
         <material-stats-card
           color="grey darken-1"
@@ -94,11 +101,11 @@
         xs12
         sm6
         md6
-        lg3
+        lg6
       >
         <material-stats-card
           color="blue-grey"
-          icon="receipt"
+          icon="mdi-tune"
           :title="$t('Dashboard.profile_cnt')"
           :value="dashboard.profiles"
           add-item="profile_add"
@@ -111,7 +118,7 @@
         xs12
         sm6
         md6
-        lg3
+        lg6
       >
         <material-stats-card
           color="green"
@@ -125,7 +132,7 @@
         xs12
         sm6
         md6
-        lg3
+        lg6
       >
         <material-stats-card
           color="orange"
@@ -138,6 +145,8 @@
       <!-- <v-flex md12>
         <v-btn color="success" @click="test_notify">Tetst notify</v-btn>
       </v-flex> -->
+    </v-layout>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -308,8 +317,8 @@ export default {
             // this.trafficInLastMonth.data.labels.unshift( this.$moment(item.day).format("D") );
 
             // Чтобы по-реже сделать подписи по оси X, а то перекрываются
-            var x_value = this.$moment(item.day).format('D')
-            if (['1', '10', '20'].includes(x_value)) {
+            var x_value = this.$moment(item.day).format('E') //понедельники
+            if (x_value=='1') {
               x_value = this.$moment(item.day).format('D MMM')
             } else {
               x_value = null

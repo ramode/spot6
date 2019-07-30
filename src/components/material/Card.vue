@@ -1,7 +1,7 @@
 <template>
   <v-card
 
-    class="v-card--material-stats"
+    class="v-card--material"
     v-bind="$attrs"
     :style="styles"
     v-on="$listeners"
@@ -131,31 +131,18 @@ export default {
 
 <style lang="scss">
 
-.v-card--material-stats {
+.v-card--material {
   display: flex;
   flex-wrap: wrap;
-  position: relative;
-
-  .v-offset {
-    display: inline-block;
-    flex: 0 1;
-    margin-top: 0;
-    margin-left: 0;
-    margin-right: auto;
-    margin-bottom: 0 !important;
-    max-width: auto;
-    padding: 0 16px 0;
-  }
 
   .v-card {
     flex: 0 1 auto;
   }
 
-    .v-card__title {
-        padding-bottom:0;
-        padding-top:24px;
-
-    }
+  .v-toolbar {
+    flex: 0 0 100%;
+    max-width:100%
+  }
 
   .v-card__actions {
     flex: 1 0 100%;

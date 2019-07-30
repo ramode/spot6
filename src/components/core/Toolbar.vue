@@ -257,8 +257,11 @@ export default {
         this.$auth.refresh({
             data: {group_id:id},
             success: function () {
-                //this.$auth.fetch() //не нужно тк go рефрешит всю страницу
-                this.$router.go()
+                this.$auth.fetch()
+		this.$emit('coa')
+
+		//не нужно тк go рефрешит всю страницу
+                //this.$router.go()
                 //console.log(this.$router);
                 //this.$router.replace({path: this.$router.currentRoute.path, params: this.$router.currentRoute.params})
 

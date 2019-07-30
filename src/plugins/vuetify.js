@@ -29,6 +29,7 @@ const vuetifyOptions = {
 
   icons: {
     iconfont: 'mdi'
+    // iconfont: 'mdiSvg',
   },
   lang: {
     locales: { en, ru },
