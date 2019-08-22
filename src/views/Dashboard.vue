@@ -67,6 +67,7 @@
           :responsive-options="devVendorStat.responsiveOptions"
           color="indigo"
           type="Pie"
+          :loading="loadingVen"
         >
           <h4 class="title font-weight-light">
             {{ $t('Dashboard.dev_vendors_title') }}
@@ -159,7 +160,7 @@ export default {
 
   data () {
     return {
-
+          loadingVen: true,
       dashboard: {},
 
       // See https://github.com/Yopadd/vue-chartist
@@ -209,6 +210,7 @@ export default {
       trafficInLastMonth: {
 
         data: {
+
           labels: [],
           series: [
             [], []
@@ -349,6 +351,7 @@ export default {
              this.devVendorStat.data.labels.push(this.$t('Dashboard.dev_vendor_other'))
              this.devVendorStat.data.series.push(percent_modulus)
           }
+          this.loadingVen=false
         },
         err => this.$store.commit('error', err)
       )

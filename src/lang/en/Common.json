@@ -6,5 +6,6 @@
 	"create":			"Create",
 	"disabled":			"Disabled",
     "PermissionDenied": "Permission denied",
-    "NoData": "No data"
+    "NoData": "No data",
+    "Loading": "Loading"
 }

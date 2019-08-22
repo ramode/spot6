@@ -267,9 +267,17 @@
               :loading="loading"
               v-if="form.id"
             >
+
+            <template slot="topactions">
+
+                <v-btn icon @click="reload+=1">
+                    <v-icon v-text="'mdi-refresh'"/>
+                </v-btn>
+            </template>
+
               <div>
                 <iframe
-                  :key="form.profile"
+                  :key="reload"
                   frameborder="0"
                   :src="'/uam/register/?mac=02:00:00:00:00:01&linklogin=%2Fuam%2Ffakelogin&linkorig=http%3A%2F%2Fya.ru&called='+form.profile"
                   height="640"
@@ -308,6 +316,7 @@ export default {
   data () {
     return {
       loading: true,
+      reload: 0,
 
       form: {},
       v_edit: false,
@@ -506,6 +515,7 @@ export default {
             }
             if (res.data[0].id) this.v_edit = true
             this.loading = 100
+            this.reload += 1
             // this.$router.push({name: "profiles"})
           },
           err => this.$store.commit('error', err)

@@ -2,6 +2,7 @@
   <material-card
     v-bind="$attrs"
     v-on="$listeners"
+    :loading=loading
   >
     <chartist
       :data="data"
@@ -13,7 +14,14 @@
       v-if="data.labels.length>0"
     />
 
-    <v-card-text v-else class="display-1  font-weight-light " >
+    <v-card-text v-if="loading" class="display-1  font-weight-light " >
+        <v-icon>
+         mdi-chart-line
+        </v-icon>
+        {{$t('Common.Loading')}}
+    </v-card-text>
+
+    <v-card-text v-else-if="data.labels.length==0" class="display-1  font-weight-light " >
 <v-icon>
  mdi-chart-line
 </v-icon>
@@ -34,6 +42,7 @@ export default {
   inheritAttrs: false,
 
   props: {
+    loading: [Boolean, Number],
     nodata: {
        type: Boolean,
        default: true
